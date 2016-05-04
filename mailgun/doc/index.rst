@@ -50,8 +50,6 @@ Usage
 * Open ``Discuss`` in odoo
 * See your message there
 * Reply to the message and check it in your mail client (e.g. gmail.com)
-* Stop odoo and send several emails again. On odoo starting you see all your messages in ``Discuss``
-
 
 
 
