@@ -8,7 +8,7 @@ That is why we need this module. It fetches messages from mailgun using their AP
 and stores them in odoo.
 
 TODO
-----
+====
 
 * If emails are sent when odoo is stopped then Mailgun will retry (other than for delivery notification) during 8 hours at the following intervals before stop trying: 10 minutes, 10 minutes, 15 minutes, 30 minutes, 1 hour, 2 hour and 4 hours. This could be fixed by fetching undelivered messages after odoo starts.
 
