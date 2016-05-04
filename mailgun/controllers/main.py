@@ -12,5 +12,8 @@ class MailMailgun(http.Controller):
     def mailgun_notify(self, **kw):
         # mailgun notification in json format
         message_url = kw.get('message-url')
+        if not message_url.startswith('https://api.mailgun.net/'):
+            # simple security check failed
+            raise Exception('wrong message-url')
         request.env['mail.thread'].sudo().mailgun_fetch_message(message_url)
         return 'ok'
