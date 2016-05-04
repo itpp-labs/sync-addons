@@ -20,7 +20,7 @@ class MailMailgun(http.Controller):
                 "recipient" : "admin@iledarn.ru"
                 })
 
-    @http.route('/mail_mailgun', auth='public', csrf=False)
+    @http.route('/mailgun', auth='public', csrf=False)
     def incoming_mail(self, **kw):
         print '\n\n\n', 'in incoming_mail ', 'kw ', kw, '\n\n\n\n'
         res = self.get_logs()
@@ -38,7 +38,7 @@ class MailMailgun(http.Controller):
                 print item
                 print '\n'
 
-    @http.route('/mail_mailgun_mime', auth='public', csrf=False)
+    @http.route('/mailgun_mime', auth='public', csrf=False)
     def incoming_mail_mime(self, **kw):
         print '\n\n\n', 'in incoming_mail_mime ', 'kw ', kw, '\n\n\n\n'
         body_mime = kw.get('body-mime')

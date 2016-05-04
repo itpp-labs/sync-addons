@@ -1,6 +1,6 @@
-==============
- Mail Mailgun
-==============
+=========
+ Mailgun
+=========
 
 With this module you can receive incoming messages from mailgun.
 There is no IMAP or POP3 servers on mailgun that is to be used with odoo.
@@ -21,7 +21,7 @@ Sponsors
 Further information
 ===================
 
-HTML Description: https://apps.odoo.com/apps/modules/9.0/mail_mailgun/
+HTML Description: https://apps.odoo.com/apps/modules/9.0/mailgun/
 
 Usage instructions: `<doc/index.rst>`_
 
