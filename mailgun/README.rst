@@ -13,6 +13,7 @@ Credits
 Contributors
 ------------
 * Ildar Nasyrov <Nasyrov@it-projects.info>
+* Ivan Yelizariev <yelizariev@it-projects.info>
 
 Sponsors
 --------
