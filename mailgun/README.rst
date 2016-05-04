@@ -33,4 +33,4 @@ Usage instructions: `<doc/index.rst>`_
 
 Changelog: `<doc/changelog.rst>`_
 
-Tested on Odoo 9.0 ODOO_COMMIT_SHA_TO_BE_UPDATED
+Tested on Odoo 9.0 c8cd67c5d98b410cabe0a6efb3347a8a4de731d8
