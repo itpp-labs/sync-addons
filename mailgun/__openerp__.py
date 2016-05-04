@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Mail Mailgun",
+    'name': "Mailgun",
     'author': "IT-Projects LLC, Ildar Nasyrov",
     'license': 'LGPL-3',
     'website': "https://twitter.com/nasyrov_ildar",
