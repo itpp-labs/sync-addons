@@ -7,6 +7,7 @@ Usage
 
 * register or log in http://mailgun.com
 * On https://mailgun.com/app/domains click on you domain, e.g. sandbox123...mailgun.org domain. Here you can see all information needed to configure odoo outgoing mail feature
+
   * if you in sandbox domain, add Authorized Recepient
   * Copy API Key value into odoo
   
