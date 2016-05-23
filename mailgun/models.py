@@ -29,7 +29,7 @@ class IrConfigParameter(models.Model):
     def mailgun_verify(self):
         api_key = self.get_param('mailgun.apikey')
         mail_domain = self.get_param('mail.catchall.domain')
-        cron_record = self.env.ref('mailgun_domain_verification')
+        cron_record = self.env.ref('mailgun.mailgun_domain_verification')
         if api_key and mail_domain:
             url = "https://api.mailgun.net/v3/domains/%s/verify" % mail_domain
             res = requests.put(url, auth=("api", api_key))
