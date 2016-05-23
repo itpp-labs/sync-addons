@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    <record id="mailgun_domain_verification" model="ir.cron">
+      <field name="name">Mailgun - domain verification</field>
+      <field name='interval_number'>10</field>
+      <field name='interval_type'>minutes</field>
+      <field name="numbercall">-1</field>
+      <field name="active">True</field>
+      <field name="model">ir.config_parameter</field>
+      <field name="function">mailgun_verify</field>
+    </record>
+  </data>
+</openerp>
