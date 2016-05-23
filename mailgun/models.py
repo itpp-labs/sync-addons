@@ -33,5 +33,5 @@ class IrConfigParameter(models.Model):
         if api_key and mail_domain:
             url = "https://api.mailgun.net/v3/domains/%s/verify" % mail_domain
             res = requests.put(url, auth=("api", api_key))
-            if res.status_code == 200 and simplejson.loads(res.text)["domain"]["sate"] == "active":
+            if res.status_code == 200 and simplejson.loads(res.text)["domain"]["state"] == "active":
                 cron_record.write({'active': False})
