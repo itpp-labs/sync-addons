@@ -27,11 +27,13 @@ class IrConfigParameter(models.Model):
 
     @api.model
     def mailgun_verify(self):
+        verified = self.get_param('mailgun.verified')
+        if verified:
+            return
         api_key = self.get_param('mailgun.apikey')
         mail_domain = self.get_param('mail.catchall.domain')
-        cron_record = self.env.ref('mailgun.mailgun_domain_verification')
         if api_key and mail_domain:
             url = "https://api.mailgun.net/v3/domains/%s/verify" % mail_domain
             res = requests.put(url, auth=("api", api_key))
             if res.status_code == 200 and simplejson.loads(res.text)["domain"]["state"] == "active":
-                cron_record.write({'active': False})
+                self.set_param('mailgun.verified', '1')

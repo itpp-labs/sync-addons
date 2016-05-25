@@ -5,7 +5,7 @@
       <field name="name">Mailgun - domain verification</field>
       <field name='interval_number'>10</field>
       <field name='interval_type'>minutes</field>
-      <field name="numbercall">-1</field>
+      <field name="numbercall">288</field>
       <field name="active">True</field>
       <field name="model">ir.config_parameter</field>
       <field name="function">mailgun_verify</field>
