@@ -5,6 +5,8 @@ import werkzeug
 import email
 import requests
 import simplejson
+import re
+
 
 class MailMailgun(http.Controller):
 
@@ -12,7 +14,7 @@ class MailMailgun(http.Controller):
     def mailgun_notify(self, **kw):
         # mailgun notification in json format
         message_url = kw.get('message-url')
-        if not message_url.startswith('https://api.mailgun.net/'):
+        if not re.match('^https://[^/]*api.mailgun.net/', message_url):
             # simple security check failed
             raise Exception('wrong message-url')
         request.env['mail.thread'].sudo().mailgun_fetch_message(message_url)
