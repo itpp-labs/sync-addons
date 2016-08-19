@@ -12,6 +12,7 @@ from openerp.addons.mail.models.mail_thread import mail_header_msgid_re
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
