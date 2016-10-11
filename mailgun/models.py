@@ -1,13 +1,9 @@
+# -*- coding: utf-8 -*-
 import requests
-import time
-import dateutil
-import pytz
 import simplejson
 
 from openerp import models, api
 
-from openerp.addons.mail.models.mail_message import decode
-from openerp.addons.mail.models.mail_thread import mail_header_msgid_re
 
 import logging
 _logger = logging.getLogger(__name__)

@@ -22,15 +22,15 @@ Contributors
 
 Sponsors
 --------
-* `IT-Projects LLC <https://it-projects.info>`_
+* `IT-Projects LLC <https://it-projects.info>`__
 
 Further information
 ===================
 
 HTML Description: https://apps.odoo.com/apps/modules/9.0/mailgun/
 
-Usage instructions: `<doc/index.rst>`_
+Usage instructions: `<doc/index.rst>`__
 
-Changelog: `<doc/changelog.rst>`_
+Changelog: `<doc/changelog.rst>`__
 
 Tested on Odoo 9.0 c8cd67c5d98b410cabe0a6efb3347a8a4de731d8
