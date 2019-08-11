@@ -3,7 +3,7 @@
 Sync addons
 ===========
 
-Odoo addons for integration with external sysmte 
+Odoo addons for integration with external systems
 
 List of repositories
 ====================
