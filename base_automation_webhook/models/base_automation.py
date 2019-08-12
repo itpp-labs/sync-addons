@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 
-# The file name is choosen in favor of model name in next odoo versions
+# The file name is incorrect and should be called ir_actions_server.py instead
 from odoo import models, api
 import requests
 
