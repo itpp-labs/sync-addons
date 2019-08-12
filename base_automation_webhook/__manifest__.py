@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 {
@@ -18,7 +17,7 @@
     "currency": "EUR",
 
     "depends": [
-        "base_action_rule",
+        "base_automation",
     ],
     "external_dependencies": {"python": [], "bin": []},
     "data": [
@@ -35,7 +34,7 @@
     "uninstall_hook": None,
 
     "auto_install": False,
-    "installable": False,
+    "installable": True,
 
     # "demo_title": "Outgoing Webhooks",
     # "demo_addons": [

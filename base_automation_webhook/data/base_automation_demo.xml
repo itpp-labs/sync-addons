@@ -2,21 +2,17 @@
 <!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html). -->
 <odoo>
-  <record id="test_action" model="ir.actions.server">
-    <field name="name">Server Action for unittests</field>
-    <field name="model_id" ref="base.model_res_partner"/>
+
+  <record id="test_rule_on_create" model="base.automation">
+    <field name="name">Base Automation: test rule on create</field>
+    <field name="state">code</field>
     <field name="code">
 log("code is executed")
 # don't make actual request, but just check the package is available
 requests.get
 </field>
-  </record>
-
-  <record id="test_rule" model="base.action.rule">
-    <field name="name">Test rule</field>
-    <field name="kind">on_create</field>
+    <field name="trigger">on_create</field>
     <field name="model_id" ref="base.model_res_partner"/>
-    <field name="server_action_ids" eval="[(4, ref('base_automation_webhook.test_action'))]"/>
   </record>
 
 </odoo>
