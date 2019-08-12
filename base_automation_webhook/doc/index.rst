@@ -45,5 +45,5 @@ Handling field changing
 
 If you need to call a webhook on updating specific field, do as following:
 
-* set Rule's**Filter** to a domain like ``FIELD is not equal to TARGET_VALUE``
+* set Rule's **Filter** to a domain like ``FIELD is not equal to TARGET_VALUE``
 * set Action's **Condition** to a domain like ``FIELD is equal to TARGET_VALUE``
