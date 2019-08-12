@@ -16,10 +16,12 @@ Configuration
   * **Name**: *Test*
   * **Model**: *Contact*
   * **Trigger Condition**: *On Creation*
+  * **Filter**: Optional. You can specify a condition that must be satisfied before executing the Rule.
   * **Server actions to run**:
 
     * **Action Name**: *Test Action*
     * **Action To Do**: *Execute Python Code*
+    * **Condition**: Optional. You can specify a condition that must be satisfied before executing the Action.
     * **Python Code**: ```
 WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
 data = {
@@ -30,6 +32,13 @@ requests.post(WEBHOOK, data)
 ```
 
   * Save everything
+
+Handling field changing
+-----------------------
+
+If you need to call a webhook on updating specific field, do as following:
+* set Rule's**Filter** to a domain like ``FIELD is not equal to TARGET_VALUE``
+* set Action's **Condition** to a domain like ``FIELD is equal to TARGET_VALUE``
 
 Usage
 =====

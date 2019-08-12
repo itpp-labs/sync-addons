@@ -6,7 +6,7 @@
     "summary": """Send webhook on Odoo events: when record is created/updated/deleted""",
     "category": "Extra Tools",
     # "live_test_url": "http://apps.it-projects.info/shop/product/DEMO-URL?version=10.0",
-    "images": [],
+    "images": ['images/base_automation_webhook.png'],
     "version": "10.0.1.0.0",
     "application": False,
 
@@ -14,8 +14,8 @@
     "support": "apps@it-projects.info",
     "website": "https://apps.odoo.com/apps/modules/10.0/base_automation_webhook/",
     "license": "LGPL-3",
-    # "price": 9.00,
-    # "currency": "EUR",
+    "price": 60.00,
+    "currency": "EUR",
 
     "depends": [
         "base_action_rule",
