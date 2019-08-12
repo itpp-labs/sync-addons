@@ -35,7 +35,7 @@
     "uninstall_hook": None,
 
     "auto_install": False,
-    "installable": True,
+    "installable": False,
 
     # "demo_title": "Outgoing Webhooks",
     # "demo_addons": [
