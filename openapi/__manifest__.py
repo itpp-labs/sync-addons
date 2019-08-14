@@ -6,7 +6,7 @@
     "summary": """Set up API and export OpenAPI specification file for integration with whatever system you need""",
     "category": "",
     # "live_test_url": "",
-    "images": [],
+    "images": ['images/openapi-swagger.png'],
     "version": "10.0.1.0.0",
     "application": False,
 
@@ -14,8 +14,8 @@
     "support": "apps@it-projects.info",
     "website": "https://it-projects.info/team/yelizariev",
     "license": "LGPL-3",
-    # "price": 9.00,
-    # "currency": "EUR",
+    "price": 180.00,
+    "currency": "EUR",
 
     "depends": [
         "web_tour",
