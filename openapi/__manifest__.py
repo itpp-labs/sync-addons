@@ -2,8 +2,8 @@
 # Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
-    "name": """REST API/Openapi/Swagger""",
-    "summary": """Set up API and export OpenAPI specification file for integration with whatever system you need""",
+    "name": """REST API/OpenAPI/Swagger""",
+    "summary": """API to integrate Odoo with whatever system you need""",
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
