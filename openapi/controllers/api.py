@@ -73,7 +73,7 @@ class ApiV1Controller(http.Controller):
     @pinguin.route(
         _api_endpoint_model,
         methods=['POST'],
-        type='api',
+        type='apijson',
         auth='none',
         csrf=False)
     def create_one__POST(self, namespace, model, **data):
@@ -119,7 +119,7 @@ class ApiV1Controller(http.Controller):
     @pinguin.route(
         _api_endpoint_model_id,
         methods=['PUT'],
-        type='json',
+        type='apijson',
         auth='none',
         csrf=False)
     def update_one__PUT(self, namespace, model, id, **data):

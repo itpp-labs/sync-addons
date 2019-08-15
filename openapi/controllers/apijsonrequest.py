@@ -31,7 +31,7 @@ _request_stack = werkzeug.local.LocalStack()
 
 
 class ApiJsonRequest(WebRequest):
-    _request_type = "api"
+    _request_type = "apijson"
 
     def __init__(self, *args):
         super(ApiJsonRequest, self).__init__(*args)
@@ -182,7 +182,7 @@ class ApiJsonRequest(WebRequest):
 def api_route(route=None, **kw):
 
     routing = kw.copy()
-    assert 'type' not in routing or routing['type'] in ("http", "json", "api")
+    assert 'type' not in routing or routing['type'] in ("http", "json", "apijson")
 
     def decorator(f):
         if route:
@@ -195,7 +195,7 @@ def api_route(route=None, **kw):
         @functools.wraps(f)
         def response_wrap(*args, **kw):
             response = f(*args, **kw)
-            if isinstance(response, Response) or f.routing_type in ("api", "json"):
+            if isinstance(response, Response) or f.routing_type in ("apijson", "json"):
                 return response
 
             if isinstance(response, (bytes, text_type)):
