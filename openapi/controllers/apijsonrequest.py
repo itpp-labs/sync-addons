@@ -78,33 +78,19 @@ class ApiJsonRequest(WebRequest):
 
     def _json_response(self, result=None, error=None):
 
-        response = {
-            'jsonrpc': '2.0',
-            }
+        response = {}
         if error is not None:
             response['error'] = error
         if result is not None:
             response['status'] = result._status
         if result is not None:
-            response['result'] = json.loads(result.data.decode())
+            response = json.loads(result.data.decode())
 
-        if self.jsonp:
-            # If we use jsonp, that's mean we are called from another host
-            # Some browser (IE and Safari) do no allow third party cookies
-            # We need then to manage http sessions manually.
-            response['session_id'] = self.session.sid
-            mime = 'application/javascript'
-
-            # odoo 11+ version:
-            # body = "%s(%s);" % (self.jsonp, json.dumps(response, default=date_utils.json_default))
-            # odoo 10 only:
-            body = "%s(%s);" % (self.jsonp, json.dumps(response))
-        else:
-            mime = 'application/json'
-            # odoo 11+ version:
-            # body = json.dumps(response, default=date_utils.json_default)
-            # odoo 10 only:
-            body = json.dumps(response)
+        mime = 'application/json'
+        # odoo 11+ version:
+        # body = json.dumps(response, default=date_utils.json_default)
+        # odoo 10 only:
+        body = json.dumps(response)
 
         return Response(
             body, status=error and error.pop('http_status', 200) or 200,
@@ -222,8 +208,7 @@ get_request_original = Root.get_request
 def api_get_request(self, httprequest):
     # deduce type of request
 
-    # if httprequest.headers.get('Type') and httprequest.headers.get('Type') in ('api'):
-    if 'authorization' in httprequest.headers:
+    if 'authorization' in httprequest.headers and httprequest.headers.get('content-type', '') == 'application/json':
         return ApiJsonRequest(httprequest)
 
     return get_request_original(self, httprequest)

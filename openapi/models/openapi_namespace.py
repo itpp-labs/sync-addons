@@ -186,6 +186,12 @@ class Namespace(models.Model):
                 },
             }),
             ('responses', {
+                "400": {
+                    "description": "Invalid Data",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
                 "401": {
                     "description": "Authentication information is missing or invalid",
                     "schema": {

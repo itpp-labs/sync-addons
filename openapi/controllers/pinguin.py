@@ -948,13 +948,17 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields):
                 raise odoo.exceptions.ValidationError(odoo._('The model "%s" has no such field: "%s".') % (record._name, field))
 
             # result[field] = getattr(record, field)
-            result[field] = record[field]
+            value = record[field]
+            result[field] = value
             fld = record._fields[field]
             if fld.relational:
                 if fld.type.endswith('2one'):
-                    result[field] = result[field].id
+                    result[field] = value.id
                 elif fld.type.endswith('2many'):
-                    result[field] = result[field].ids
+                    result[field] = value.ids
+            elif (value is False or value is None) and fld.type != 'boolean':
+                # string field cannot be false in response json
+                result[field] = ''
     return result
 
 
@@ -1117,7 +1121,11 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
         definitions[definition_name]['properties'][field] = field_property
 
         if meta['required']:
-            definitions[definition_name]['required'].append(field)
+            fld = model_obj._fields[field]
+            # Mark as required only if field doesn't have defaul value
+            # Boolean always has default value (False)
+            if fld.default is None and fld.type != 'boolean':
+                definitions[definition_name]['required'].append(field)
 
     if not definitions[definition_name]['required']:
         del definitions[definition_name]['required']

@@ -186,12 +186,6 @@ class Access(models.Model):
                             "$ref": "#/definitions/%s-read_one" % model_name
                         }
                     },
-                    "400": {
-                        "description": "invalid data",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorResponse"
-                        }
-                    }
                 },
             }
 
@@ -259,12 +253,6 @@ class Access(models.Model):
                 "responses": {
                     "204": {
                         "description": "successful update",
-                    },
-                    "400": {
-                        "description": "invalid data",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorResponse"
-                        }
                     },
                     "404": {
                         "description": "%s not found" % model_name
@@ -418,6 +406,9 @@ class Access(models.Model):
 
                 # add global responses
                 path_method['responses'].update({
+                    400: {
+                        "$ref": "#/responses/400"
+                    },
                     401: {
                         '$ref': '#/responses/401'
                     },
