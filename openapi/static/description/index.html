@@ -22,7 +22,7 @@
 
         <li>
         <i class="fa fa-check-square-o text-primary"></i>
-         Requests\Responses made over API are logged with required level of details: full/short/disabled
+         Requests/Responses made over API are logged with required level of details: full/short/disabled
         </li>
 
         <li>
@@ -39,13 +39,16 @@
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img class="d-block w-100" src="swagger-editor.png" alt="Swagger Editor">
+                <img class="d-block w-100 oe_picture oe_screenshot" src="swagger-editor.png" alt="Swagger Editor">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="openapi-logs.png" alt="Logs">
+                <img class="d-block oe_picture oe_screenshot" src="openapi-logs.png" alt="Logs">
             </div>
             <div class="carousel-item">
-                <img class="d-block w-100" src="api-configuration.png" alt="API Congifuration">
+                <img class="d-block oe_picture oe_screenshot" src="openapi-configuration-model.png" alt="API Congifuration per Model">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block oe_picture oe_screenshot" src="openapi-configuration-namespace.png" alt="API Congifuration per Integration">
             </div>
         </div>
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -58,7 +61,10 @@
         </a>
     </div>
 
+
 </section>
+
+
 
 <section class="oe_container">
     <div class="oe_row oe_spaced">
@@ -89,15 +95,42 @@
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="python" role="tabpanel" aria-labelledby="python-tab">
-
-If there is no partner with email sync@ then create "Openapi support" and send message "The Openapi module works in Python! Thank you!"
-
-</div>
+...
+    </div>
     <div class="tab-pane fade" id="java" role="tabpanel" aria-labelledby="java-tab">...</div>
     <div class="tab-pane fade" id="php" role="tabpanel" aria-labelledby="php-tab">...</div>
   </div>
 </section>
 
+<pre>
+http_client = RequestsClient()
+http_client.set_basic_auth('yourdomain.example.com', 'DATABASE-NAME', 'USER-TOKEN')
+odoo = SwaggerClient.from_url(
+    'https://yourdomain.example.com/api/v1/demo/swagger.json?token=demo_token&db=source',
+    http_client=http_client,
+)
+
+result = client.res_partner.callMethodForResPartnerRecordset(body={
+    "method_name": "search",
+    "ids": "[]",
+    "method_params": "{'domain': [('email', '=', 'sync@it-projects.info')]}"
+})
+
+partner_id = result.TODO
+
+if not partner_id:
+    result = client.res_partner.addResPartner(body={
+        "name": "OpenAPI Support",
+        "email": "sync@it-projects.info"
+    })
+    partner_id = result.TODO
+
+client.res_partner.callMethodForResPartnerRecordset(body={
+    "method_name": "message_post",
+    "ids": [partner_id],
+    "method_params": {"body": "The Openapi module works in Python! Thank you!"}
+})
+</pre>
 
 
 <section class="oe_container">
@@ -121,7 +154,7 @@ If there is no partner with email sync@ then create "Openapi support" and send m
         </div>
         <div class="oe_span6">
             <div class="oe_row_img oe_centered" align="center">
-                <img class="oe_demo oe_picture oe_screenshot" src="aws-lambda.png"/>
+                <img class="oe_demo oe_picture oe_screenshot" src="aws.png"/>
             </div>
         </div>
     </div>
@@ -131,7 +164,7 @@ If there is no partner with email sync@ then create "Openapi support" and send m
     <div class="oe_row oe_spaced">
         <div class="oe_span6">
             <div class="oe_row_img oe_centered" align="center">
-                <img class="oe_demo oe_picture oe_screenshot" src="syndesis.png"/>
+                <img class="oe_demo oe_picture oe_screenshot" src="syndesis.jpg"/>
             </div>
         </div>
         <div class="oe_span6">
@@ -169,7 +202,7 @@ If there is no partner with email sync@ then create "Openapi support" and send m
     <div class="oe_row oe_spaced">
         <div class="oe_span6">
             <div class="oe_row_img oe_centered" align="center">
-                <img class="oe_demo oe_picture oe_screenshot" src="syndesis.png"/>
+                <img class="oe_demo oe_picture oe_screenshot" src="powerbi.png"/>
             </div>
         </div>
         <div class="oe_span6">
