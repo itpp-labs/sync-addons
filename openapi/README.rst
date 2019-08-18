@@ -70,6 +70,7 @@ Roadmap
 =======
 
 * TODO: Add a smart button for Logs in ``openapi.namespace`` form
+* TODO: Add a button to developer menu to grant access to current model (see index.rst)
 
 Credits
 =======

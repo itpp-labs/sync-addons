@@ -51,10 +51,10 @@ class Access(models.Model):
         default=False,
     )
     public_methods = fields.Text(
-        'Restrict Public methods',
-        help='Allowed public methods besides basic ones. '
-        'Public methods are ones that don\'t start with underscore). '
-        'Format: one method per line. '
+        'Rectric Public methods',
+        help='Allowed public methods besides basic ones.\n'
+        'Public methods are ones that don\'t start with underscore).\n'
+        'Format: one method per line.\n'
         'When empty -- all public methods are allowed')
     # Options for Private methods
     # * all forbidden
@@ -68,7 +68,7 @@ class Access(models.Model):
     read_one_id = fields.Many2one(
         'ir.exports',
         'Read One Fields',
-        help='Fields to return on reading one record',
+        help='Fields to return on reading one record, on creating a record',
         domain="[('resource', '=', model)]")
     read_many_id = fields.Many2one(
         'ir.exports',

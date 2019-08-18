@@ -69,7 +69,7 @@
                             <field name="api_delete"/>
                             <field name="api_public_methods"/>
                             <field name="public_methods"
-                                   attrs="{'invisible': [('api_public_methods', '=', True)]}"
+                                   attrs="{'invisible': [('api_public_methods', '=', False)]}"
                             />
                             <field name="private_methods"/>
                             <field name="read_one_id"
@@ -91,7 +91,7 @@
                                 </form>
                             </field>
                             <field name="read_many_id"
-                                   attrs="{'readonly': [('model_id', '=', False)]}"
+                                   attrs="{'readonly': [('model_id', '=', False)], 'invisible': [('api_read', '=', False)]}"
                                    context="{'default_resource': model, 'default_name': context.get('parent_name', '&lt;parent_namespace_name&gt;') + ' / ' + model + ' / read_many'}"
                             >
                                 <form string="Read Many Fields">
@@ -110,7 +110,7 @@
                             </field>
                         </group>
                     </div>
-                    <notebook>
+                    <notebook attrs="{'invisible': [('api_create', '=', False)]}">
                         <page string="Creation Context Presets">
                             <field name="create_context_ids"
                                    attrs="{'readonly': [('model_id', '=', False)]}"

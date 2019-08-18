@@ -19,28 +19,28 @@ Configuration
 Activating and customization
 ----------------------------
 
-via Model's Menu (recommended)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-TODO
-* `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
-* Open the developer tools drop down
-* Click menu ``Configure REST API`` located within the dropdown
-* On the form that opens, activate and configure this module for REST API accessability. 
-* Click ``[Apply]``
-
-via Database Structure Menu (only for developers)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. via Model's Menu (recommended)
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. 
+.. TODO
+.. * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
+.. * Open the developer tools drop down
+.. * Click menu ``Configure REST API`` located within the dropdown
+.. * On the form that opens, activate and configure this module for REST API accessability. 
+.. * Click ``[Apply]``
+.. 
+.. via Database Structure Menu (only for developers)
+.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Open menu ``[[ Settings ]] >> Dashboard``
 * In *REST API* section click ``[Add Integration]``
 
   * Specify **Name** for integration, e.g. ``test``
-  * Set **Log responses** **Full**
+  * Set **Log requests** to *Full*
+  * Set **Log responses** to *Full*
   * Click ``[Save]``
 
-* Click smart-button ``Accessable models``
-* Click ``[Create]``
+* In ``Accessable models`` tab click ``Add an item`` 
 
   * Set **Model**, for example *res.users*
   * Configure allowed operations
