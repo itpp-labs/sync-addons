@@ -19,19 +19,6 @@ Configuration
 Activating and customization
 ----------------------------
 
-.. via Model's Menu (recommended)
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. 
-.. TODO
-.. * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
-.. * Open the developer tools drop down
-.. * Click menu ``Configure REST API`` located within the dropdown
-.. * On the form that opens, activate and configure this module for REST API accessability. 
-.. * Click ``[Apply]``
-.. 
-.. via Database Structure Menu (only for developers)
-.. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 * Open menu ``[[ OpenAPI ]] >> OpenAPI >> Integrations``
 * Click ``[Create]``
 * Specify **Name** for integration, e.g. ``test``
@@ -67,6 +54,9 @@ Activating and customization
     * **[x] Update via API**
     * **[x] Delete via API**
 
+* Click ``[Save]``
+* Copy **Specification Link** to use it in any system that support OpenAPI
+
 Authentication
 --------------
 
@@ -74,33 +64,20 @@ Authentication
 * Open menu ``[[ Settings ]] >> Users >> Users``
 * Select a user that will be used for iteracting over API
 * In **Allowed Integration** select some integrations
-* Copy **OpenAPI Token** to use in any system that support REST API (OpenAPI)
-
-
-Configuration review
---------------------
-
-All settings are available under menu ``[[ Settings ]] >> REST API`` (Available in `Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__)
+* Copy **OpenAPI Token** to use it in any system that support OpenAPI
 
 Usage
 =====
 
-TODO
-
-* Open menu ``[[ Settings ]] >> Dashboard``
-* In *REST API* section you can see Quantity of Models available via API
-* Click button ``[Manage]`` to check or edit configuration
-* Click link ``Publish OpenAPI (Swagger)``. A ``swagger.json`` will be made available under ``/api/v1/swagger.json``
-  documentation of the tool / system you use on how to apply the Specification
-  file there. Some examples are presented below.
-
-Swagger Editor
---------------
-
-Allows to review API
+As the simplest example, you can try API in Swagger Editor. It allows to review and check API
 
 * Open http://editor.swagger.io/
 * Click menu ``File >> Import File`` 
-* RESULT: You can see specification for API
-* You can auto-generate SDKs in over 40 languages, there.
-* Or even download server stups in over 20 frameworks, that iplement the API.
+* Set **Specification link**
+* RESULT: Specification is parsed succefully and you can see API presentation
+* Click ``[Authorize]`` button
+
+  * **Username** -- set database name
+  * **Password** -- set **OpenAPI Token**
+
+For more examples visit https://odoo-sync.sh website

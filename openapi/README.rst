@@ -70,7 +70,16 @@ Roadmap
 =======
 
 * TODO: Add a smart button for Logs in ``openapi.namespace`` form
-* TODO: Add a button to developer menu to grant access to current model (see index.rst)
+* TODO: Add a button to developer menu to grant access to current model
+
+    * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
+    * Open the developer tools drop down
+    * Click menu ``Configure REST API`` located within the dropdown
+    * On the form that opens, activate and configure this module for REST API accessability. 
+    * Click ``[Apply]``
+
+
+
 
 Credits
 =======
