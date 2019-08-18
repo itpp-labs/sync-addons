@@ -18,7 +18,7 @@
                 <field name="openapi_token" attrs="{'invisible': [('id', '=', False)]}"/>
             </field>
             <notebook position="inside">
-                <page string="Allowed Namespaces">
+                <page string="Allowed Intergrations">
                     <field name="namespace_ids"/>
                 </page>
             </notebook>

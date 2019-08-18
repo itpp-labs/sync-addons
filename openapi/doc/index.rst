@@ -1,6 +1,6 @@
-===============================
- REST API / Open API (Swagger)
-===============================
+==========================
+ REST API/Openapi/Swagger
+==========================
 
 .. contents::
    :local:
@@ -32,16 +32,12 @@ Activating and customization
 .. via Database Structure Menu (only for developers)
 .. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* Open menu ``[[ Settings ]] >> Dashboard``
-* In *REST API* section click ``[Add Integration]``
-
-  * Specify **Name** for integration, e.g. ``test``
-  * Set **Log requests** to *Full*
-  * Set **Log responses** to *Full*
-  * Click ``[Save]``
-
+* Open menu ``[[ OpenAPI ]] >> OpenAPI >> Integrations``
+* Click ``[Create]``
+* Specify **Name** for integration, e.g. ``test``
+* Set **Log requests** to *Full*
+* Set **Log responses** to *Full*
 * In ``Accessable models`` tab click ``Add an item`` 
-
   * Set **Model**, for example *res.users*
   * Configure allowed operations
 
@@ -57,20 +53,29 @@ Activating and customization
       * Set **Read One Fields** -- fields to return on reading one record
       * Set **Read Many Fields** -- fields to return on reading multiple records
 
+      Note: you can use Export widget in corresponding *Model* to create *Fields list*. To do that:
+
+        * Open menu for the *Model*
+        * Switch to list view
+        * Select any record
+        * click ``[Action] -> Export``
+        * Set **Export Type** to *Export all Data*
+        * Add the fields you need to right column
+        * Click **Save fields list**, choose name and save the list
+        * Now the list is availab to set **Read One Fields**, **Read Many Fields** settings
+
     * **[x] Update via API**
     * **[x] Delete via API**
 
 Authentication
 --------------
 
+* `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
 * Open menu ``[[ Settings ]] >> Users >> Users``
 * Select a user that will be used for iteracting over API
-* In ``REST API`` tab:
+* In **Allowed Integration** select some integrations
+* Copy **OpenAPI Token** to use in any system that support REST API (OpenAPI)
 
-  * Set **Allowed Integration**
-  * In ``REST API`` tab Click  ``[Generate Access Token]``
-  * Copy **Basic Authentication code** to use in any system that support REST API (Open API)
-  * If you want to refresh the token programatically from the connected system, also copy the **Refresh Token**.
 
 Configuration review
 --------------------
