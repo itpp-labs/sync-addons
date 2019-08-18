@@ -12,13 +12,13 @@ class ResUsers(models.Model):
 
     namespace_ids = fields.Many2many('openapi.namespace', string='Allowed Integrations')
     openapi_token = fields.Char('OpenAPI Token',
-                        default=lambda self: self._get_unique_token(),
+                        default=lambda self: self._get_unique_openapi_token(),
                         required=True, copy=False, help='Authentication token for access to API (/api).')
 
     @api.multi
     def reset_openapi_token(self):
         for record in self:
-            record.write({'openapi_token': self._get_unique_token()})
+            record.write({'openapi_token': self._get_unique_openapi_token()})
 
     def _get_unique_openapi_token(self):
         openapi_token = str(uuid.uuid4())

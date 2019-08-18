@@ -54,7 +54,7 @@ class Namespace(models.Model):
                         default=lambda self: str(uuid.uuid4()), readonly=True,
                         required=True, copy=False,
                         help='Token passed by a query string parameter to access the specification.')
-    spec_url = fields.Char('Specification link', compute='_compute_spec_url')
+    spec_url = fields.Char('Specification Link', compute='_compute_spec_url')
 
     _sql_constraints = [
         ('name_uniq',
