@@ -421,8 +421,8 @@ class Access(models.Model):
 
     def get_OAS_definitions_part(self):
         related_model = self.env[self.model]
-        export_fields_read_one = pinguin.transform_strfields_to_dict(self.read_one_id.export_fields.mapped('name'))
-        export_fields_read_many = pinguin.transform_strfields_to_dict(self.read_many_id.export_fields.mapped('name'))
+        export_fields_read_one = pinguin.transform_strfields_to_dict(self.read_one_id.export_fields.mapped('name') or ('id',))
+        export_fields_read_many = pinguin.transform_strfields_to_dict(self.read_many_id.export_fields.mapped('name') or ('id',))
         definitions = {}
         definitions.update(pinguin.get_OAS_definitions_part(related_model, export_fields_read_one, definition_postfix='read_one'))
         definitions.update(pinguin.get_OAS_definitions_part(related_model, export_fields_read_many, definition_postfix='read_many'))

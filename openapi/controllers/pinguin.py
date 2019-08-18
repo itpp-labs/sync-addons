@@ -432,6 +432,7 @@ def get_model_openapi_access(namespace, model):
     :rtype: dict
     :raise: werkzeug.exceptions.HTTPException if the namespace has no accesses.
     """
+    # TODO: this method has code duplicates with openapi specification code (e.g. get_OAS_definitions_part)
     cr, uid = request.cr, request.session.uid
     # Singleton by construction (_sql_constraints)
     openapi_access = request.env(cr, uid)['openapi.access'].sudo().search(
@@ -478,8 +479,8 @@ def get_model_openapi_access(namespace, model):
     for c in openapi_access.create_context_ids.mapped('context'):
         res['context'].update(json.loads(c[1:-1]))
 
-    res['out_fields_read_multi'] = openapi_access.read_many_id.export_fields.mapped('name')
-    res['out_fields_read_one'] = openapi_access.read_one_id.export_fields.mapped('name')
+    res['out_fields_read_multi'] = openapi_access.read_many_id.export_fields.mapped('name') or ('id',)
+    res['out_fields_read_one'] = openapi_access.read_one_id.export_fields.mapped('name') or ('id',)
 
     if openapi_access.public_methods:
         res['method']['public']['whitelist'] = openapi_access.public_methods.split()
@@ -656,6 +657,11 @@ def wrap__resource__create_one(modelname, context, data, success_code, out_field
     model_obj = get_model_for_read(modelname)
     try:
         created_obj = model_obj.with_context(context).create(data)
+        # Somehow don't making a commit here may lead to error
+        # "Record does not exist or has been deleted"
+        # Probably, Odoo (10.0 at least) uses different cursors
+        # to create and to read fields from database
+        request.env.cr.commit()
     except Exception as e:
         return error_response(400, type(e).__name__, str(e))
 

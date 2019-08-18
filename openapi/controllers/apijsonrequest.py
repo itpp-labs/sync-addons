@@ -81,19 +81,16 @@ class ApiJsonRequest(WebRequest):
         response = {}
         if error is not None:
             response['error'] = error
-        if result is not None:
-            response['status'] = result._status
-        if result is not None:
-            response = json.loads(result.data.decode())
 
         mime = 'application/json'
         # odoo 11+ version:
         # body = json.dumps(response, default=date_utils.json_default)
         # odoo 10 only:
-        body = json.dumps(response)
+        body = response and json.dumps(response) or result.data
+        status = error and error.pop('http_status') or result.status_code
 
         return Response(
-            body, status=error and error.pop('http_status', 200) or 200,
+            body, status=status,
             headers=[('Content-Type', mime), ('Content-Length', len(body))]
         )
 

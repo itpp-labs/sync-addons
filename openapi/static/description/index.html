@@ -103,6 +103,10 @@
 </section>
 
 <pre>
+# https://github.com/Yelp/bravado
+from bravado.requests_client import RequestsClient
+from bravado.client import SwaggerClient
+
 http_client = RequestsClient()
 http_client.set_basic_auth('yourdomain.example.com', 'DATABASE-NAME', 'USER-TOKEN')
 odoo = SwaggerClient.from_url(
