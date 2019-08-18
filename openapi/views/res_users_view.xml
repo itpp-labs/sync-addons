@@ -7,15 +7,15 @@
         <field name="priority">120</field>
         <field name="arch" type="xml">
             <header position="inside">
-                <button name="reset_token"
-                        string="Reset Token"
+                <button name="reset_openapi_token"
+                        string="Reset OpenAPI Token"
                         confirm="Do you want to proceed reset token?"
                         type="object"
                         attrs="{'invisible': [('id', '=', False)]}"
                 />
             </header>
             <field name="partner_id" position="after">
-                <field name="token" attrs="{'invisible': [('id', '=', False)]}"/>
+                <field name="openapi_token" attrs="{'invisible': [('id', '=', False)]}"/>
             </field>
             <notebook position="inside">
                 <page string="Allowed Namespaces">

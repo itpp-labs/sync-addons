@@ -138,7 +138,7 @@ def authenticate_token_for_user(token):
 
     :raise: werkzeug.exceptions.HTTPException if user not found.
     """
-    user = request.env['res.users'].sudo().search([('token', '=', token)])
+    user = request.env['res.users'].sudo().search([('openapi_token', '=', token)])
     if user.exists():
         # copy-pasted from odoo.http.py:OpenERPSession.authenticate()
         request.session.uid = user.id

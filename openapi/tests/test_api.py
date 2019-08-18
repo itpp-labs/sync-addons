@@ -37,7 +37,7 @@ class TestAPI(HttpCase):
     def request_from_user(self, *args, **kwargs):
         user = kwargs['user']
         del kwargs['user']
-        kwargs['auth'] = requests.auth.HTTPBasicAuth(self.db_name, user.token)
+        kwargs['auth'] = requests.auth.HTTPBasicAuth(self.db_name, user.openapi_token)
         return self.request(*args, **kwargs)
 
     def test_read_many_all(self):
@@ -123,7 +123,7 @@ class TestAPI(HttpCase):
         namespace_name = 'demo'
         model_name = 'res.partner'
         db_name = 'invalid_db_name'
-        resp = self.request('GET', namespace_name, model_name, auth=requests.auth.HTTPBasicAuth(db_name, demo_user.token))
+        resp = self.request('GET', namespace_name, model_name, auth=requests.auth.HTTPBasicAuth(db_name, demo_user.openapi_token))
         self.assertEqual(resp.status_code, pinguin.CODE__db_not_found[0])
         self.assertEqual(resp.json()['error'], pinguin.CODE__db_not_found[1])
 
@@ -144,7 +144,7 @@ class TestAPI(HttpCase):
             'name': 'new user',
             'login': 'new_user',
         })
-        new_user.reset_token()
+        new_user.reset_openapi_token()
         self.assertTrue(new_user.id not in namespace.user_ids.ids)
         self.assertTrue(namespace.id not in new_user.namespace_ids.ids)
 
@@ -244,5 +244,5 @@ class TestAPI(HttpCase):
         })
 
         url = "http://localhost:%d/api/v1/%s/report/html/%s/%s" % (PORT, namespace_name, report_external_id, docids)
-        resp = requests.request('GET', url, timeout=30, auth=requests.auth.HTTPBasicAuth(self.db_name, super_user.token))
+        resp = requests.request('GET', url, timeout=30, auth=requests.auth.HTTPBasicAuth(self.db_name, super_user.openapi_token))
         self.assertEqual(resp.status_code, pinguin.CODE__success)
