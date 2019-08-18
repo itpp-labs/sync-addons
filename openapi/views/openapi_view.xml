@@ -134,7 +134,7 @@
         <field name="name">openapi.namespace.form</field>
         <field name="model">openapi.namespace</field>
         <field name="arch" type="xml">
-            <form string="Namespace">
+            <form string="Intergration">
                 <header position="inside">
                     <button name="reset_token"
                             string="Reset Token"
@@ -223,7 +223,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="namespace_list_action">
-        <field name="name">Namespaces</field>
+        <field name="name">Intergrations</field>
         <field name="res_model">openapi.namespace</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
@@ -241,6 +241,6 @@
 
     <menuitem id="main_openapi_menu" name="Open API"/>
     <menuitem id="openapi_menu" name="Open API" parent="main_openapi_menu"/>
-    <menuitem id="namespaces_menu" name="Namespaces" parent="openapi_menu"
+    <menuitem id="namespaces_menu" name="Intergrations" parent="openapi_menu"
               action="namespace_list_action"/>
 </odoo>
