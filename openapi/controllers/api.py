@@ -173,7 +173,6 @@ class ApiV1Controller(http.Controller):
     def call_method_multi__PATCH(self, namespace, model, method_name, ids, method_params=None, **kw):
         conf = pinguin.get_model_openapi_access(namespace, model)
         pinguin.method_is_allowed(method_name, conf['method'])
-        # TODO: can we use normal array here?
         ids = json.loads(ids)
         method_params = json.loads(method_params) if method_params else {}
         return pinguin.wrap__resource__call_method(

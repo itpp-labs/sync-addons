@@ -43,9 +43,6 @@ Roadmap
 
 * TODO: ``wrap__resource__create_one`` method makes ``cr.commit()``. We need to avoid that.
 
-
-
-
 Credits
 =======
 

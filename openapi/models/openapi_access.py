@@ -51,7 +51,7 @@ class Access(models.Model):
         default=False,
     )
     public_methods = fields.Text(
-        'Rectric Public methods',
+        'Restric Public methods',
         help='Allowed public methods besides basic ones.\n'
         'Public methods are ones that don\'t start with underscore).\n'
         'Format: one method per line.\n'
@@ -151,15 +151,20 @@ class Access(models.Model):
         model_name = self.model
         read_many_path = '/%s' % model_name
         read_one_path = '%s/{id}' % read_many_path
+        patch_one_path = read_one_path + '/{method_name}'
+        patch_many_path = read_many_path + '/{method_name}/{ids}'
 
         read_many_definition_ref = "#/definitions/%s" % pinguin.get_definition_name(self.model, '', 'read_many')
         read_one_definition_ref = "#/definitions/%s" % pinguin.get_definition_name(self.model, '', 'read_one')
+        patch_definition_ref = "#/definitions/%s" % pinguin.get_definition_name(self.model, '', 'patch')
 
         capitalized_model_name = ''.join([s.capitalize() for s in model_name.split('.')])
 
         paths_object = collections.OrderedDict([
             (read_many_path, {}),
             (read_one_path, {}),
+            (patch_many_path, {}),
+            (patch_one_path, {}),
         ])
 
         if self.api_create:
@@ -292,41 +297,41 @@ class Access(models.Model):
 
             allowed_methods = list(set(allowed_methods))
 
-            paths_object[read_one_path]['patch'] = {
+            PARAM_METHOD_NAME = {
+                "name": "method_name",
+                "in": "path",
+                "description": "Method Name",
+                "required": True,
+                "type": "string",
+                "enum": allowed_methods
+            }
+
+            paths_object[patch_one_path]['patch'] = {
                 "summary": "Patch %s by single ID" % model_name,
                 "description": "Call model method for single record.",
                 "operationId": "callMethodFor%sSingleRecord" % capitalized_model_name,
                 "consumes": [
-                    "multipart/form-data",
-                    "application/x-www-form-urlencoded",
+                    "application/json",
                 ],
                 "produces": [
                     "application/json",
                 ],
                 "parameters": [
                     PARAM_ID,
+                    PARAM_METHOD_NAME,
+                    {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "Record IDS",
+                        "required": True,
+                        "type": "string",
+                    },
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Parameters for calling the method on a single record",
+                        "description": "Parameters for calling the method on a recordset",
                         "schema": {
-                            "type": "object",
-                            "required": [
-                                "method_name"
-                            ],
-                            "properties": {
-                                "method_name": {
-                                    "type": "string",
-                                    "enum": allowed_methods
-                                },
-                                "method_params": {
-                                    "type": "string"
-                                }
-                            },
-                            "example": {
-                                "method_name": "write",
-                                "method_params": "{\"vals\": {\"name\": \"changed from 'write' method which call from api\"}}"
-                            }
+                            "$ref": patch_definition_ref
                         }
                     },
                 ],
@@ -343,7 +348,7 @@ class Access(models.Model):
                 }
             }
 
-            paths_object[read_many_path]['patch'] = {
+            paths_object[patch_many_path]['patch'] = {
                 "summary": "Patch %s by some IDs" % model_name,
                 "description": "Call model method for recordset.",
                 "operationId": "callMethodFor%sRecordset" % capitalized_model_name,
@@ -356,32 +361,26 @@ class Access(models.Model):
                 ],
                 "parameters": [
                     {
+                        "name": "ids",
+                        "in": "path",
+                        "description": "Record IDS",
+                        "required": True,
+                        "type": "string",
+                    },
+                    {
+                        "name": "method_name",
+                        "in": "path",
+                        "description": "Method Name",
+                        "required": True,
+                        "type": "string",
+                        "enum": allowed_methods
+                    },
+                    {
                         "in": "body",
                         "name": "body",
                         "description": "Parameters for calling the method on a recordset",
                         "schema": {
-                            "type": "object",
-                            "required": [
-                                "method_name",
-                                "ids"
-                            ],
-                            "properties": {
-                                "method_name": {
-                                    "type": "string",
-                                    "enum": allowed_methods
-                                },
-                                "ids": {
-                                    "type": "string"
-                                },
-                                "method_params": {
-                                    "type": "string"
-                                }
-                            },
-                            "example": {
-                                "ids": "[8, 18, 33, 23, 22]",
-                                "method_name": "write",
-                                "method_params": "{\"vals\": {\"name\": \"changed from 'write' method which call from api\"}}"
-                            }
+                            "$ref": patch_definition_ref
                         }
                     },
                 ],
@@ -429,6 +428,19 @@ class Access(models.Model):
         if self.api_create or self.api_update:
             all_fields = pinguin.transform_strfields_to_dict(related_model.fields_get_keys())
             definitions.update(pinguin.get_OAS_definitions_part(related_model, all_fields))
+
+        if self.api_public_methods or self.private_methods:
+            definitions.update({
+                pinguin.get_definition_name(self.model, '', 'patch'): {
+                    'type': 'object',
+                    'required': [],
+                    'example': {
+                        'vals': {
+                            "name": "Name is set from API"
+                        }
+                    }
+                }
+            })
         return definitions
 
     def get_OAS_part(self):
