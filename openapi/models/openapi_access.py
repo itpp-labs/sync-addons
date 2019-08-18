@@ -151,8 +151,9 @@ class Access(models.Model):
         model_name = self.model
         read_many_path = '/%s' % model_name
         read_one_path = '%s/{id}' % read_many_path
-        patch_one_path = read_one_path + '/{method_name}'
-        patch_many_path = read_many_path + '/{method_name}/{ids}'
+        patch_one_path = read_one_path + '/call/{method_name}'
+        patch_model_path = read_many_path + '/call/{method_name}'
+        patch_many_path = read_many_path + '/call/{method_name}/{ids}'
 
         read_many_definition_ref = "#/definitions/%s" % pinguin.get_definition_name(self.model, '', 'read_many')
         read_one_definition_ref = "#/definitions/%s" % pinguin.get_definition_name(self.model, '', 'read_one')
@@ -163,6 +164,7 @@ class Access(models.Model):
         paths_object = collections.OrderedDict([
             (read_many_path, {}),
             (read_one_path, {}),
+            (patch_model_path, {}),
             (patch_many_path, {}),
             (patch_one_path, {}),
         ])
@@ -305,6 +307,25 @@ class Access(models.Model):
                 "type": "string",
                 "enum": allowed_methods
             }
+            PARAM_BODY = {
+                "in": "body",
+                "name": "body",
+                "description": "Parameters for calling the method on a recordset",
+                "schema": {
+                    "$ref": patch_definition_ref
+                }
+            }
+            RESPONSES = {
+                "200": {
+                    "description": "successful patch"
+                },
+                "403": {
+                    "description": "Requested model method is not allowed",
+                    "schema": {
+                        "$ref": "#/definitions/ErrorResponse"
+                    }
+                },
+            }
 
             paths_object[patch_one_path]['patch'] = {
                 "summary": "Patch %s by single ID" % model_name,
@@ -319,42 +340,35 @@ class Access(models.Model):
                 "parameters": [
                     PARAM_ID,
                     PARAM_METHOD_NAME,
-                    {
-                        "name": "ids",
-                        "in": "path",
-                        "description": "Record IDS",
-                        "required": True,
-                        "type": "string",
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Parameters for calling the method on a recordset",
-                        "schema": {
-                            "$ref": patch_definition_ref
-                        }
-                    },
+                    PARAM_BODY,
                 ],
-                "responses": {
-                    "200": {
-                        "description": "successful patch"
-                    },
-                    "403": {
-                        "description": "Requested model method is not allowed",
-                        "schema": {
-                            "$ref": "#/definitions/ErrorResponse"
-                        }
-                    },
-                }
+                "responses": RESPONSES
             }
+
+            paths_object[patch_model_path]['patch'] = {
+                "summary": "Patch %s" % model_name,
+                "description": "Call model method on model",
+                "operationId": "callMethodFor%sModel" % capitalized_model_name,
+                "consumes": [
+                    "application/json",
+                ],
+                "produces": [
+                    "application/json",
+                ],
+                "parameters": [
+                    PARAM_METHOD_NAME,
+                    PARAM_BODY,
+                ],
+                "responses": RESPONSES
+            }
+
 
             paths_object[patch_many_path]['patch'] = {
                 "summary": "Patch %s by some IDs" % model_name,
                 "description": "Call model method for recordset.",
                 "operationId": "callMethodFor%sRecordset" % capitalized_model_name,
                 "consumes": [
-                    "multipart/form-data",
-                    "application/x-www-form-urlencoded",
+                    "application/json",
                 ],
                 "produces": [
                     "application/json",
@@ -363,32 +377,14 @@ class Access(models.Model):
                     {
                         "name": "ids",
                         "in": "path",
-                        "description": "Record IDS",
+                        "description": "Comma-separated Record IDS",
                         "required": True,
                         "type": "string",
                     },
-                    {
-                        "name": "method_name",
-                        "in": "path",
-                        "description": "Method Name",
-                        "required": True,
-                        "type": "string",
-                        "enum": allowed_methods
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "Parameters for calling the method on a recordset",
-                        "schema": {
-                            "$ref": patch_definition_ref
-                        }
-                    },
+                    PARAM_METHOD_NAME,
+                    PARAM_BODY,
                 ],
-                "responses": {
-                    "200": {
-                        "description": "successful patch"
-                    },
-                }
+                "responses": RESPONSES
             }
 
         for path_item_key, path_item_value in paths_object.items():
@@ -433,7 +429,6 @@ class Access(models.Model):
             definitions.update({
                 pinguin.get_definition_name(self.model, '', 'patch'): {
                     'type': 'object',
-                    'required': [],
                     'example': {
                         'vals': {
                             "name": "Name is set from API"

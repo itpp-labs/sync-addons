@@ -59,9 +59,10 @@ class ApiV1Controller(http.Controller):
     # ReadOne # UpdateOne # UnlinkOne
     _api_endpoint_model_id = _api_endpoint + '/<model>/<int:id>'
     # Call Method on Singleton Record
-    _api_endpoint_model_id_method = _api_endpoint + '/<model>/<int:id>/<method_name>'
+    _api_endpoint_model_id_method = _api_endpoint + '/<model>/<int:id>/call/<method_name>'
     # Call Method on RecordSet
-    _api_endpoint_model_method_ids = _api_endpoint + '/<model>/<method_name>/<ids>'
+    _api_endpoint_model_method = _api_endpoint + '/<model>/call/<method_name>'
+    _api_endpoint_model_method_ids = _api_endpoint + '/<model>/call/<method_name>/<ids>'
     # Get Reports
     _api_report_docids = _api_endpoint + '/report/<any(pdf, html):converter>/<report_external_id>/<docids>'
 
@@ -149,13 +150,12 @@ class ApiV1Controller(http.Controller):
     @pinguin.route(
         _api_endpoint_model_id_method,
         methods=['PATCH'],
-        type='http',
+        type='apijson',
         auth='none',
         csrf=False)
-    def call_method_one__PATCH(self, namespace, model, id, method_name, method_params=None):
+    def call_method_one__PATCH(self, namespace, model, id, method_name, **method_params):
         conf = pinguin.get_model_openapi_access(namespace, model)
         pinguin.method_is_allowed(method_name, conf['method'])
-        method_params = json.loads(method_params) if method_params else {}
         return pinguin.wrap__resource__call_method(
             modelname=model,
             ids=[id],
@@ -165,16 +165,16 @@ class ApiV1Controller(http.Controller):
 
     # Call Method on RecordSet (optional: method parameters)
     @pinguin.route(
-        _api_endpoint_model_method_ids,
+        [_api_endpoint_model_method,
+         _api_endpoint_model_method_ids],
         methods=['PATCH'],
-        type='http',
+        type='apijson',
         auth='none',
         csrf=False)
-    def call_method_multi__PATCH(self, namespace, model, method_name, ids, method_params=None, **kw):
+    def call_method_multi__PATCH(self, namespace, model, method_name, ids=None, **method_params):
         conf = pinguin.get_model_openapi_access(namespace, model)
         pinguin.method_is_allowed(method_name, conf['method'])
-        ids = json.loads(ids)
-        method_params = json.loads(method_params) if method_params else {}
+        ids = ids and ids.split(',') or []
         return pinguin.wrap__resource__call_method(
             modelname=model,
             ids=ids,

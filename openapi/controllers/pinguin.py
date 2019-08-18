@@ -90,7 +90,11 @@ def successful_response(status, data=None):
         http://werkzeug.pocoo.org/docs/0.14/wrappers/#module-werkzeug.wrappers
 
     """
-    response = json.dumps(data) if data else None
+    try:
+        response = json.dumps(data.ids)
+    except:
+        response = json.dumps(data) if data else None
+
     return werkzeug.wrappers.Response(
         status=status,
         content_type='application/json; charset=utf-8',

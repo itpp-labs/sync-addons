@@ -94,14 +94,7 @@
     </li>
   </ul>
   <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="python" role="tabpanel" aria-labelledby="python-tab">
-...
-    </div>
-    <div class="tab-pane fade" id="java" role="tabpanel" aria-labelledby="java-tab">...</div>
-    <div class="tab-pane fade" id="php" role="tabpanel" aria-labelledby="php-tab">...</div>
-  </div>
-</section>
-
+    <div class="tab-pane show active" id="python" role="tabpanel" aria-labelledby="python-tab">
 <pre>
 # https://github.com/Yelp/bravado
 from bravado.requests_client import RequestsClient
@@ -114,27 +107,39 @@ odoo = SwaggerClient.from_url(
     http_client=http_client
 )
 
-result = odoo.res_partner.callMethodForResPartnerRecordset(body={
-    "method_name": "search",
-    "ids": "[]",
-    "method_params": "{'domain': [('email', '=', 'sync@it-projects.info')]}"
-}).response().result
+result = odoo.res_partner.callMethodForResPartnerModel(
+    method_name="search",
+    body={
+        'args': [('email', '=', 'sync@it-projects.info')]
+    }
+).response().incoming_response.json()
 
-partner_id = result['id']
+partner_id = result and result[0]
 
 if not partner_id:
-    result = client.res_partner.addResPartner(body={
+    result = odoo.res_partner.addResPartner(body={
         "name": "OpenAPI Support",
         "email": "sync@it-projects.info"
-    })
-    partner_id = result.TODO
+    }).response().result
+    partner_id = result.id
 
-client.res_partner.callMethodForResPartnerRecordset(body={
-    "method_name": "message_post",
-    "ids": [partner_id],
-    "method_params": {"body": "The Openapi module works in Python! Thank you!"}
-})
+odoo.res_partner.callMethodForResPartnerSingleRecord(
+  id=partner_id,
+  method_name="message_post",
+  body={
+    "body": "The Openapi module works in Python! Thank you!",
+    "partner_ids": [partner_id]
+  }
+).response()
 </pre>
+
+
+    </div>
+    <div class="tab-pane" id="java" role="tabpanel" aria-labelledby="java-tab">...</div>
+    <div class="tab-pane" id="php" role="tabpanel" aria-labelledby="php-tab">...</div>
+  </div>
+</section>
+
 
 
 <section class="oe_container">
