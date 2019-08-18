@@ -69,7 +69,6 @@ Check `Usage instruction <doc/index.rst>`_ for details.
 Roadmap
 =======
 
-* TODO: monkey patch doesn't work just after odoo restart. Either update docs to ask add the module to server_wide_modules or find a workaround
 * TODO: Add a smart button for Logs in ``openapi.namespace`` form
 
 Credits
