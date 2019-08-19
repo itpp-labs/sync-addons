@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html). -->
+<templates xml:space="preserve">
+    <t t-extend="DashboardMain">
+        <t t-jquery=".o_web_settings_dashboard_col:has(.o_web_settings_dashboard_invitations)" t-operation="after">
+            <div class="col-md-3 col-sm-6 col-xs-12 o_web_settings_dashboard_col">
+                <div class="text-center o_web_settings_dashboard_openapi"></div>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="DashboardOpenAPI">
+        <div class="text-center o_web_settings_dashboard_saas">
+            <i class="fa fa-exchange fa-4x text-muted"></i>
+            <div class="o_web_settings_dashboard_header">
+                <p>REST API</p>
+            </div>
+            <t t-if="!widget.data.namespace_list.length">
+                <div class="mb16">
+                    <em>No integrations yet</em>
+                </div>
+            </t>
+
+            <div>
+                <a t-att-href="pay_subscription_url" target="_blank"
+                   class="btn btn-primary btn-block o_openapi_create" role="button"><strong>Add integration</strong></a>
+            </div>
+            <t t-if="widget.data.namespace_list.length">
+                <hr/>
+                <t t-foreach="widget.data.namespace_list" t-as="ns">
+                    <div class="text-left">
+                    <a href="#"><b class="o_openapi_namespace" t-att-data-namespace-id="ns.id"><t t-esc="ns.name"/></b></a>
+                    <br/><em>Last connection: <t t-esc="ns.last_connection"/></em>
+                    </div>
+                    <t t-if="!ns_last">
+                        <hr/>
+                    </t>
+                </t>
+
+            </t>
+        </div>
+    </t>
+</templates>
