@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html). -->
+<templates>
+    <t t-name="OpenAPIView.add_button">
+        <button t-if='widget.options.import_enabled' type="button" class="btn btn-sm btn-default o_button_openapi_add_configure">
+            Configure API
+        </button>
+    </t>
+    <t t-extend="ListView.buttons">
+        <t t-jquery="button.o_list_button_add" t-operation="after">
+           <t t-call="OpenAPIView.add_button"/>
+        </t>
+    </t>
+    <t t-extend="KanbanView.buttons">
+        <t t-jquery="button.o-kanban-button-new" t-operation="after">
+            <t t-call="OpenAPIView.add_button"/>
+        </t>
+    </t>
+</templates>
