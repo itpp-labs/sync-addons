@@ -11,9 +11,11 @@ class ResUsers(models.Model):
     _inherit = 'res.users'
 
     namespace_ids = fields.Many2many('openapi.namespace', string='Allowed Integrations')
-    openapi_token = fields.Char('OpenAPI Token',
-                        default=lambda self: self._get_unique_openapi_token(),
-                        required=True, copy=False, help='Authentication token for access to API (/api).')
+    openapi_token = fields.Char(
+        'OpenAPI Token',
+        default=lambda self: self._get_unique_openapi_token(),
+        required=True, copy=False, help='Authentication token for access to API (/api).'
+    )
 
     @api.multi
     def reset_openapi_token(self):

@@ -36,6 +36,7 @@ Roadmap
     * Click ``[Apply]``
 
 * TODO: when user is not authenticated api returns 200 with the message below, instead of designed 401:
+::
 
      File "/opt/odoo/vendor/it-projects-llc/sync-addons/openapi/controllers/pinguin.py", line 152, in authenticate_token_for_user
          raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__no_user_auth))

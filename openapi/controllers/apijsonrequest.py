@@ -14,10 +14,6 @@ from odoo.http import request, rpc_request, rpc_response
 # from odoo.tools import pycompat, date_utils
 # text_type=pycompat.text_type
 
-# PY2 and odoo 10:
-text_type = unicode  # pylint: disable=undefined-variable
-
-
 from odoo.service.server import memory_info
 
 try:
@@ -27,7 +23,9 @@ except ImportError:
 
 
 _logger = logging.getLogger(__name__)
-_request_stack = werkzeug.local.LocalStack()
+
+# PY2 and odoo 10:
+text_type = unicode  # pylint: disable=undefined-variable
 
 
 class ApiJsonRequest(WebRequest):
