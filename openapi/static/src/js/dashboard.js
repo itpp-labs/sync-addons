@@ -1,5 +1,5 @@
 /*
-Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 */
@@ -7,17 +7,6 @@ odoo.define('openapi.dashboard', function (require) {
 
     var Widget = require('web.Widget');
     var dashboard = require('web_settings_dashboard');
-
-    dashboard.Dashboard.include({
-        init: function(parent, data){
-            var ret = this._super(parent, data);
-            this.all_dashboards.push('openapi');
-            return ret;
-        },
-        load_openapi: function(data){
-            return  new DashboardOpenAPI(this, data.openapi).replace(this.$('.o_web_settings_dashboard_openapi'));
-        },
-    });
 
     var DashboardOpenAPI = Widget.extend({
 
@@ -69,4 +58,14 @@ odoo.define('openapi.dashboard', function (require) {
         }
     });
 
+    dashboard.Dashboard.include({
+        init: function(parent, data){
+            var ret = this._super(parent, data);
+            this.all_dashboards.push('openapi');
+            return ret;
+        },
+        load_openapi: function(data){
+            return new DashboardOpenAPI(this, data.openapi).replace(this.$('.o_web_settings_dashboard_openapi'));
+        },
+    });
 });
