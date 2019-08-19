@@ -12,7 +12,7 @@
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
-    "website": "https://it-projects.info/team/yelizariev",
+    "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
     "license": "LGPL-3",
     "price": 180.00,
     "currency": "EUR",
