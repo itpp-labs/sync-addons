@@ -6,12 +6,7 @@
 import collections
 import uuid
 
-# python3
-# import urllib.parse as urlparse
-
-# python2
-import urlparse
-import urllib
+import urllib.parse as urlparse
 
 from odoo import models, fields, api
 from ..controllers import pinguin
@@ -72,10 +67,7 @@ class Namespace(models.Model):
     @api.model
     def _fix_name(self, vals):
         if 'name' in vals:
-            # python3
-            # vals['name'] = urlparse.quote_plus(vals['name'].lower())
-            # python2
-            vals['name'] = urllib.quote_plus(vals['name'].lower())
+            vals['name'] = urlparse.quote_plus(vals['name'].lower())
         return vals
 
     @api.model

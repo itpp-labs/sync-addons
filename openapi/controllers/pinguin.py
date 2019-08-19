@@ -32,7 +32,7 @@ import collections
 import odoo
 
 from odoo.service import security
-from odoo.addons.report.controllers.main import ReportController
+from odoo.addons.web.controllers.main import ReportController
 
 try:
     import simplejson as json
@@ -515,7 +515,7 @@ def validate_extra_field(field):
     :rtype: None
     :raise: werkzeug.exceptions.HTTPException if field is invalid.
     """
-    if not isinstance(field, basestring):
+    if not isinstance(field, str):
         return werkzeug.exceptions.HTTPException(response=error_response(*CODE__invalid_spec))
 
 
@@ -867,7 +867,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
     # Do some optimization for subfields
     _prefetch = {}
     for field in spec:
-        if isinstance(field, basestring):
+        if isinstance(field, str):
             continue
         _fld = records._fields[field[0]]
         if _fld.relational:
