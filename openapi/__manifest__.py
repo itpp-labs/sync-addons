@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
     "name": """REST API/OpenAPI/Swagger""",
@@ -12,7 +12,7 @@
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
-    "website": "https://it-projects.info/team/yelizariev",
+    "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
     "license": "LGPL-3",
     "price": 180.00,
     "currency": "EUR",

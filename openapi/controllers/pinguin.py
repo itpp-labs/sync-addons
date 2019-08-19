@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018, XOE Solutions
-# Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pylint: disable=redefined-builtin
