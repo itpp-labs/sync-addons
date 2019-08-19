@@ -35,12 +35,13 @@ Roadmap
     * On the form that opens, activate and configure this module for REST API accessability. 
     * Click ``[Apply]``
 
-* TODO: when user is not authenticated api returns 200 with the message below, instead of designed 401:
-::
+* TODO: when user is not authenticated api returns 200 with the message below, instead of designed 401
 
-     File "/opt/odoo/vendor/it-projects-llc/sync-addons/openapi/controllers/pinguin.py", line 152, in authenticate_token_for_user
-         raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__no_user_auth))
-     HTTPException: ??? Unknown Error: None
+  ::
+
+    File "/opt/odoo/vendor/it-projects-llc/sync-addons/openapi/controllers/pinguin.py", line 152, in authenticate_token_for_user
+        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__no_user_auth))
+    HTTPException: ??? Unknown Error: None
 
 * TODO: ``wrap__resource__create_one`` method makes ``cr.commit()``. We need to avoid that.
 * TODO: add code examples for other programming languages in index.html. The examples can be based on generated swagger clients. The idea of the scripts must be the same as for python (search for partner, create if it doesn't exist, send message)
