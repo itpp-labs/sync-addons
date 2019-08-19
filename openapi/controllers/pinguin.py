@@ -92,7 +92,7 @@ def successful_response(status, data=None):
     """
     try:
         response = json.dumps(data.ids)
-    except:
+    except AttributeError:
         response = json.dumps(data) if data else None
 
     return werkzeug.wrappers.Response(

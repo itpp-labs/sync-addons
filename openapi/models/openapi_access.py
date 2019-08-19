@@ -362,7 +362,6 @@ class Access(models.Model):
                 "responses": RESPONSES
             }
 
-
             paths_object[patch_many_path]['patch'] = {
                 "summary": "Patch %s by some IDs" % model_name,
                 "description": "Call model method for recordset.",
