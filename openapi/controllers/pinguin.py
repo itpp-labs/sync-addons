@@ -189,7 +189,7 @@ def get_data_from_auth_header(header):
     """
     normalized_token = header.replace('Basic ', '').replace('\\n', '').encode('utf-8')
     try:
-        decoded_token_parts = base64.decodestring(normalized_token).split(':')
+        decoded_token_parts = base64.decodestring(normalized_token).split(b':')
     except TypeError:
         raise werkzeug.exceptions.HTTPException(response=error_response(500, 'Invalid header', 'Basic auth header must be valid base64 string'))
 
