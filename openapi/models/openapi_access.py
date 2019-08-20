@@ -35,7 +35,7 @@ class Access(models.Model):
         'Integration',
         required=True)
     model_id = fields.Many2one('ir.model', 'Model', required=True)
-    model = fields.Char(related='model_id.model')
+    model = fields.Char('Model Name', related='model_id.model')
     api_create = fields.Boolean('Create via API', default=False)
     api_read = fields.Boolean('Read via API', default=False)
     api_update = fields.Boolean('Update via API', default=False)
