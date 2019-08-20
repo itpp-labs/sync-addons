@@ -386,7 +386,7 @@ class Access(models.Model):
                 "responses": RESPONSES
             }
 
-        paths_object = dict((k,v) for k, v in paths_object.items() if v)
+        paths_object = dict((k, v) for k, v in paths_object.items() if v)
         for path_item_key, path_item_value in paths_object.items():
 
             for path_method in path_item_value.values():
