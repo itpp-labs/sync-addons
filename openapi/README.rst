@@ -65,7 +65,7 @@ Maintainers
 -----------
 * `IT-Projects LLC <https://it-projects.info>`__
 
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/11.0/openapi/>`__.
+      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/12.0/openapi/>`__.
 
       Thank you for understanding!
 
@@ -74,14 +74,14 @@ Maintainers
 Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/11.0
+Demo: http://runbot.it-projects.info/demo/sync-addons/12.0
 
-HTML Description: https://apps.odoo.com/apps/modules/11.0/openapi/
+HTML Description: https://apps.odoo.com/apps/modules/12.0/openapi/
 
 Usage instructions: `<doc/index.rst>`_
 
 Changelog: `<doc/changelog.rst>`_
 
-Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_
+Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_
 
-Tested on Odoo 11.0 855447fc77fdbe2972be043b7ba9131567d21b9f
+Tested on Odoo 12.0 e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6
