@@ -253,7 +253,18 @@ def get_namespace_by_name_from_users_namespaces(user, namespace_name, raise_exce
 
 
 # Create openapi.log record
-def create_log_record(namespace_id, namespace_log_request, namespace_log_response, user_id, user_request, user_response):
+def create_log_record(*args):
+    print('create_log_record', args)
+    if False:
+        with odoo.registry(request.session.db).cursor() as cr:
+            # use new to save data even in case of an error in the old cursor
+            env = odoo.api.Environment(cr, user_id, {})
+            _create_log_record(*args)
+    else:
+        # don't use new cursor in test mode
+        _create_log_record(request.env, *args)
+
+def _create_log_record(env, namespace_id, namespace_log_request, namespace_log_response, user_id, user_request, user_response):
     """create log for request
 
     :param int namespace_id: Requested namespace id.
@@ -268,9 +279,7 @@ def create_log_record(namespace_id, namespace_log_request, namespace_log_respons
     :returns: New 'openapi.log' record.
     :rtype: ..models.openapi_log.Log
     """
-    # The new cursor is necessary because in case of an error the old cursor may already be closed
-    with odoo.registry(request.session.db).cursor() as cr:
-        env = odoo.api.Environment(cr, user_id, {})
+    if True:  # just to keep original indent
         log_data = {
             'namespace_id': namespace_id,
             'request': '%s | %s | %d' % (user_request.url, user_request.method, user_response.status_code),
