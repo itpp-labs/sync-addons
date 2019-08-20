@@ -45,6 +45,8 @@ Roadmap
 
 * TODO: ``wrap__resource__create_one`` method makes ``cr.commit()``. We need to avoid that.
 * TODO: add code examples for other programming languages in index.html. The examples can be based on generated swagger clients. The idea of the scripts must be the same as for python (search for partner, create if it doesn't exist, send message)
+* TODO: ``.../swagger.json`` url doesn't work in multi-db mode in odoo 12.0 at least: it make strange redirection to from ``/api/v1/demo/swagger.json?token=demo_token&db=source`` to ``/api/v1/demo/swagger.json?token%3Ddemo_token%26db%3Dsource``
+
 
 Credits
 =======
