@@ -175,6 +175,7 @@ class ApiV1Controller(http.Controller):
         conf = pinguin.get_model_openapi_access(namespace, model)
         pinguin.method_is_allowed(method_name, conf['method'])
         ids = ids and ids.split(',') or []
+        ids = [int(i) for i in ids]
         return pinguin.wrap__resource__call_method(
             modelname=model,
             ids=ids,
