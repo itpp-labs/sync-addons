@@ -386,11 +386,8 @@ class Access(models.Model):
                 "responses": RESPONSES
             }
 
+        paths_object = dict((k,v) for k, v in paths_object.items() if v)
         for path_item_key, path_item_value in paths_object.items():
-            # remove empty paths
-            if not path_item_value:
-                del paths_object[path_item_key]
-                continue
 
             for path_method in path_item_value.values():
                 # add tag
