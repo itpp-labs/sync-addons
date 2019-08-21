@@ -23,6 +23,7 @@
     ],
     "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
     "data": [
+        "security/openapi_security.xml",
         "security/ir.model.access.csv",
         "views/assets.xml",
         "views/openapi_view.xml",
@@ -31,7 +32,8 @@
     ],
     "demo": [
         "views/assets_demo.xml",
-        "data/openapi_demo.xml",
+        "demo/openapi_demo.xml",
+        "demo/openapi_security_demo.xml",
     ],
     "qweb": [
         "static/src/xml/dashboard.xml",
