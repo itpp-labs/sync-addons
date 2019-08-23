@@ -179,7 +179,7 @@ def api_route(route=None, **kw):
             if isinstance(response, Response) or f.routing_type in ("apijson", "json"):
                 return response
 
-            if isinstance(response, (bytes, text_type)):
+            if isinstance(response, basestring):
                 return Response(response)
 
             if isinstance(response, werkzeug.exceptions.HTTPException):
