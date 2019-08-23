@@ -253,18 +253,18 @@ def get_namespace_by_name_from_users_namespaces(user, namespace_name, raise_exce
 
 
 # Create openapi.log record
-def create_log_record(*args):
-    print('create_log_record', args)
-    if False:
+def create_log_record(**kwargs):
+    test_mode = request.registry.test_cr
+    # don't create log in test mode as it's impossible in case of error in sql
+    # request (we cannot use second cursor and we cannot use aborted
+    # transaction)
+    if not test_mode:
         with odoo.registry(request.session.db).cursor() as cr:
             # use new to save data even in case of an error in the old cursor
-            env = odoo.api.Environment(cr, user_id, {})
-            _create_log_record(*args)
-    else:
-        # don't use new cursor in test mode
-        _create_log_record(request.env, *args)
+            env = odoo.api.Environment(cr, request.session.uid, {})
+            _create_log_record(env, **kwargs)
 
-def _create_log_record(env, namespace_id, namespace_log_request, namespace_log_response, user_id, user_request, user_response):
+def _create_log_record(env, namespace_id=None, namespace_log_request=None, namespace_log_response=None, user_id=None, user_request=None, user_response=None):
     """create log for request
 
     :param int namespace_id: Requested namespace id.
@@ -670,11 +670,13 @@ def wrap__resource__create_one(modelname, context, data, success_code, out_field
     model_obj = get_model_for_read(modelname)
     try:
         created_obj = model_obj.with_context(context).create(data)
-        # Somehow don't making a commit here may lead to error
-        # "Record does not exist or has been deleted"
-        # Probably, Odoo (10.0 at least) uses different cursors
-        # to create and to read fields from database
-        request.env.cr.commit()
+        test_mode = request.registry.test_cr
+        if not test_mode:
+            # Somehow don't making a commit here may lead to error
+            # "Record does not exist or has been deleted"
+            # Probably, Odoo (10.0 at least) uses different cursors
+            # to create and to read fields from database
+            request.env.cr.commit()
     except Exception as e:
         return error_response(400, type(e).__name__, str(e))
 
