@@ -910,9 +910,11 @@ def get_model_for_read(model):
     :raise: werkzeug.exceptions.HTTPException if the model not found in env.
     """
     cr, uid = request.cr, request.session.uid
-    # Permit parallel query execution on read
-    # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
-    cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
+    test_mode = request.registry.test_cr
+    if not test_mode:
+        # Permit parallel query execution on read
+        # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
+        cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     try:
         return request.env(cr, uid)[model]
     except KeyError:
