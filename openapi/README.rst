@@ -45,6 +45,8 @@ Roadmap
 
 * TODO: ``wrap__resource__create_one`` method makes ``cr.commit()``. We need to avoid that.
 * TODO: add code examples for other programming languages in index.html. The examples can be based on generated swagger clients. The idea of the scripts must be the same as for python (search for partner, create if it doesn't exist, send message)
+* TODO: use sudo for log creating and disable write access rights
+* TODO: finish unitttests (see ``test_api.py``)
 
 Credits
 =======
