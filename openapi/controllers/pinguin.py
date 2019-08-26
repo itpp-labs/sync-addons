@@ -264,6 +264,7 @@ def create_log_record(**kwargs):
             env = odoo.api.Environment(cr, request.session.uid, {})
             _create_log_record(env, **kwargs)
 
+
 def _create_log_record(env, namespace_id=None, namespace_log_request=None, namespace_log_response=None, user_id=None, user_request=None, user_response=None):
     """create log for request
 

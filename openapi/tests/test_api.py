@@ -2,8 +2,6 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-import json
-
 import requests
 import logging
 
@@ -16,7 +14,12 @@ _logger = logging.getLogger(__name__)
 
 USER_DEMO = 'base.user_demo'
 USER_ADMIN = 'base.user_root'
+MESSAGE = 'message is posted from API'
 
+
+# TODO: test other methods:
+# * /res.partner/call/{method_name} (without recordset)
+# * /res.partner/{record_id}
 
 class TestAPI(HttpCase):
     at_install = True
@@ -63,7 +66,7 @@ class TestAPI(HttpCase):
         created_user = self.phantom_env[self.model_name].browse(resp.json()['id'])
         self.assertEqual(created_user.name, data_for_create['name'])
 
-    # TODO: doesn't work
+    # TODO: doesn't work in test environment
     def _test_create_one_with_invalid_data(self):
         """create partner without name"""
         self.phantom_env = api.Environment(self.registry.test_cr, self.uid, {})
@@ -81,7 +84,7 @@ class TestAPI(HttpCase):
         self.assertEqual(partner.name, data_for_update['name'])
         # TODO: check result
 
-    # TODO: doesn't work
+    # TODO: doesn't work in test environment
     def _test_unlink_one(self):
         partner = self.phantom_env[self.model_name].create({'name': 'record for deleting from test'})
         resp = self.request_from_user(self.demo_user, 'DELETE', '/{model}/{record_id}', record_id=partner.id)
@@ -93,7 +96,7 @@ class TestAPI(HttpCase):
         resp = self.request('GET', '/{model}')
         self.assertEqual(resp.status_code, pinguin.CODE__no_user_auth[0])
 
-    # TODO: doesn't work
+    # TODO: doesn't work in test environment
     def _test_invalid_dbname(self):
         db_name = 'invalid_db_name'
         resp = self.request('GET', '/{model}', auth=requests.auth.HTTPBasicAuth(db_name, self.demo_user.openapi_token))
@@ -120,55 +123,53 @@ class TestAPI(HttpCase):
         self.assertEqual(resp.status_code, pinguin.CODE__user_no_perm[0], resp.json())
         self.assertEqual(resp.json()['error'], pinguin.CODE__user_no_perm[1])
 
-    def _test_call_allowed_method_on_singleton_record(self):
+    def test_call_allowed_method_on_singleton_record(self):
         partner = self.phantom_env[self.model_name].search([], limit=1)
-
+        method_name = 'message_post'
         method_params = {
-            'vals': {
-                'name': 'changed from write method which call from api'
-            }
-        }
-        data = {
-            'method_name': 'write',
-            'method_params': json.dumps(method_params)
+            'body': MESSAGE,
         }
 
-        resp = self.request_from_user(self.demo_user, 'PATCH', '/{model}', partner.id, data_json=data)
+        resp = self.request_from_user(self.demo_user, 'PATCH', '/{model}/{record_id}/call/{method_name}', record_id=partner.id, method_name=method_name, data_json=method_params)
 
         self.assertEqual(resp.status_code, pinguin.CODE__success)
-        self.assertTrue(resp.json())
-        self.assertEqual(partner.name, method_params['vals']['name'])
+        # TODO check that message is created
 
-    def _test_call_allowed_method_on_recordset(self):
-
+    def test_call_allowed_method_on_recordset(self):
         partners = self.phantom_env[self.model_name].search([], limit=5)
+        method_name = 'write'
         method_params = {
             'vals': {
-                'name': 'changed from write method which call from api'
+                'name': 'changed from write method called from api'
             },
         }
-        data = {
-            'method_name': 'write',
-            'ids': json.dumps(partners.mapped('id')),
-            'method_params': json.dumps(method_params)
-        }
+        ids = partners.mapped('id')
+        ids_str = ','.join(str(i) for i in ids)
 
-        resp = self.request_from_user(self.demo_user, 'PATCH', '/{model}', data_json=data)
+        resp = self.request_from_user(
+            self.demo_user,
+            'PATCH', '/{model}/call/{method_name}/{ids}',
+            method_name=method_name, ids=ids_str,
+            data_json=method_params)
 
         self.assertEqual(resp.status_code, pinguin.CODE__success)
         for i in range(len(partners)):
             self.assertTrue(resp.json()[i])
+        # reread records
+        partners = self.phantom_env[self.model_name].browse(ids)
         for partner in partners:
             self.assertEqual(partner.name, method_params['vals']['name'])
 
+    # TODO: doesn't work in test environment
     def _test_log_creating(self):
         logs_count_before_request = len(self.phantom_env['openapi.log'].search([]))
         self.request_from_user(self.demo_user, 'GET', '/{model}')
         logs_count_after_request = len(self.phantom_env['openapi.log'].search([]))
         self.assertTrue(logs_count_after_request > logs_count_before_request)
 
+    # TODO test is not update for the latest module version
     def _test_get_report_for_allowed_model(self):
-        super_user = self.phantom_env.ref(USER_ROOT)
+        super_user = self.phantom_env.ref(USER_ADMIN)
         modelname_for_report = 'ir.module.module'
         report_external_id = 'base.ir_module_reference_print'
 
@@ -197,6 +198,6 @@ class TestAPI(HttpCase):
             'namespace_ids': [(4, namespace.id)]
         })
 
-        url = "http://localhost:%d/api/v1/%s/report/html/%s/%s" % (PORT, report_external_id, docids)
+        url = "http://localhost:%d/api/v1/demo/report/html/%s/%s" % (PORT, report_external_id, docids)
         resp = requests.request('GET', url, timeout=30, auth=requests.auth.HTTPBasicAuth(self.db_name, super_user.openapi_token))
         self.assertEqual(resp.status_code, pinguin.CODE__success)
