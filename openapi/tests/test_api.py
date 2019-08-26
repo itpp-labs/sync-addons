@@ -2,8 +2,6 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-import json
-
 import requests
 import logging
 
@@ -171,7 +169,7 @@ class TestAPI(HttpCase):
 
     # TODO test is not update for the latest module version
     def _test_get_report_for_allowed_model(self):
-        super_user = self.phantom_env.ref(USER_ROOT)
+        super_user = self.phantom_env.ref(USER_ADMIN)
         modelname_for_report = 'ir.module.module'
         report_external_id = 'base.ir_module_reference_print'
 
@@ -200,6 +198,6 @@ class TestAPI(HttpCase):
             'namespace_ids': [(4, namespace.id)]
         })
 
-        url = "http://localhost:%d/api/v1/%s/report/html/%s/%s" % (PORT, report_external_id, docids)
+        url = "http://localhost:%d/api/v1/demo/report/html/%s/%s" % (PORT, report_external_id, docids)
         resp = requests.request('GET', url, timeout=30, auth=requests.auth.HTTPBasicAuth(self.db_name, super_user.openapi_token))
         self.assertEqual(resp.status_code, pinguin.CODE__success)
