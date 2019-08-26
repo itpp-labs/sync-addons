@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 USER_DEMO = 'base.user_demo'
 USER_ADMIN = 'base.user_root'
-MESSAGE='message is posted from API'
+MESSAGE = 'message is posted from API'
 
 
 # TODO: test other methods:
