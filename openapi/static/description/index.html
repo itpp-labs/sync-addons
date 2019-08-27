@@ -114,7 +114,7 @@ odoo = SwaggerClient.from_url(
 result = odoo.res_partner.callMethodForResPartnerModel(
     method_name="search",
     body={
-        'args': [('email', '=', 'sync@it-projects.info')]
+        'args': [[('email', '=', 'sync@it-projects.info')]]
     }
 ).response().incoming_response.json()
 
@@ -131,8 +131,10 @@ odoo.res_partner.callMethodForResPartnerSingleRecord(
   id=partner_id,
   method_name="message_post",
   body={
-    "body": "The Openapi module works in Python! Thank you!",
-    "partner_ids": [partner_id]
+    "kwargs": {
+      "body": "The Openapi module works in Python! Thank you!",
+      "partner_ids": [partner_id]
+    }
   }
 ).response()
 </pre>
