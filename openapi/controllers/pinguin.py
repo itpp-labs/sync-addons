@@ -885,7 +885,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
         if _fld.relational:
             _prefetch[_fld.comodel] = records.mapped(field[0]).ids
 
-    for mod, ids in _prefetch.iteritems():
+    for mod, ids in _prefetch.items():
         get_model_for_read(mod).browse(ids).read()
 
     result = []
