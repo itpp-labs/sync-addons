@@ -253,7 +253,19 @@ def get_namespace_by_name_from_users_namespaces(user, namespace_name, raise_exce
 
 
 # Create openapi.log record
-def create_log_record(namespace_id, namespace_log_request, namespace_log_response, user_id, user_request, user_response):
+def create_log_record(**kwargs):
+    test_mode = request.registry.test_cr
+    # don't create log in test mode as it's impossible in case of error in sql
+    # request (we cannot use second cursor and we cannot use aborted
+    # transaction)
+    if not test_mode:
+        with odoo.registry(request.session.db).cursor() as cr:
+            # use new to save data even in case of an error in the old cursor
+            env = odoo.api.Environment(cr, request.session.uid, {})
+            _create_log_record(env, **kwargs)
+
+
+def _create_log_record(env, namespace_id=None, namespace_log_request=None, namespace_log_response=None, user_id=None, user_request=None, user_response=None):
     """create log for request
 
     :param int namespace_id: Requested namespace id.
@@ -268,9 +280,7 @@ def create_log_record(namespace_id, namespace_log_request, namespace_log_respons
     :returns: New 'openapi.log' record.
     :rtype: ..models.openapi_log.Log
     """
-    # The new cursor is necessary because in case of an error the old cursor may already be closed
-    with odoo.registry(request.session.db).cursor() as cr:
-        env = odoo.api.Environment(cr, user_id, {})
+    if True:  # just to keep original indent
         log_data = {
             'namespace_id': namespace_id,
             'request': '%s | %s | %d' % (user_request.url, user_request.method, user_response.status_code),
@@ -661,11 +671,13 @@ def wrap__resource__create_one(modelname, context, data, success_code, out_field
     model_obj = get_model_for_read(modelname)
     try:
         created_obj = model_obj.with_context(context).create(data)
-        # Somehow don't making a commit here may lead to error
-        # "Record does not exist or has been deleted"
-        # Probably, Odoo (10.0 at least) uses different cursors
-        # to create and to read fields from database
-        request.env.cr.commit()
+        test_mode = request.registry.test_cr
+        if not test_mode:
+            # Somehow don't making a commit here may lead to error
+            # "Record does not exist or has been deleted"
+            # Probably, Odoo (10.0 at least) uses different cursors
+            # to create and to read fields from database
+            request.env.cr.commit()
     except Exception as e:
         return error_response(400, type(e).__name__, str(e))
 
@@ -873,7 +885,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
         if _fld.relational:
             _prefetch[_fld.comodel] = records.mapped(field[0]).ids
 
-    for mod, ids in _prefetch.iteritems():
+    for mod, ids in _prefetch.items():
         get_model_for_read(mod).browse(ids).read()
 
     result = []
@@ -901,9 +913,11 @@ def get_model_for_read(model):
     :raise: werkzeug.exceptions.HTTPException if the model not found in env.
     """
     cr, uid = request.cr, request.session.uid
-    # Permit parallel query execution on read
-    # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
-    cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
+    test_mode = request.registry.test_cr
+    if not test_mode:
+        # Permit parallel query execution on read
+        # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
+        cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     try:
         return request.env(cr, uid)[model]
     except KeyError:
