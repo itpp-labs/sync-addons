@@ -424,8 +424,10 @@ class Access(models.Model):
                 pinguin.get_definition_name(self.model, '', 'patch'): {
                     'type': 'object',
                     'example': {
-                        'vals': {
-                            "name": "Name is set from API"
+                        'args': [],
+                        'kwargs': {
+                            'body': 'Message is posted via API by calling message_post method',
+                            'subject': 'Test API',
                         }
                     }
                 }

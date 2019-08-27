@@ -775,8 +775,10 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
 
     records = model_obj.browse(ids).exists()
     results = []
+    args = method_params.get('args', [])
+    kwargs = method_params.get('kwargs', {})
     for record in (records or [model_obj]):
-        result = getattr(record, method)(**method_params)
+        result = getattr(record, method)(*args, **kwargs)
         results.append(result)
 
     if len(ids) <= 1 and len(results):
