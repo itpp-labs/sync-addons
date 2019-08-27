@@ -127,7 +127,9 @@ class TestAPI(HttpCase):
         partner = self.phantom_env[self.model_name].search([], limit=1)
         method_name = 'message_post'
         method_params = {
-            'body': MESSAGE,
+            'kwargs': {
+                'body': MESSAGE,
+            }
         }
 
         resp = self.request_from_user(self.demo_user, 'PATCH', '/{model}/{record_id}/call/{method_name}', record_id=partner.id, method_name=method_name, data_json=method_params)
@@ -139,9 +141,9 @@ class TestAPI(HttpCase):
         partners = self.phantom_env[self.model_name].search([], limit=5)
         method_name = 'write'
         method_params = {
-            'vals': {
+            'args': [{
                 'name': 'changed from write method called from api'
-            },
+            }],
         }
         ids = partners.mapped('id')
         ids_str = ','.join(str(i) for i in ids)
@@ -158,7 +160,7 @@ class TestAPI(HttpCase):
         # reread records
         partners = self.phantom_env[self.model_name].browse(ids)
         for partner in partners:
-            self.assertEqual(partner.name, method_params['vals']['name'])
+            self.assertEqual(partner.name, method_params['args'][0]['name'])
 
     # TODO: doesn't work in test environment
     def _test_log_creating(self):
