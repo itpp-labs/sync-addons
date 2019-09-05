@@ -2,6 +2,7 @@
 -------
 
 - **New:** search_or_create method is available in all models
+- **Improvement:** no need to use extra quotes in context
 
 `1.0.0`
 -------

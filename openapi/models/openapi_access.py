@@ -489,7 +489,7 @@ class AccessCreateContext(models.Model):
         fields = Model.fields_get()
         for record in self:
             try:
-                data = json.loads(record.context[1:-1])
+                data = json.loads(record.context)
             except ValueError:
                 raise exceptions.ValidationError(_('Context must be jsonable.'))
 
