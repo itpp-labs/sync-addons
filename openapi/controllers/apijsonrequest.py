@@ -10,10 +10,9 @@ import os
 import pprint
 from odoo.http import AuthenticationError, Response, Root, SessionExpiredException, WebRequest, serialize_exception
 from odoo.http import request, rpc_request, rpc_response
-# PY3 and odoo 11+:
-# from odoo.tools import pycompat, date_utils
-# text_type=pycompat.text_type
-
+from odoo.tools import pycompat
+# Odoo 12+
+# from odoo.tools import date_utils
 from odoo.service.server import memory_info
 
 try:
@@ -23,9 +22,7 @@ except ImportError:
 
 
 _logger = logging.getLogger(__name__)
-
-# PY2 and odoo 10:
-text_type = unicode  # pylint: disable=undefined-variable
+text_type = pycompat.text_type
 
 
 class ApiJsonRequest(WebRequest):
@@ -81,9 +78,9 @@ class ApiJsonRequest(WebRequest):
             response['error'] = error
 
         mime = 'application/json'
-        # odoo 11+ version:
+        # odoo 12+ version:
         # body = json.dumps(response, default=date_utils.json_default)
-        # odoo 10 only:
+        # odoo 10, 11 only:
         status = error and error.pop('code') or result.status_code
         body = response and json.dumps(response) or result.data
 
@@ -179,7 +176,7 @@ def api_route(route=None, **kw):
             if isinstance(response, Response) or f.routing_type in ("apijson", "json"):
                 return response
 
-            if isinstance(response, basestring):
+            if isinstance(response, (bytes, text_type)):
                 return Response(response)
 
             if isinstance(response, werkzeug.exceptions.HTTPException):

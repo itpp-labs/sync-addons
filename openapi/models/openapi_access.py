@@ -5,12 +5,10 @@
 import collections
 import json
 import inspect
+from inspect import isclass, getmro
+import types
 
-# python3
-# import urllib.parse as urlparse
-
-# python2
-import urllib
+import urllib.parse as urlparse
 
 from odoo import models, fields, api, _, exceptions
 
@@ -90,7 +88,7 @@ class Access(models.Model):
 
     @api.model
     def _get_method_list(self):
-        return {m[0] for m in inspect.getmembers(self.env[self.model], predicate=inspect.ismethod)}
+        return {m[0] for m in getmembers(self.env[self.model], predicate=inspect.ismethod)}
 
     @api.multi
     @api.constrains('public_methods')
@@ -466,10 +464,7 @@ class AccessCreateContext(models.Model):
     @api.model
     def _fix_name(self, vals):
         if 'name' in vals:
-            # python3
-            # vals['name'] = urlparse.quote_plus(vals['name'].lower())
-            # python2
-            vals['name'] = urllib.quote_plus(vals['name'].lower())
+            vals['name'] = urlparse.quote_plus(vals['name'].lower())
         return vals
 
     @api.model
@@ -496,3 +491,54 @@ class AccessCreateContext(models.Model):
             for k, v in data.items():
                 if k.startswith('default_') and k[8:] not in fields:
                     raise exceptions.ValidationError(_('The model "%s" has no such field: "%s".') % (Model, k[8:]))
+
+
+def getmembers(object, predicate=None):
+    # This is copy-pasted method from inspect lib with updates marked as NEW
+    """Return all members of an object as (name, value) pairs sorted by name.
+    Optionally, only return members that satisfy a given predicate."""
+    if isclass(object):
+        mro = (object,) + getmro(object)
+    else:
+        mro = ()
+    results = []
+    processed = set()
+    names = dir(object)
+    # :dd any DynamicClassAttributes to the list of names if object is a class;
+    # this may result in duplicate entries if, for example, a virtual
+    # attribute with the same name as a DynamicClassAttribute exists
+    try:
+        for base in object.__bases__:
+            for k, v in base.__dict__.items():
+                if isinstance(v, types.DynamicClassAttribute):
+                    names.append(k)
+    except AttributeError:
+        pass
+    for key in names:
+        if key == '_cache':
+            # NEW
+            # trying to read this key will return error in odoo 11.0+
+            # AssertionError: Unexpected RecordCache(res.partner())
+            continue
+        # First try to get the value via getattr.  Some descriptors don't
+        # like calling their __get__ (see bug #1785), so fall back to
+        # looking in the __dict__.
+        try:
+            value = getattr(object, key)
+            # handle the duplicate key
+            if key in processed:
+                raise AttributeError
+        except AttributeError:
+            for base in mro:
+                if key in base.__dict__:
+                    value = base.__dict__[key]
+                    break
+            else:
+                # could be a (currently) missing slot member, or a buggy
+                # __dir__; discard and move on
+                continue
+        if not predicate or predicate(value):
+            results.append((key, value))
+        processed.add(key)
+    results.sort(key=lambda pair: pair[0])
+    return results
