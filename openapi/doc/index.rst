@@ -25,6 +25,7 @@ Activating and customization
 * Set **Log requests** to *Full*
 * Set **Log responses** to *Full*
 * In ``Accessable models`` tab click ``Add an item`` 
+
   * Set **Model**, for example *res.users*
   * Configure allowed operations
 
@@ -40,7 +41,7 @@ Activating and customization
       * Set **Read One Fields** -- fields to return on reading one record
       * Set **Read Many Fields** -- fields to return on reading multiple records
 
-      Note: you can use Export widget in corresponding *Model* to create *Fields list*. To do that:
+        Note: you can use Export widget in corresponding *Model* to create *Fields list*. To do that:
 
         * Open menu for the *Model*
         * Switch to list view
