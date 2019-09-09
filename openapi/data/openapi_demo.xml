@@ -41,7 +41,7 @@
     <record id="context_res_partner_demo" model="openapi.access.create.context">
         <field name="name">default</field>
         <field name="model_id" ref="base.model_res_partner"/>
-        <field name="context">"{"default_function": "CEO"}"</field>
+        <field name="context">{"default_function": "CEO"}</field>
     </record>
 
     <record id="access_res_partner_demo" model="openapi.access">
