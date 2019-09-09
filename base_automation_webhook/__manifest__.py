@@ -4,7 +4,7 @@
     "name": """Outgoing Webhooks""",
     "summary": """Send webhook on Odoo events: when record is created/updated/deleted""",
     "category": "Extra Tools",
-    # "live_test_url": "http://apps.it-projects.info/shop/product/DEMO-URL?version=10.0",
+    # "live_test_url": "http://apps.it-projects.info/shop/product/DEMO-URL?version=11.0",
     "images": ['images/base_automation_webhook.png'],
     "version": "11.0.1.0.0",
     "application": False,
