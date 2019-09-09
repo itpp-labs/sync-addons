@@ -10,8 +10,7 @@ import pprint
 from odoo.http import AuthenticationError, Response, Root, SessionExpiredException, WebRequest, serialize_exception
 from odoo.http import request, rpc_request, rpc_response
 from odoo.tools import pycompat
-# Odoo 12+
-# from odoo.tools import date_utils
+from odoo.tools import date_utils
 from odoo.service.server import memory_info
 
 try:
@@ -77,9 +76,7 @@ class ApiJsonRequest(WebRequest):
             response['error'] = error
 
         mime = 'application/json'
-        # odoo 12+ version:
-        # body = json.dumps(response, default=date_utils.json_default)
-        # odoo 10, 11 only:
+        body = json.dumps(response, default=date_utils.json_default)
         status = error and error.pop('code') or result.status_code
         body = response and json.dumps(response) or result.data
 

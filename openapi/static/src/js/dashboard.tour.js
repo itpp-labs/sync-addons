@@ -17,8 +17,8 @@ odoo.define('openapi.dashboard.tour', function (require) {
     var tour_name = 'openapi_dashboard';
     tour.register(tour_name, options,
                   [
-                      tour.STEPS.TOGGLE_APPSWITCHER,
-                      tour.STEPS.MENU_MORE,
+                      tour.STEPS.TOGGLE_HOME_MENU,
+                      tour.STEPS.SHOW_APPS_MENU_ITEM,
                       {
                           trigger: '.o_app[data-menu-xmlid="base.menu_administration"], .oe_menu_toggler[data-menu-xmlid="base.menu_administration"]',
                           content: "Open Settings",

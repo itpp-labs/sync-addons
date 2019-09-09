@@ -7,6 +7,7 @@ import logging
 import werkzeug
 
 from odoo import http
+from odoo.tools import date_utils
 from odoo.addons.web_settings_dashboard.controllers.main \
     import WebSettingsDashboard
 from odoo.addons.web.controllers.main import ensure_db
@@ -70,7 +71,7 @@ class OAS(http.Controller):
             }
 
         return werkzeug.wrappers.Response(
-            json.dumps(namespace.get_OAS()),
+            json.dumps(namespace.get_OAS(), default=date_utils.json_default),
             status=200,
             **response_params
         )
