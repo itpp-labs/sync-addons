@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018, XOE Solutions
 # Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>

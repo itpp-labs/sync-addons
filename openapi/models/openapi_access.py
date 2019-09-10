@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
@@ -484,7 +483,7 @@ class AccessCreateContext(models.Model):
         fields = Model.fields_get()
         for record in self:
             try:
-                data = json.loads(record.context[1:-1])
+                data = json.loads(record.context)
             except ValueError:
                 raise exceptions.ValidationError(_('Context must be jsonable.'))
 

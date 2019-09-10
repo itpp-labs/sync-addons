@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018, XOE Solutions
 # Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
@@ -491,7 +490,7 @@ def get_model_openapi_access(namespace, model):
         res['method']['private']['mode'] = 'none'
 
     for c in openapi_access.create_context_ids.mapped('context'):
-        res['context'].update(json.loads(c[1:-1]))
+        res['context'].update(json.loads(c))
 
     res['out_fields_read_multi'] = openapi_access.read_many_id.export_fields.mapped('name') or ('id',)
     res['out_fields_read_one'] = openapi_access.read_one_id.export_fields.mapped('name') or ('id',)
