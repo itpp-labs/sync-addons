@@ -9,9 +9,9 @@ Installation
 ============
 
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
-* Add ``openapi`` to ``--load`` parameters, e.g.::
+* Add ``openapi`` to `--load parameter <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
-    ./odoo --workers=2 --load openapi,web --config=/path/to/openerp-server.conf
+    ./odoo-bin --workers=2 --load openapi,web --config=/path/to/odoo.conf
 
 Configuration
 =============
