@@ -115,6 +115,7 @@ class TestAPI(HttpCase):
             'login': 'new_user',
         })
         new_user.reset_openapi_token()
+        new_user.flush()
         self.assertTrue(new_user.id not in namespace.user_ids.ids)
         self.assertTrue(namespace.id not in new_user.namespace_ids.ids)
 

@@ -6,18 +6,18 @@
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
-    "version": "12.0.1.1.0",
+    "version": "13.0.1.1.0",
     "application": False,
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/12.0/openapi/",
+    "website": "https://apps.odoo.com/apps/modules/13.0/openapi/",
     "license": "LGPL-3",
     "price": 180.00,
     "currency": "EUR",
 
     "depends": [
-        "web",
+        "mail",
     ],
     "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
     "data": [
@@ -42,5 +42,5 @@
     "uninstall_hook": None,
 
     "auto_install": False,
-    "installable": False,
+    "installable": True,
 }
