@@ -36,7 +36,7 @@
     "uninstall_hook": None,
 
     "auto_install": False,
-    "installable": True,
+    "installable": False,
 
     # "demo_title": "Telegram Bot: Leads",
     # "demo_addons": [
