@@ -17,23 +17,21 @@
     "currency": "EUR",
 
     "depends": [
-        "web_tour",
-        "web_settings_dashboard",
+        "web",
     ],
     "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
     "data": [
         "security/ir.model.access.csv",
-        "views/assets.xml",
+        # Сommented until we discuss it
+        # "views/assets.xml",
         "views/openapi_view.xml",
         "views/res_users_view.xml",
         "views/ir_model_view.xml",
     ],
     "demo": [
-        "views/assets_demo.xml",
         "data/openapi_demo.xml",
     ],
     "qweb": [
-        "static/src/xml/dashboard.xml",
         # Сommented until we discuss it
         # "static/src/xml/configure_api_button.xml"
     ],
