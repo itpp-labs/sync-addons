@@ -1,3 +1,8 @@
+`1.1.1`
+-------
+
+- **Fix:** Translation model's float-field into JSON's integer
+
 `1.1.0`
 -------
 

@@ -2,6 +2,7 @@
 # Copyright 2018, XOE Solutions
 # Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
+# Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pylint: disable=redefined-builtin
 
@@ -1113,7 +1114,7 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
             if meta['type'] == 'integer':
                 field_property.update(type='integer')
             elif meta['type'] == 'float':
-                field_property.update(type='integer', format='float')
+                field_property.update(type='number', format='float')
             elif meta['type'] == 'char':
                 field_property.update(type='string')
             elif meta['type'] == 'text':
