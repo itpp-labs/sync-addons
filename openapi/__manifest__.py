@@ -31,7 +31,6 @@
     ],
     "demo": [
         "views/assets_demo.xml",
-        "views/tour_views.xml",
         "demo/openapi_demo.xml",
         "demo/openapi_security_demo.xml",
     ],
