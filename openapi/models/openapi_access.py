@@ -87,7 +87,7 @@ class Access(models.Model):
 
     @api.model
     def _get_method_list(self):
-        return {m[0] for m in getmembers(self.env[self.model], predicate=inspect.ismethod)}
+        return {m[0] for m in getmembers_fixed(self.env[self.model], predicate=inspect.ismethod)}
 
     @api.multi
     @api.constrains('public_methods')
@@ -492,7 +492,7 @@ class AccessCreateContext(models.Model):
                     raise exceptions.ValidationError(_('The model "%s" has no such field: "%s".') % (Model, k[8:]))
 
 
-def getmembers(object, predicate=None):
+def getmembers_fixed(object, predicate=None):
     # This is copy-pasted method from inspect lib with updates marked as NEW
     """Return all members of an object as (name, value) pairs sorted by name.
     Optionally, only return members that satisfy a given predicate."""
