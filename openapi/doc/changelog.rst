@@ -1,3 +1,8 @@
+`1.1.2`
+-------
+
+- **Improvement:** Security rules for reading and configuration
+
 `1.1.1`
 -------
 
