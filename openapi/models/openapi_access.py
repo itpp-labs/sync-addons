@@ -89,7 +89,6 @@ class Access(models.Model):
     def _get_method_list(self):
         return {m[0] for m in getmembers(self.env[self.model], predicate=inspect.ismethod)}
 
-    @api.multi
     @api.constrains('public_methods')
     def _check_public_methods(self):
         for access in self:
@@ -106,7 +105,6 @@ class Access(models.Model):
                         'Method %r is not part of the model\'s method list:\n %r') % (
                         line, self._get_method_list()))
 
-    @api.multi
     @api.constrains('private_methods')
     def _check_private_methods(self):
         for access in self:
@@ -139,7 +137,6 @@ class Access(models.Model):
                 _('You must select at least one API method for "%s" model.') % self.model
             )
 
-    @api.multi
     def name_get(self):
         return [(record.id, "%s/%s" % (record.namespace_id.name, record.model))
                 for record in self]
@@ -471,12 +468,10 @@ class AccessCreateContext(models.Model):
         vals = self._fix_name(vals)
         return super(AccessCreateContext, self).create(vals)
 
-    @api.multi
     def write(self, vals):
         vals = self._fix_name(vals)
         return super(AccessCreateContext, self).write(vals)
 
-    @api.multi
     @api.constrains('context')
     def _check_context(self):
         Model = self.env[self.model_id.model]

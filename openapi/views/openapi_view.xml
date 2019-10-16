@@ -225,7 +225,6 @@
     <record model="ir.actions.act_window" id="namespace_list_action">
         <field name="name">Intergrations</field>
         <field name="res_model">openapi.namespace</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="help">Create and manage the namespaces.</field>
     </record>
@@ -233,7 +232,6 @@
     <record model="ir.actions.act_window" id="ir_model_accesses_list_action">
         <field name="name">Accesses</field>
         <field name="res_model">openapi.access</field>
-        <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('model_id', '=', active_id)]</field>
         <field name="context">{'default_model_id': active_id}</field>

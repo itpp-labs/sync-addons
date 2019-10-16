@@ -56,7 +56,6 @@ class Namespace(models.Model):
          'A namespace already exists with this name. Namespace\'s name must be unique!')
     ]
 
-    @api.multi
     def name_get(self):
         return [(record.id, "/api/v1/%s%s" % (record.name,
                                               ' (%s)' % record.description
@@ -74,12 +73,10 @@ class Namespace(models.Model):
         vals = self._fix_name(vals)
         return super(Namespace, self).create(vals)
 
-    @api.multi
     def write(self, vals):
         vals = self._fix_name(vals)
         return super(Namespace, self).write(vals)
 
-    @api.multi
     def get_OAS(self):
         current_host = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         parsed_current_host = urlparse.urlparse(current_host)

@@ -7,7 +7,7 @@ import werkzeug.wrappers
 import time
 import os
 import pprint
-from odoo.http import AuthenticationError, Response, Root, SessionExpiredException, WebRequest, serialize_exception
+from odoo.http import AuthenticationError, Response, Root, SessionExpiredException, WebRequest
 from odoo.http import request, rpc_request, rpc_response
 from odoo.tools import pycompat
 from odoo.tools import date_utils
@@ -20,7 +20,6 @@ except ImportError:
 
 
 _logger = logging.getLogger(__name__)
-text_type = pycompat.text_type
 
 
 class ApiJsonRequest(WebRequest):
@@ -98,7 +97,7 @@ class ApiJsonRequest(WebRequest):
             error = {
                 'code': 200,
                 'message': "Odoo Server Error",
-                'data': serialize_exception(exception)
+                'data': request.registry['ir.http'].serialize_exception(exception)
             }
             if isinstance(exception, werkzeug.exceptions.NotFound):
                 error['http_status'] = 404
@@ -172,7 +171,7 @@ def api_route(route=None, **kw):
             if isinstance(response, Response) or f.routing_type in ("apijson", "json"):
                 return response
 
-            if isinstance(response, (bytes, text_type)):
+            if isinstance(response, (bytes, str)):
                 return Response(response)
 
             if isinstance(response, werkzeug.exceptions.HTTPException):
