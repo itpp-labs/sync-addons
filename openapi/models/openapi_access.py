@@ -487,22 +487,22 @@ class AccessCreateContext(models.Model):
                     raise exceptions.ValidationError(_('The model "%s" has no such field: "%s".') % (Model, k[8:]))
 
 
-def getmembers(object, predicate=None):
+def getmembers(obj, predicate=None):
     # This is copy-pasted method from inspect lib with updates marked as NEW
     """Return all members of an object as (name, value) pairs sorted by name.
     Optionally, only return members that satisfy a given predicate."""
-    if isclass(object):
-        mro = (object,) + getmro(object)
+    if isclass(obj):
+        mro = (obj,) + getmro(obj)
     else:
         mro = ()
     results = []
     processed = set()
-    names = dir(object)
+    names = dir(obj)
     # :dd any DynamicClassAttributes to the list of names if object is a class;
     # this may result in duplicate entries if, for example, a virtual
     # attribute with the same name as a DynamicClassAttribute exists
     try:
-        for base in object.__bases__:
+        for base in obj.__bases__:
             for k, v in base.__dict__.items():
                 if isinstance(v, types.DynamicClassAttribute):
                     names.append(k)
@@ -518,7 +518,7 @@ def getmembers(object, predicate=None):
         # like calling their __get__ (see bug #1785), so fall back to
         # looking in the __dict__.
         try:
-            value = getattr(object, key)
+            value = getattr(obj, key)
             # handle the duplicate key
             if key in processed:
                 raise AttributeError

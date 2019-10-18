@@ -9,7 +9,6 @@ import os
 import pprint
 from odoo.http import AuthenticationError, Response, Root, SessionExpiredException, WebRequest
 from odoo.http import request, rpc_request, rpc_response
-from odoo.tools import pycompat
 from odoo.tools import date_utils
 from odoo.service.server import memory_info
 
