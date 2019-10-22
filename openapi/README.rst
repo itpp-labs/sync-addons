@@ -26,6 +26,7 @@ connection, use Database Name / OpenAPI toekn accordingly.
 Roadmap
 =======
 
+* TODO: Rewrite tests to replace dependency ``mail`` to ``web`` module.
 * TODO: check whether module works in odoo.sh and if not, document what exactly doesn't work and what a possible workarounds
 * TODO: Add a smart button for Logs in ``openapi.namespace`` form
 * TODO: Add a button to developer menu to grant access to current model

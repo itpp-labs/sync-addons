@@ -1,11 +1,13 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import requests
 import logging
 
 from odoo import api
 from odoo.tests.common import HttpCase, PORT, get_db_name
+from odoo.tests import tagged
 
 from ..controllers import pinguin
 
@@ -20,9 +22,9 @@ MESSAGE = 'message is posted from API'
 # * /res.partner/call/{method_name} (without recordset)
 # * /res.partner/{record_id}
 
+
+@tagged('post_install', 'at_install')
 class TestAPI(HttpCase):
-    at_install = True
-    post_install = True
 
     def setUp(self):
         super(TestAPI, self).setUp()
@@ -114,6 +116,9 @@ class TestAPI(HttpCase):
             'name': 'new user',
             'login': 'new_user',
         })
+        new_user.write({
+            'groups_id': [(4, self.phantom_env.ref('openapi.group_user').id)],
+        })
         new_user.reset_openapi_token()
         self.assertTrue(new_user.id not in namespace.user_ids.ids)
         self.assertTrue(namespace.id not in new_user.namespace_ids.ids)
@@ -123,6 +128,8 @@ class TestAPI(HttpCase):
         self.assertEqual(resp.json()['error'], pinguin.CODE__user_no_perm[1])
 
     def test_call_allowed_method_on_singleton_record(self):
+        if (not self.env['ir.module.module'].search([('name', '=', 'mail')]) == "installed"):
+            self.skipTest("To run test 'test_call_allowed_method_on_singleton_record' install 'mail'-module")
         partner = self.phantom_env[self.model_name].search([], limit=1)
         method_name = 'message_post'
         method_params = {
@@ -130,9 +137,7 @@ class TestAPI(HttpCase):
                 'body': MESSAGE,
             }
         }
-
         resp = self.request_from_user(self.demo_user, 'PATCH', '/{model}/{record_id}/call/{method_name}', record_id=partner.id, method_name=method_name, data_json=method_params)
-
         self.assertEqual(resp.status_code, pinguin.CODE__success)
         # TODO check that message is created
 

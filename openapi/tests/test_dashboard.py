@@ -2,11 +2,11 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 from odoo.tests.common import HttpCase
 from odoo import api
+from odoo.tests import tagged
 
 
+@tagged('post_install', 'at_install')
 class TestDashboard(HttpCase):
-    at_install = True
-    post_install = True
 
     def test_dashboard(self):
 
