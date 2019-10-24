@@ -6,11 +6,11 @@ import json
 from odoo.tests.common import HttpCase, PORT
 from bravado_core.spec import Spec
 from swagger_spec_validator import SwaggerValidationError
+from odoo.tests import tagged
 
 
+@tagged('post_install', 'at_install')
 class TestJsonSpec(HttpCase):
-    at_install = True
-    post_install = True
 
     def test_json_base(self):
 

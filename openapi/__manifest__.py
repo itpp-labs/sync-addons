@@ -6,7 +6,7 @@
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
-    "version": "13.0.1.1.0",
+    "version": "13.0.1.1.2",
     "application": False,
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
@@ -21,6 +21,7 @@
     ],
     "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
     "data": [
+        "security/openapi_security.xml",
         "security/ir.model.access.csv",
         # Сommented until we discuss it
         # "views/assets.xml",
@@ -29,7 +30,8 @@
         "views/ir_model_view.xml",
     ],
     "demo": [
-        "data/openapi_demo.xml",
+        "demo/openapi_demo.xml",
+        "demo/openapi_security_demo.xml",
     ],
     "qweb": [
         # Сommented until we discuss it
