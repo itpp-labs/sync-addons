@@ -261,7 +261,13 @@ Comming soon...
 
             <div class="alert alert-success oe_mt32" style="padding:0.3em 0.6em; font-size: 150%;">
                 <i class="fa fa-linode" aria-hidden="true"></i><b> RESTAPI/OPENAPI vs RPC </b>
-                <ul class="list-unstyled"><i>Integrated RPC functionality differs from Our implementation of RESTAPI/OPENAPI</i>:
+                <ul class="list-unstyled"><i>Our implementation of RESTAPI/OPENAPI has the following advantages over the built-in RPC functionality:</i>:
+
+                    <li>
+                        <i class="fa fa-check-square-o text-primary"></i>
+                        A lot of utilities supports OPENAPI
+                    </li>
+
                     <li>
                         <i class="fa fa-check-square-o text-primary"></i>
                         You can restrict access to the specific models, to the function call
@@ -269,18 +275,17 @@ Comming soon...
 
                     <li>
                         <i class="fa fa-check-square-o text-primary"></i>
-                        You can authorizate through tokens (without passwords)
+                        You can make authorization through tokens (without passwords)
                     </li>
 
                     <li>
                         <i class="fa fa-check-square-o text-primary"></i>
                         You can make requests with the one request <p>
-                        (<i>for example</i>, in RPC you need to Login first, then get uid...)
+                        (<i>for example</i>, in RPC you need to be authorized first, then get uid...)
                     </li>
 
                 </ul>
             </div>
-
         </div>
     </div>
 </section>
