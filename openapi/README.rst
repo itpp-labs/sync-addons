@@ -18,7 +18,7 @@ Authentication
 * Database inference: Database name encoded and appended to the token
 * User authentication through the actual token
 
-As a workaround for multi-db Odoo instances, system uses *Basic Authentication* with
+As a workaround for multi-db Odoo instances, system uses `Basic Authentication <https://swagger.io/docs/specification/2-0/authentication/basic-authentication/>`__ with
 ``db_name:token`` credentials, where ``token`` is a new field in ``res.users``
 model. That is, whenever you see Username / Password to setup OpenAPI
 connection, use Database Name / OpenAPI toekn accordingly.
