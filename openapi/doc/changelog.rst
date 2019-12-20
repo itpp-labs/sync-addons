@@ -1,3 +1,9 @@
+`1.1.3`
+-------
+
+- **Fix:** computed fields may be wrongly computed on record creation due to
+  using cursor optimized for reading
+
 `1.1.2`
 -------
 

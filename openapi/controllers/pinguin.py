@@ -643,7 +643,7 @@ def transform_dictfields_to_list_of_tuples(record, dct):
     result = {}
     for key, value in dct.items():
         if isinstance(value, dict):
-            model_obj = get_model_for_read(fields_with_meta[key]['relation'])
+            model_obj = get_model(fields_with_meta[key]['relation'])
             inner_result = transform_dictfields_to_list_of_tuples(model_obj, value)
             is_2many = fields_with_meta[key]['type'].endswith('2many')
             result[key] = list(inner_result) if is_2many else tuple(inner_result)
@@ -669,16 +669,9 @@ def wrap__resource__create_one(modelname, context, data, success_code, out_field
               otherwise error response
     :rtype: werkzeug.wrappers.Response
     """
-    model_obj = get_model_for_read(modelname)
+    model_obj = get_model(modelname)
     try:
         created_obj = model_obj.with_context(context).create(data)
-        test_mode = request.registry.test_cr
-        if not test_mode:
-            # Somehow don't making a commit here may lead to error
-            # "Record does not exist or has been deleted"
-            # Probably, Odoo (10.0 at least) uses different cursors
-            # to create and to read fields from database
-            request.env.cr.commit()
     except Exception as e:
         return error_response(400, type(e).__name__, str(e))
 
@@ -769,7 +762,7 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
               otherwise error response
     :rtype: werkzeug.wrappers.Response
     """
-    model_obj = get_model_for_read(modelname)
+    model_obj = get_model(modelname)
 
     if not hasattr(model_obj, method):
         return error_response(*CODE__invalid_method)
@@ -838,7 +831,7 @@ def get_dict_from_model(model, spec, id, **kwargs):
         ())  # Not actually implemented on higher level (ACL!)
     exclude_fields = kwargs.get('exclude_fields', ())
 
-    model_obj = get_model_for_read(model)
+    model_obj = get_model(model)
 
     record = model_obj.browse([id])
     if not record.exists():
@@ -875,7 +868,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
         ())  # Not actually implemented on higher level (ACL!)
     exclude_fields = kwargs.get('exclude_fields', ())
 
-    model_obj = get_model_for_read(model)
+    model_obj = get_model(model)
 
     records = model_obj.sudo().search(domain, offset=offset, limit=limit, order=order)
 
@@ -889,7 +882,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
             _prefetch[_fld.comodel] = records.mapped(field[0]).ids
 
     for mod, ids in _prefetch.iteritems():
-        get_model_for_read(mod).browse(ids).read()
+        get_model(mod).browse(ids).read()
 
     result = []
     for record in records:
@@ -900,8 +893,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
     return result
 
 
-# Get a model with special context
-def get_model_for_read(model):
+def get_model(model, readonly=False):
     """Fetch a model object from the environment optimized for read.
 
     Postgres serialization levels are changed to allow parallel read queries.
@@ -917,7 +909,7 @@ def get_model_for_read(model):
     """
     cr, uid = request.cr, request.session.uid
     test_mode = request.registry.test_cr
-    if not test_mode:
+    if not test_mode and readonly:
         # Permit parallel query execution on read
         # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
         cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)

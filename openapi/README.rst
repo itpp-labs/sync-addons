@@ -48,6 +48,10 @@ Roadmap
 * TODO: add code examples for other programming languages in index.html. The examples can be based on generated swagger clients. The idea of the scripts must be the same as for python (search for partner, create if it doesn't exist, send message)
 * TODO: use sudo for log creating and disable write access rights
 * TODO: finish unitttests (see ``test_api.py``)
+* TODO: Add new argument ``readonly`` to read API requests. It should speed up
+  reading, but it can be used only when the request is really readonly (possible
+  reasons for not beeing so: odoo recompute computed fields only on reading (?),
+  redefined ORM methods)
 
 Credits
 =======
