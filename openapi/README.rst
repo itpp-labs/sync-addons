@@ -18,7 +18,7 @@ Authentication
 * Database inference: Database name encoded and appended to the token
 * User authentication through the actual token
 
-As a workaround for multi-db Odoo instances, system uses *Basic Authentication* with
+As a workaround for multi-db Odoo instances, system uses `Basic Authentication <https://swagger.io/docs/specification/2-0/authentication/basic-authentication/>`__ with
 ``db_name:token`` credentials, where ``token`` is a new field in ``res.users``
 model. That is, whenever you see Username / Password to setup OpenAPI
 connection, use Database Name / OpenAPI toekn accordingly.
@@ -70,7 +70,7 @@ Maintainers
 -----------
 * `IT-Projects LLC <https://it-projects.info>`__
 
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/12.0/openapi/>`__.
+      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/13.0/openapi/>`__.
 
       Thank you for understanding!
 
@@ -79,14 +79,14 @@ Maintainers
 Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/12.0
+Demo: http://runbot.it-projects.info/demo/sync-addons/13.0
 
-HTML Description: https://apps.odoo.com/apps/modules/12.0/openapi/
+HTML Description: https://apps.odoo.com/apps/modules/13.0/openapi/
 
 Usage instructions: `<doc/index.rst>`_
 
 Changelog: `<doc/changelog.rst>`_
 
-Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_
+Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_
 
 Tested on Odoo 12.0 e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6

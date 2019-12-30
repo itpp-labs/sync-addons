@@ -87,9 +87,8 @@ class Access(models.Model):
 
     @api.model
     def _get_method_list(self):
-        return {m[0] for m in getmembers_fixed(self.env[self.model], predicate=inspect.ismethod)}
+        return {m[0] for m in getmembers(self.env[self.model], predicate=inspect.ismethod)}
 
-    @api.multi
     @api.constrains('public_methods')
     def _check_public_methods(self):
         for access in self:
@@ -106,7 +105,6 @@ class Access(models.Model):
                         'Method %r is not part of the model\'s method list:\n %r') % (
                         line, self._get_method_list()))
 
-    @api.multi
     @api.constrains('private_methods')
     def _check_private_methods(self):
         for access in self:
@@ -139,7 +137,6 @@ class Access(models.Model):
                 _('You must select at least one API method for "%s" model.') % self.model
             )
 
-    @api.multi
     def name_get(self):
         return [(record.id, "%s/%s" % (record.namespace_id.name, record.model))
                 for record in self]
@@ -471,12 +468,10 @@ class AccessCreateContext(models.Model):
         vals = self._fix_name(vals)
         return super(AccessCreateContext, self).create(vals)
 
-    @api.multi
     def write(self, vals):
         vals = self._fix_name(vals)
         return super(AccessCreateContext, self).write(vals)
 
-    @api.multi
     @api.constrains('context')
     def _check_context(self):
         Model = self.env[self.model_id.model]
@@ -492,22 +487,22 @@ class AccessCreateContext(models.Model):
                     raise exceptions.ValidationError(_('The model "%s" has no such field: "%s".') % (Model, k[8:]))
 
 
-def getmembers_fixed(object, predicate=None):
+def getmembers(obj, predicate=None):
     # This is copy-pasted method from inspect lib with updates marked as NEW
     """Return all members of an object as (name, value) pairs sorted by name.
     Optionally, only return members that satisfy a given predicate."""
-    if isclass(object):
-        mro = (object,) + getmro(object)
+    if isclass(obj):
+        mro = (obj,) + getmro(obj)
     else:
         mro = ()
     results = []
     processed = set()
-    names = dir(object)
+    names = dir(obj)
     # :dd any DynamicClassAttributes to the list of names if object is a class;
     # this may result in duplicate entries if, for example, a virtual
     # attribute with the same name as a DynamicClassAttribute exists
     try:
-        for base in object.__bases__:
+        for base in obj.__bases__:
             for k, v in base.__dict__.items():
                 if isinstance(v, types.DynamicClassAttribute):
                     names.append(k)
@@ -523,7 +518,7 @@ def getmembers_fixed(object, predicate=None):
         # like calling their __get__ (see bug #1785), so fall back to
         # looking in the __dict__.
         try:
-            value = getattr(object, key)
+            value = getattr(obj, key)
             # handle the duplicate key
             if key in processed:
                 raise AttributeError
