@@ -1,3 +1,7 @@
+`1.1.3`
+-------
+- **Fix:** don't mark fields as readOnly and required at the same time
+
 `1.1.2`
 -------
 

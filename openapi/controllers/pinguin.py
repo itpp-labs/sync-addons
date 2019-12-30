@@ -1142,12 +1142,26 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
                     }
                 })
 
-            if meta['readonly']:
+            # We cannot have both required and readOnly flags in field openapi
+            # definition, for that reason we cannot blindly use odoo's
+            # attributed readonly and required.
+            #
+            # 1) For odoo-required, but NOT odoo-related field, we do NOT use
+            # openapi-readonly
+            #
+            # Example of such field can be found in sale module:
+            #     partner_id = fields.Many2one('res.partner', readonly=True,
+            #     states={'draft': [('readonly', False)], 'sent': [('readonly',
+            #     False)]}, required=True, ...)
+            #
+            # 2) For odoo-required and odoo-related field, we DO use
+            # openapi-readonly, but we don't use openapi-required
+            if meta['readonly'] and (not meta['required'] or meta.get('related')):
                 field_property.update(readOnly=True)
 
         definitions[definition_name]['properties'][field] = field_property
 
-        if meta['required']:
+        if meta['required'] and not meta.get('related'):
             fld = model_obj._fields[field]
             # Mark as required only if field doesn't have defaul value
             # Boolean always has default value (False)
