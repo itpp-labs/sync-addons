@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
@@ -7,12 +6,12 @@
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
-    "version": "10.0.1.1.3",
+    "version": "11.0.1.1.3",
     "application": False,
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
+    "website": "https://apps.odoo.com/apps/modules/11.0/openapi/",
     "license": "LGPL-3",
     "price": 180.00,
     "currency": "EUR",
@@ -20,7 +19,6 @@
     "depends": [
         "web_tour",
         "web_settings_dashboard",
-        "report",
     ],
     "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
     "data": [
@@ -33,7 +31,6 @@
     ],
     "demo": [
         "views/assets_demo.xml",
-        "views/tour_views.xml",
         "demo/openapi_demo.xml",
         "demo/openapi_security_demo.xml",
     ],

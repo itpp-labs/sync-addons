@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import json
@@ -17,13 +16,13 @@ class TestJsonSpec(HttpCase):
 
         resp = self.url_open("http://localhost:%d/api/v1/demo/swagger.json?token=demo_token&download" % PORT,
                              timeout=30)
-        self.assertEqual(resp.getcode(), 200, 'Cannot get json spec')
+        self.assertEqual(resp.status_code, 200, 'Cannot get json spec')
         # TODO add checking  actual content of the json
 
     def test_OAS_scheme_for_demo_data_is_valid(self):
         resp = self.url_open("http://localhost:%d/api/v1/demo/swagger.json?token=demo_token&download" % PORT,
                              timeout=30)
-        spec_dict = json.loads(resp.read())
+        spec_dict = json.loads(resp.content.decode('utf8'))
         try:
             Spec.from_dict(spec_dict, config={'validate_swagger_spec': True})
         except SwaggerValidationError as e:

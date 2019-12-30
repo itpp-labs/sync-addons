@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/it-projects-llc/pos-addons.svg?branch=10.0)](https://travis-ci.com/it-projects-llc/sync-addons)
+[![Build Status](https://travis-ci.com/it-projects-llc/pos-addons.svg?branch=11.0)](https://travis-ci.com/it-projects-llc/sync-addons)
 
 Sync addons
 ===========

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+    Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
      License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html). -->
 <templates xml:space="preserve">
     <t t-extend="DashboardMain">
         <t t-jquery=".o_web_settings_dashboard_col:has(.o_web_settings_dashboard_invitations)" t-operation="after">
-            <div class="col-md-3 col-sm-6 col-xs-12 o_web_settings_dashboard_col">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 o_web_settings_dashboard_col">
                 <div class="text-center o_web_settings_dashboard_openapi"></div>
             </div>
         </t>

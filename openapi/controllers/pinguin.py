@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018, XOE Solutions
 # Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
@@ -33,7 +32,7 @@ import collections
 import odoo
 
 from odoo.service import security
-from odoo.addons.report.controllers.main import ReportController
+from odoo.addons.web.controllers.main import ReportController
 
 try:
     import simplejson as json
@@ -190,7 +189,7 @@ def get_data_from_auth_header(header):
     """
     normalized_token = header.replace('Basic ', '').replace('\\n', '').encode('utf-8')
     try:
-        decoded_token_parts = base64.decodestring(normalized_token).split(':')
+        decoded_token_parts = base64.decodestring(normalized_token).split(b':')
     except TypeError:
         raise werkzeug.exceptions.HTTPException(response=error_response(500, 'Invalid header', 'Basic auth header must be valid base64 string'))
 
@@ -526,7 +525,7 @@ def validate_extra_field(field):
     :rtype: None
     :raise: werkzeug.exceptions.HTTPException if field is invalid.
     """
-    if not isinstance(field, basestring):
+    if not isinstance(field, str):
         return werkzeug.exceptions.HTTPException(response=error_response(*CODE__invalid_spec))
 
 
@@ -882,13 +881,13 @@ def get_dictlist_from_model(model, spec, **kwargs):
     # Do some optimization for subfields
     _prefetch = {}
     for field in spec:
-        if isinstance(field, basestring):
+        if isinstance(field, str):
             continue
         _fld = records._fields[field[0]]
         if _fld.relational:
             _prefetch[_fld.comodel] = records.mapped(field[0]).ids
 
-    for mod, ids in _prefetch.iteritems():
+    for mod, ids in _prefetch.items():
         get_model_for_read(mod).browse(ids).read()
 
     result = []
