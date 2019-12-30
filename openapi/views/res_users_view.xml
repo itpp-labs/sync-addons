@@ -14,13 +14,13 @@
                         attrs="{'invisible': [('id', '=', False)]}"
                 />
             </header>
-            <field name="partner_id" position="after">
-                <field name="openapi_token" attrs="{'invisible': [('id', '=', False)]}"/>
-            </field>
             <notebook position="inside">
-                <page string="Allowed Intergrations">
-                    <field name="namespace_ids"/>
-                </page>
+              <page string="Allowed Intergrations">
+                <group>
+                  <field name="openapi_token"/>
+                </group>
+                <field name="namespace_ids"/>
+              </page>
             </notebook>
         </field>
     </record>

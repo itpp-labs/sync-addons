@@ -26,6 +26,7 @@ connection, use Database Name / OpenAPI toekn accordingly.
 Roadmap
 =======
 
+* TODO: Rewrite tests to replace dependency ``mail`` to ``web`` module.
 * TODO: check whether module works in odoo.sh and if not, document what exactly doesn't work and what a possible workarounds
 * TODO: Add a smart button for Logs in ``openapi.namespace`` form
 * TODO: Add a button to developer menu to grant access to current model
@@ -48,6 +49,7 @@ Roadmap
 * TODO: add code examples for other programming languages in index.html. The examples can be based on generated swagger clients. The idea of the scripts must be the same as for python (search for partner, create if it doesn't exist, send message)
 * TODO: use sudo for log creating and disable write access rights
 * TODO: finish unitttests (see ``test_api.py``)
+* TODO: ``.../swagger.json`` url doesn't work in multi-db mode in odoo 12.0 at least: it make strange redirection to from ``/api/v1/demo/swagger.json?token=demo_token&db=source`` to ``/api/v1/demo/swagger.json?token%3Ddemo_token%26db%3Dsource``
 
 Credits
 =======
@@ -68,7 +70,7 @@ Maintainers
 -----------
 * `IT-Projects LLC <https://it-projects.info>`__
 
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/11.0/openapi/>`__.
+      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/12.0/openapi/>`__.
 
       Thank you for understanding!
 
@@ -77,14 +79,14 @@ Maintainers
 Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/11.0
+Demo: http://runbot.it-projects.info/demo/sync-addons/12.0
 
-HTML Description: https://apps.odoo.com/apps/modules/11.0/openapi/
+HTML Description: https://apps.odoo.com/apps/modules/12.0/openapi/
 
 Usage instructions: `<doc/index.rst>`_
 
 Changelog: `<doc/changelog.rst>`_
 
-Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_
+Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_
 
-Tested on Odoo 11.0 855447fc77fdbe2972be043b7ba9131567d21b9f
+Tested on Odoo 12.0 e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6
