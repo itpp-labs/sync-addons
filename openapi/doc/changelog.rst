@@ -1,3 +1,7 @@
+`1.1.5`
+-------
+- **Fix:** users got same token on installation
+
 `1.1.4`
 -------
 - **Fix:** OpenAPI user can't create log records
