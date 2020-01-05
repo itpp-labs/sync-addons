@@ -6,7 +6,7 @@
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
-    "version": "13.0.1.1.3",
+    "version": "13.0.1.1.4",
     "application": False,
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
@@ -23,6 +23,7 @@
     "data": [
         "security/openapi_security.xml",
         "security/ir.model.access.csv",
+        "security/res_users_token.xml",
         # Сommented until we discuss it
         # "views/assets.xml",
         "views/openapi_view.xml",

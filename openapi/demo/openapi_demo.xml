@@ -58,5 +58,4 @@
         <field name="create_context_ids" eval="[(4, ref('context_res_partner_demo'))]" />
     </record>
 
-    <function model="res.users" name="reset_all_openapi_tokens"/>
 </odoo>
