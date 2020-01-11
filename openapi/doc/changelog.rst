@@ -1,3 +1,7 @@
+`1.1.4`
+-------
+- **Fix:** no computation In PATCH-method for compute-fields
+
 `1.1.3`
 -------
 - **Fix:** don't mark fields as readOnly and required at the same time
