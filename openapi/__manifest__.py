@@ -6,7 +6,7 @@
     "category": "",
     # "live_test_url": "",
     "images": ['images/openapi-swagger.png'],
-    "version": "11.0.1.1.3",
+    "version": "11.0.1.1.4",
     "application": False,
 
     "author": "IT-Projects LLC, Ivan Yelizariev",
