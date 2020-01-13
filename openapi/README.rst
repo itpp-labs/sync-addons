@@ -88,4 +88,4 @@ Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_
 
-Tested on Odoo 12.0 e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6
+Tested on Odoo 13.0 eed3171f2f057223c3fbedd95ce6bcde2124f46c
