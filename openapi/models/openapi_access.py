@@ -12,6 +12,7 @@ import urllib.parse as urlparse
 from odoo import models, fields, api, _, exceptions
 
 from ..controllers import pinguin
+from odoo.addons.base_api.lib.pinguin import transform_strfields_to_dict
 
 
 PARAM_ID = {
@@ -407,13 +408,13 @@ class Access(models.Model):
 
     def get_OAS_definitions_part(self):
         related_model = self.env[self.model]
-        export_fields_read_one = pinguin.transform_strfields_to_dict(self.read_one_id.export_fields.mapped('name') or ('id',))
-        export_fields_read_many = pinguin.transform_strfields_to_dict(self.read_many_id.export_fields.mapped('name') or ('id',))
+        export_fields_read_one = transform_strfields_to_dict(self.read_one_id.export_fields.mapped('name') or ('id',))
+        export_fields_read_many = transform_strfields_to_dict(self.read_many_id.export_fields.mapped('name') or ('id',))
         definitions = {}
         definitions.update(pinguin.get_OAS_definitions_part(related_model, export_fields_read_one, definition_postfix='read_one'))
         definitions.update(pinguin.get_OAS_definitions_part(related_model, export_fields_read_many, definition_postfix='read_many'))
         if self.api_create or self.api_update:
-            all_fields = pinguin.transform_strfields_to_dict(related_model.fields_get_keys())
+            all_fields = transform_strfields_to_dict(related_model.fields_get_keys())
             definitions.update(pinguin.get_OAS_definitions_part(related_model, all_fields))
 
         if self.api_public_methods or self.private_methods:

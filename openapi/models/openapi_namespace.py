@@ -8,7 +8,7 @@ import uuid
 import urllib.parse as urlparse
 
 from odoo import models, fields, api
-from ..controllers import pinguin
+from odoo.addons.base_api.lib import pinguin
 
 
 class Namespace(models.Model):
