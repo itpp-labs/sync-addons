@@ -1,3 +1,7 @@
+`1.1.5`
+-------
+- **Fix:** UTF-8 Decode error, singleton error in check methods
+
 `1.1.4`
 -------
 - **Fix:** no computation In PATCH-method for compute-fields
