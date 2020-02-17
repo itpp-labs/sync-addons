@@ -1,5 +1,5 @@
 # Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
-# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
+# License MIT (https://opensource.org/licenses/MIT).
 {
     "name": """Telegram Leads""",
     "summary": """Generate Leads out of messages forwarded in Telegram""",
@@ -12,7 +12,7 @@
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
     "website": "https://apps.odoo.com/apps/modules/11.0/telegram_leads/",
-    "license": "LGPL-3",
+    "license": "Other OSI approved licence",  # MIT
     "price": 50.00,
     "currency": "EUR",
 
