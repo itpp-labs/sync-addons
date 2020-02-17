@@ -1,6 +1,6 @@
 /*
 Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
-License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+License MIT (https://opensource.org/licenses/MIT).
 */
 odoo.define('openapi.configure_API', function (require) {
 

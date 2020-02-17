@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
-     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html). -->
+     License MIT (https://opensource.org/licenses/MIT). -->
 <templates>
     <t t-name="OpenAPIView.add_button">
         <button t-if='widget.options.import_enabled' type="button" class="btn btn-sm btn-default o_button_openapi_add_configure">
