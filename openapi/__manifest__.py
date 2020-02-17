@@ -1,5 +1,5 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
-# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
+# License MIT (https://opensource.org/licenses/MIT).
 {
     "name": """REST API/OpenAPI/Swagger""",
     "summary": """API to integrate Odoo with whatever system you need""",
@@ -12,7 +12,7 @@
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
     "website": "https://apps.odoo.com/apps/modules/13.0/openapi/",
-    "license": "LGPL-3",
+    "license": "Other OSI approved licence",  # MIT
     "price": 180.00,
     "currency": "EUR",
 
