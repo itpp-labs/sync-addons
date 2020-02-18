@@ -1,0 +1,2 @@
+bravado
+swagger-spec-validator==2.4.3

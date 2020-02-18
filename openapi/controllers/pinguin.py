@@ -783,6 +783,7 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
 
     if len(ids) <= 1 and len(results):
         results = results[0]
+    model_obj.flush()  # to recompute fields
     return successful_response(success_code, data=results)
 
 

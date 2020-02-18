@@ -123,19 +123,20 @@ class Access(models.Model):
 
     @api.constrains('api_create', 'api_read', 'api_update', 'api_delete')
     def _check_methods(self):
-        methods = [
-            self.api_create,
-            self.api_read,
-            self.api_update,
-            self.api_delete,
-            self.api_public_methods,
-        ]
-        methods += (self.public_methods or '').split('\n')
-        methods += (self.private_methods or '').split('\n')
-        if all(not m for m in methods):
-            raise exceptions.ValidationError(
-                _('You must select at least one API method for "%s" model.') % self.model
-            )
+        for record in self:
+            methods = [
+                record.api_create,
+                record.api_read,
+                record.api_update,
+                record.api_delete,
+                record.api_public_methods,
+            ]
+            methods += (record.public_methods or '').split('\n')
+            methods += (record.private_methods or '').split('\n')
+            if all(not m for m in methods):
+                raise exceptions.ValidationError(
+                    _('You must select at least one API method for "%s" model.') % record.model
+                )
 
     def name_get(self):
         return [(record.id, "%s/%s" % (record.namespace_id.name, record.model))

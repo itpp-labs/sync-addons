@@ -11,6 +11,7 @@ from odoo.http import AuthenticationError, Response, Root, SessionExpiredExcepti
 from odoo.http import request, rpc_request, rpc_response
 from odoo.tools import date_utils
 from odoo.service.server import memory_info
+from odoo.addons.web.controllers.main import serialize_exception
 
 try:
     import psutil
@@ -39,16 +40,16 @@ class ApiJsonRequest(WebRequest):
         if jsonp and self.httprequest.method == 'POST':
             # jsonp 2 steps step1 POST: save call
             def handler():
-                self.session['jsonp_request_%s' % (request_id,)] = self.httprequest.form['r']
+                self.session['jsonp_request_%s' % (request_id,)] = self.httprequest.form['rb']
                 self.session.modified = True
                 headers = [('Content-Type', 'text/plain; charset=utf-8')]
                 r = werkzeug.wrappers.Response(request_id, headers=headers)
                 return r
             self.jsonp_handler = handler
             return
-        elif jsonp and args.get('r'):
+        elif jsonp and args.get('rb'):
             # jsonp method GET
-            request = args.get('r')
+            request = args.get('rb')
         elif jsonp and request_id:
             # jsonp 2 steps step2 GET: run and return result
             request = self.session.pop('jsonp_request_%s' % (request_id,), '{}')
@@ -96,7 +97,7 @@ class ApiJsonRequest(WebRequest):
             error = {
                 'code': 200,
                 'message': "Odoo Server Error",
-                'data': request.registry['ir.http'].serialize_exception(exception)
+                'data': serialize_exception(exception)
             }
             if isinstance(exception, werkzeug.exceptions.NotFound):
                 error['http_status'] = 404
