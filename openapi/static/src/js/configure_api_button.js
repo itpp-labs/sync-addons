@@ -3,6 +3,7 @@ Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 */
 odoo.define("openapi.configure_API", function(require) {
+    "use strict";
     var ListView = require("web.ListView");
     var Model = require("web.DataModel");
     var IrModel = new Model("ir.model");
