@@ -366,7 +366,7 @@ class Access(models.Model):
             }
 
         paths_object = {k: v for k, v in paths_object.items() if v}
-        for path_item_key, path_item_value in paths_object.items():
+        for _path_item_key, path_item_value in paths_object.items():
 
             for path_method in path_item_value.values():
                 # add tag
@@ -486,7 +486,7 @@ class AccessCreateContext(models.Model):
             except ValueError:
                 raise exceptions.ValidationError(_("Context must be jsonable."))
 
-            for k, v in data.items():
+            for k, _v in data.items():
                 if k.startswith("default_") and k[8:] not in fields:
                     raise exceptions.ValidationError(
                         _('The model "%s" has no such field: "%s".') % (Model, k[8:])
