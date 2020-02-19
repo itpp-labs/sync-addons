@@ -1,18 +1,17 @@
 # Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
-from odoo.tests.common import TransactionCase
 from odoo.tests import tagged
+from odoo.tests.common import TransactionCase
 
 
-@tagged('post_install', 'at_install')
+@tagged("post_install", "at_install")
 class TestBase(TransactionCase):
-
     def test_search_or_create(self):
-        MODEL = 'res.partner'
-        FIELD = 'name'
-        VALUE = 'test_search_or_create'
+        MODEL = "res.partner"
+        FIELD = "name"
+        VALUE = "test_search_or_create"
         d = {FIELD: VALUE}
-        self.env[MODEL].search([(FIELD, '=', VALUE)]).unlink()
+        self.env[MODEL].search([(FIELD, "=", VALUE)]).unlink()
         is_new, record_ids = self.env[MODEL].search_or_create(d.copy())
         record = self.env[MODEL].browse(record_ids)
         self.assertTrue(is_new)

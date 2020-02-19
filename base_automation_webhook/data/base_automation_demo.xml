@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
@@ -12,7 +12,7 @@ log("code is executed")
 requests.get
 </field>
     <field name="trigger">on_create</field>
-    <field name="model_id" ref="base.model_res_partner"/>
+    <field name="model_id" ref="base.model_res_partner" />
   </record>
 
 </odoo>
