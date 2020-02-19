@@ -18,8 +18,6 @@ from ..controllers import pinguin
 # import urllib.parse as urlparse
 
 
-
-
 class Namespace(models.Model):
 
     _name = "openapi.namespace"
@@ -237,9 +235,7 @@ class Namespace(models.Model):
     def _compute_spec_url(self):
         for record in self:
             record.spec_url = "/api/v1/{}/swagger.json?token={}&db={}".format(
-                record.name,
-                record.token,
-                self._cr.dbname,
+                record.name, record.token, self._cr.dbname,
             )
 
     def reset_token(self):
