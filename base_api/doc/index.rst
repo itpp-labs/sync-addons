@@ -48,7 +48,7 @@ search_or_create
 
   - *x2many* fields in `vals`:
       - ignored for searching
-      - type of list of *tuples*  
+      - type of list of *tuples*
       - e.g.
             .. code-block::
 
@@ -81,7 +81,7 @@ search_or_create
 
   -> # Creating record (for x2many-fields)
 
-  -> vals = { 'name': 'Albert Bubis', 'child_ids': [(4, 11, 0), (4, 5, 0)] }  
+  -> vals = { 'name': 'Albert Bubis', 'child_ids': [(4, 11, 0), (4, 5, 0)] }
 
   -> res_partner_object.search_or_create(vals)
 
@@ -116,7 +116,7 @@ search_read_nested
       - e.g.
           .. code-block::
 
-             fields = [ 
+             fields = [
                         company_id,
                         company_id/name
                         ]
@@ -141,7 +141,7 @@ search_read_nested
       - e.g. 
           .. code-block::
 
-            fields = [ 
+            fields = [
                         'book_name',
                         'author_id',
                         'author_id/name',
@@ -231,8 +231,8 @@ search_read_nested
 
       }
   ]
-  
-  
+
+
 *– Algorithm*:
   1. Searches for records that satisfy `domain`
 
@@ -254,7 +254,7 @@ create_or_update_by_external_id
       - e.g.
             .. code-block::
 
-               vals = { 
+               vals = {
                         'id': 'ext.id_1',
                         'name: 'John',
                         'age': 37,
