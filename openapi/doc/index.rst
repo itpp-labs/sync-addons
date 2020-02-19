@@ -81,4 +81,4 @@ As the simplest example, you can try API in Swagger Editor. It allows to review 
   * **Username** -- set database name
   * **Password** -- set **OpenAPI Token**
 
-For more examples visit https://odoo-sync.sh website
+For more examples visit https://itpp.dev/sync website
