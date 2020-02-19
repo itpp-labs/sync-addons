@@ -16,9 +16,6 @@ from ..controllers import pinguin
 # import urllib.parse as urlparse
 
 
-
-
-
 PARAM_ID = {
     "name": "id",
     "in": "path",
