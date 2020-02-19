@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
   <record id="test_action" model="ir.actions.server">
     <field name="name">Server Action for unittests</field>
-    <field name="model_id" ref="base.model_res_partner"/>
+    <field name="model_id" ref="base.model_res_partner" />
     <field name="code">
 log("code is executed")
 # don't make actual request, but just check the package is available
@@ -15,8 +15,11 @@ requests.get
   <record id="test_rule" model="base.action.rule">
     <field name="name">Test rule</field>
     <field name="kind">on_create</field>
-    <field name="model_id" ref="base.model_res_partner"/>
-    <field name="server_action_ids" eval="[(4, ref('base_automation_webhook.test_action'))]"/>
+    <field name="model_id" ref="base.model_res_partner" />
+    <field
+            name="server_action_ids"
+            eval="[(4, ref('base_automation_webhook.test_action'))]"
+        />
   </record>
 
 </odoo>

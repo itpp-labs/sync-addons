@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record model="ir.ui.view" id="ir_exports_form_view">
         <field name="name">ir.exports.form</field>
@@ -6,13 +6,13 @@
         <field name="arch" type="xml">
             <form string="Exports">
                 <group>
-                    <field name="id" invisible="1"/>
-                    <field name="name"/>
-                    <field name="resource"/>
+                    <field name="id" invisible="1" />
+                    <field name="name" />
+                    <field name="resource" />
                     <field name="export_fields">
                         <form string="Export Fields">
                             <group>
-                                <field name="name"/>
+                                <field name="name" />
                             </group>
                         </form>
                     </field>
@@ -27,12 +27,12 @@
         <field name="arch" type="xml">
             <form string="Log">
                 <group>
-                    <field name="namespace_id" readonly="1"/>
-                    <field name="create_uid" readonly="1"/>
-                    <field name="create_date" readonly="1"/>
-                    <field name="request" readonly="1"/>
-                    <field name="request_data" readonly="1"/>
-                    <field name="response_data" readonly="1"/>
+                    <field name="namespace_id" readonly="1" />
+                    <field name="create_uid" readonly="1" />
+                    <field name="create_date" readonly="1" />
+                    <field name="request" readonly="1" />
+                    <field name="request_data" readonly="1" />
+                    <field name="response_data" readonly="1" />
                 </group>
             </form>
         </field>
@@ -44,64 +44,67 @@
         <field name="arch" type="xml">
             <form string="Access">
                 <sheet>
-                    <div class="oe_button_box"
-                         name="button_box">
-                        <button name="toggle_active"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-archive">
-                            <field name="active"
-                                   widget="boolean_button"
-                                   options='{"terminology": "archive"}'/>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="toggle_active"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-archive"
+                        >
+                            <field
+                                name="active"
+                                widget="boolean_button"
+                                options='{"terminology": "archive"}'
+                            />
                         </button>
                     </div>
                     <div class="oe_title">
                         <group>
-                            <field name="id" invisible="1"/>
-                            <field name="model"
-                                   invisible="1"/>
-                            <field name="model_id"
-                                   options="{'no_create': True}"
+                            <field name="id" invisible="1" />
+                            <field name="model" invisible="1" />
+                            <field name="model_id" options="{'no_create': True}" />
+                            <field name="api_create" />
+                            <field name="api_read" />
+                            <field name="api_update" />
+                            <field name="api_delete" />
+                            <field name="api_public_methods" />
+                            <field
+                                name="public_methods"
+                                attrs="{'invisible': [('api_public_methods', '=', False)]}"
                             />
-                            <field name="api_create"/>
-                            <field name="api_read"/>
-                            <field name="api_update"/>
-                            <field name="api_delete"/>
-                            <field name="api_public_methods"/>
-                            <field name="public_methods"
-                                   attrs="{'invisible': [('api_public_methods', '=', False)]}"
-                            />
-                            <field name="private_methods"/>
-                            <field name="read_one_id"
-                                   attrs="{'readonly': [('model_id', '=', False)]}"
-                                   context="{'default_resource': model, 'default_name': context.get('parent_name', '&lt;parent_namespace_name&gt;') + ' / ' + model + ' / read_one'}"
+                            <field name="private_methods" />
+                            <field
+                                name="read_one_id"
+                                attrs="{'readonly': [('model_id', '=', False)]}"
+                                context="{'default_resource': model, 'default_name': context.get('parent_name', '&lt;parent_namespace_name&gt;') + ' / ' + model + ' / read_one'}"
                             >
                                 <form string="Read One Fields">
                                     <group>
-                                        <field name="name"/>
-                                        <field name="resource"/>
+                                        <field name="name" />
+                                        <field name="resource" />
                                         <field name="export_fields">
                                             <form string="Export Fields">
                                                 <group>
-                                                    <field name="name"/>
+                                                    <field name="name" />
                                                 </group>
                                             </form>
                                         </field>
                                     </group>
                                 </form>
                             </field>
-                            <field name="read_many_id"
-                                   attrs="{'readonly': [('model_id', '=', False)], 'invisible': [('api_read', '=', False)]}"
-                                   context="{'default_resource': model, 'default_name': context.get('parent_name', '&lt;parent_namespace_name&gt;') + ' / ' + model + ' / read_many'}"
+                            <field
+                                name="read_many_id"
+                                attrs="{'readonly': [('model_id', '=', False)], 'invisible': [('api_read', '=', False)]}"
+                                context="{'default_resource': model, 'default_name': context.get('parent_name', '&lt;parent_namespace_name&gt;') + ' / ' + model + ' / read_many'}"
                             >
                                 <form string="Read Many Fields">
                                     <group>
-                                        <field name="name"/>
-                                        <field name="resource"/>
+                                        <field name="name" />
+                                        <field name="resource" />
                                         <field name="export_fields">
                                             <form string="Export Fields">
                                                 <group>
-                                                    <field name="name"/>
+                                                    <field name="name" />
                                                 </group>
                                             </form>
                                         </field>
@@ -112,14 +115,15 @@
                     </div>
                     <notebook attrs="{'invisible': [('api_create', '=', False)]}">
                         <page string="Creation Context Presets">
-                            <field name="create_context_ids"
-                                   attrs="{'readonly': [('model_id', '=', False)]}"
+                            <field
+                                name="create_context_ids"
+                                attrs="{'readonly': [('model_id', '=', False)]}"
                             >
                                 <form string="Creation Context Presets">
                                     <group>
-                                        <field name="name"/>
-                                        <field name="description"/>
-                                        <field name="context"/>
+                                        <field name="name" />
+                                        <field name="description" />
+                                        <field name="context" />
                                     </group>
                                 </form>
                             </field>
@@ -136,62 +140,78 @@
         <field name="arch" type="xml">
             <form string="Intergration">
                 <header position="inside">
-                    <button name="reset_token"
-                            string="Reset Token"
-                            confirm="Do you want to proceed reset token?"
-                            type="object"
-                            attrs="{'invisible': [('id', '=', False)]}"
+                    <button
+                        name="reset_token"
+                        string="Reset Token"
+                        confirm="Do you want to proceed reset token?"
+                        type="object"
+                        attrs="{'invisible': [('id', '=', False)]}"
                     />
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="toggle_active" type="object"
-                                class="oe_stat_button" icon="fa-archive">
-                            <field name="active" widget="boolean_button"
-                                   options='{"terminology": "archive"}'/>
+                        <button
+                            name="toggle_active"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-archive"
+                        >
+                            <field
+                                name="active"
+                                widget="boolean_button"
+                                options='{"terminology": "archive"}'
+                            />
                         </button>
                     </div>
                     <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
+                        <label for="name" class="oe_edit_only" />
                         <h1>
-                            <field name="name" class="oe_inline"/>
+                            <field name="name" class="oe_inline" />
                         </h1>
-                        <label for="description" class="oe_edit_only"/>
+                        <label for="description" class="oe_edit_only" />
                         <h3>
-                            <field name="description"/>
+                            <field name="description" />
                         </h3>
-                        <field name="id" invisible="1"/>
+                        <field name="id" invisible="1" />
                         <group>
-                            <field name="create_uid" readonly="1"/>
-                            <field name="log_request"/>
-                            <field name="log_response"/>
-                            <field name="last_log_date" readonly="1"/>
-                            <field name="token"/>
-                            <field name="spec_url" widget="url" readonly="1"/>
+                            <field name="create_uid" readonly="1" />
+                            <field name="log_request" />
+                            <field name="log_response" />
+                            <field name="last_log_date" readonly="1" />
+                            <field name="token" />
+                            <field name="spec_url" widget="url" readonly="1" />
                         </group>
                     </div>
                     <notebook>
                         <page string="Accessable Models">
-                            <field name="access_ids" mode="tree" context="{'parent_name': name, 'active_test': False}">
+                            <field
+                                name="access_ids"
+                                mode="tree"
+                                context="{'parent_name': name, 'active_test': False}"
+                            >
                                 <tree>
-                                    <field name="active"/>
-                                    <field name="model_id"/>
+                                    <field name="active" />
+                                    <field name="model_id" />
                                 </tree>
                             </field>
                         </page>
                         <page string="Logs">
-                            <field name="log_ids" readonly="1" context="{'default_namespace_id': active_id}">
+                            <field
+                                name="log_ids"
+                                readonly="1"
+                                context="{'default_namespace_id': active_id}"
+                            >
                                 <tree>
-                                    <field name="create_date"/>
-                                    <field name="create_uid"/>
-                                    <field name="request"/>
+                                    <field name="create_date" />
+                                    <field name="create_uid" />
+                                    <field name="request" />
                                 </tree>
                             </field>
                         </page>
                         <page string="Allowed Users">
                             <field name="user_ids">
                                 <tree>
-                                    <field name="name"/>
+                                    <field name="name" />
                                 </tree>
                             </field>
                         </page>
@@ -206,7 +226,7 @@
         <field name="model">openapi.namespace</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="name"/>
+                <field name="name" />
             </tree>
         </field>
     </record>
@@ -216,8 +236,8 @@
         <field name="model">openapi.access</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="namespace_id"/>
-                <field name="model"/>
+                <field name="namespace_id" />
+                <field name="model" />
             </tree>
         </field>
     </record>
@@ -239,8 +259,12 @@
         <field name="context">{'default_model_id': active_id}</field>
     </record>
 
-    <menuitem id="main_openapi_menu" name="OpenAPI"/>
-    <menuitem id="openapi_menu" name="OpenAPI" parent="main_openapi_menu"/>
-    <menuitem id="namespaces_menu" name="Intergrations" parent="openapi_menu"
-              action="namespace_list_action"/>
+    <menuitem id="main_openapi_menu" name="OpenAPI" />
+    <menuitem id="openapi_menu" name="OpenAPI" parent="main_openapi_menu" />
+    <menuitem
+        id="namespaces_menu"
+        name="Intergrations"
+        parent="openapi_menu"
+        action="namespace_list_action"
+    />
 </odoo>
