@@ -21,28 +21,27 @@ Todo:
    https://google.github.io/styleguide/pyguide.html
 """
 import base64
+import collections
 import functools
 import traceback
 
 import six
-
 import werkzeug.wrappers
-
-import collections
+from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 import odoo
-
+from odoo.http import request
 from odoo.service import security
+
 from odoo.addons.report.controllers.main import ReportController
+
+from .apijsonrequest import api_route
 
 try:
     import simplejson as json
 except ImportError:
     import json
 
-from .apijsonrequest import api_route
-from odoo.http import request
-from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 ####################################
 # Definition of global error codes #
@@ -55,27 +54,43 @@ CODE__accepted = 202
 CODE__ok_no_content = 204
 # 4xx Client Errors
 CODE__server_rejects = (400, "Server rejected", "Welcome to macondo!")
-CODE__no_user_auth = (401, "Authentication",
-                      "Your token could not be authenticated.")
+CODE__no_user_auth = (401, "Authentication", "Your token could not be authenticated.")
 CODE__user_no_perm = (401, "Permissions", "%s")
-CODE__method_blocked = (403, "Blocked Method",
-                        "This method is not whitelisted on this model.")
+CODE__method_blocked = (
+    403,
+    "Blocked Method",
+    "This method is not whitelisted on this model.",
+)
 CODE__db_not_found = (404, "Db not found", "Welcome to macondo!")
-CODE__canned_ctx_not_found = (404, "Canned context not found", "The requested canned context is not configured on this model")
-CODE__obj_not_found = (404, "Object not found",
-                       "This object is not available on this instance.")
-CODE__res_not_found = (404, "Resource not found",
-                       "There is no resource with this id.")
-CODE__act_not_executed = (409, "Action not executed",
-                          "The requested action was not executed.")
+CODE__canned_ctx_not_found = (
+    404,
+    "Canned context not found",
+    "The requested canned context is not configured on this model",
+)
+CODE__obj_not_found = (
+    404,
+    "Object not found",
+    "This object is not available on this instance.",
+)
+CODE__res_not_found = (404, "Resource not found", "There is no resource with this id.")
+CODE__act_not_executed = (
+    409,
+    "Action not executed",
+    "The requested action was not executed.",
+)
 # 5xx Server errors
-CODE__invalid_method = (501, "Invalid Method",
-                        "This method is not implemented.")
-CODE__invalid_spec = (501, "Invalid Field Spec",
-                      "The field spec supplied is not valid.")
+CODE__invalid_method = (501, "Invalid Method", "This method is not implemented.")
+CODE__invalid_spec = (
+    501,
+    "Invalid Field Spec",
+    "The field spec supplied is not valid.",
+)
 # If API Workers are enforced, but non is available (switched off)
-CODE__no_api_worker = (503, "API worker sleeping",
-                       "The API worker is currently not at work.")
+CODE__no_api_worker = (
+    503,
+    "API worker sleeping",
+    "The API worker is currently not at work.",
+)
 
 
 def successful_response(status, data=None):
@@ -98,7 +113,7 @@ def successful_response(status, data=None):
 
     return werkzeug.wrappers.Response(
         status=status,
-        content_type='application/json; charset=utf-8',
+        content_type="application/json; charset=utf-8",
         response=response,
     )
 
@@ -119,11 +134,8 @@ def error_response(status, error, error_descrip):
     """
     return werkzeug.wrappers.Response(
         status=status,
-        content_type='application/json; charset=utf-8',
-        response=json.dumps({
-            'error': error,
-            'error_descrip': error_descrip,
-        }),
+        content_type="application/json; charset=utf-8",
+        response=json.dumps({"error": error, "error_descrip": error_descrip}),
     )
 
 
@@ -143,18 +155,22 @@ def authenticate_token_for_user(token):
 
     :raise: werkzeug.exceptions.HTTPException if user not found.
     """
-    user = request.env['res.users'].sudo().search([('openapi_token', '=', token)])
+    user = request.env["res.users"].sudo().search([("openapi_token", "=", token)])
     if user.exists():
         # copy-pasted from odoo.http.py:OpenERPSession.authenticate()
         request.session.uid = user.id
         request.session.login = user.login
-        request.session.session_token = user.id and security.compute_session_token(request.session, request.env)
+        request.session.session_token = user.id and security.compute_session_token(
+            request.session, request.env
+        )
         request.uid = user.id
         request.disable_db = False
         request.session.get_context()
 
         return user
-    raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__no_user_auth))
+    raise werkzeug.exceptions.HTTPException(
+        response=error_response(*CODE__no_user_auth)
+    )
 
 
 def get_auth_header(headers, raise_exception=False):
@@ -170,10 +186,12 @@ def get_auth_header(headers, raise_exception=False):
                                               and auth header is not in headers
                                               or it is not Basic type.
     """
-    auth_header = headers.get('Authorization') or headers.get('authorization')
-    if not auth_header or not auth_header.startswith('Basic '):
+    auth_header = headers.get("Authorization") or headers.get("authorization")
+    if not auth_header or not auth_header.startswith("Basic "):
         if raise_exception:
-            raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__no_user_auth))
+            raise werkzeug.exceptions.HTTPException(
+                response=error_response(*CODE__no_user_auth)
+            )
     return auth_header
 
 
@@ -188,19 +206,30 @@ def get_data_from_auth_header(header):
                                               string or if the basic header is
                                               in the wrong format
     """
-    normalized_token = header.replace('Basic ', '').replace('\\n', '').encode('utf-8')
+    normalized_token = header.replace("Basic ", "").replace("\\n", "").encode("utf-8")
     try:
-        decoded_token_parts = base64.decodestring(normalized_token).split(':')
+        decoded_token_parts = base64.decodestring(normalized_token).split(":")
     except TypeError:
-        raise werkzeug.exceptions.HTTPException(response=error_response(500, 'Invalid header', 'Basic auth header must be valid base64 string'))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(
+                500, "Invalid header", "Basic auth header must be valid base64 string"
+            )
+        )
 
     if len(decoded_token_parts) == 1:
         db_name, user_token = None, decoded_token_parts[0]
     elif len(decoded_token_parts) == 2:
         db_name, user_token = decoded_token_parts
     else:
-        err_descrip = 'Basic auth header payload must be of the form "<%s>" (encoded to base64)' % 'user_token' if odoo.tools.config['dbfilter'] else 'db_name:user_token'
-        raise werkzeug.exceptions.HTTPException(response=error_response(500, 'Invalid header', err_descrip))
+        err_descrip = (
+            'Basic auth header payload must be of the form "<%s>" (encoded to base64)'
+            % "user_token"
+            if odoo.tools.config["dbfilter"]
+            else "db_name:user_token"
+        )
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(500, "Invalid header", err_descrip)
+        )
 
     return db_name, user_token
 
@@ -217,9 +246,12 @@ def setup_db(httprequest, db_name):
     if httprequest.session.db:
         return
     if db_name not in odoo.service.db.list_dbs(force=True):
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__db_not_found))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__db_not_found)
+        )
 
     httprequest.session.db = db_name
+
 
 ###################
 # Pinguin Routing #
@@ -227,7 +259,9 @@ def setup_db(httprequest, db_name):
 
 
 # Try to get namespace from user allowed namespaces
-def get_namespace_by_name_from_users_namespaces(user, namespace_name, raise_exception=False):
+def get_namespace_by_name_from_users_namespaces(
+    user, namespace_name, raise_exception=False
+):
     """check and get namespace from users namespaces by name
 
     :param ..models.res_users.ResUsers user: The user record.
@@ -240,10 +274,12 @@ def get_namespace_by_name_from_users_namespaces(user, namespace_name, raise_exce
     :raise: werkzeug.exceptions.HTTPException if the namespace is not contained
                                               in allowed user namespaces.
     """
-    namespace = request.env['openapi.namespace'].search([('name', '=', namespace_name)])
+    namespace = request.env["openapi.namespace"].search([("name", "=", namespace_name)])
 
     if not namespace.exists() and raise_exception:
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__obj_not_found))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__obj_not_found)
+        )
 
     if namespace not in user.namespace_ids and raise_exception:
         err = list(CODE__user_no_perm)
@@ -266,7 +302,15 @@ def create_log_record(**kwargs):
             _create_log_record(env, **kwargs)
 
 
-def _create_log_record(env, namespace_id=None, namespace_log_request=None, namespace_log_response=None, user_id=None, user_request=None, user_response=None):
+def _create_log_record(
+    env,
+    namespace_id=None,
+    namespace_log_request=None,
+    namespace_log_response=None,
+    user_id=None,
+    user_request=None,
+    user_response=None,
+):
     """create log for request
 
     :param int namespace_id: Requested namespace id.
@@ -283,24 +327,25 @@ def _create_log_record(env, namespace_id=None, namespace_log_request=None, names
     """
     if True:  # just to keep original indent
         log_data = {
-            'namespace_id': namespace_id,
-            'request': '%s | %s | %d' % (user_request.url, user_request.method, user_response.status_code),
-            'request_data': None,
-            'response_data': None,
+            "namespace_id": namespace_id,
+            "request": "%s | %s | %d"
+            % (user_request.url, user_request.method, user_response.status_code),
+            "request_data": None,
+            "response_data": None,
         }
-        if namespace_log_request == 'debug':
-            log_data['request_data'] = user_request.__dict__
-        elif namespace_log_request == 'info':
-            log_data['request_data'] = user_request.__dict__
-            for k in ['form', 'files']:
-                del log_data['request_data'][k]
+        if namespace_log_request == "debug":
+            log_data["request_data"] = user_request.__dict__
+        elif namespace_log_request == "info":
+            log_data["request_data"] = user_request.__dict__
+            for k in ["form", "files"]:
+                del log_data["request_data"][k]
 
-        if namespace_log_response == 'debug':
-            log_data['response_data'] = user_response.__dict__
-        elif namespace_log_response == 'error' and user_response.status_code > 400:
-            log_data['response_data'] = user_response.__dict__
+        if namespace_log_response == "debug":
+            log_data["response_data"] = user_response.__dict__
+        elif namespace_log_response == "error" and user_response.status_code > 400:
+            log_data["response_data"] = user_response.__dict__
 
-        return env['openapi.log'].create(log_data)
+        return env["openapi.log"].create(log_data)
 
 
 # Patched http route
@@ -315,24 +360,28 @@ def route(*args, **kwargs):
 
     :returns: wrapped method
     """
-    def decorator(controller_method):
 
+    def decorator(controller_method):
         @api_route(*args, **kwargs)
         @functools.wraps(controller_method)
         def controller_method_wrapper(*iargs, **ikwargs):
 
-            auth_header = get_auth_header(request.httprequest.headers, raise_exception=True)
+            auth_header = get_auth_header(
+                request.httprequest.headers, raise_exception=True
+            )
             db_name, user_token = get_data_from_auth_header(auth_header)
             setup_db(request.httprequest, db_name)
             authenticated_user = authenticate_token_for_user(user_token)
-            namespace = get_namespace_by_name_from_users_namespaces(authenticated_user, ikwargs['namespace'], raise_exception=True)
+            namespace = get_namespace_by_name_from_users_namespaces(
+                authenticated_user, ikwargs["namespace"], raise_exception=True
+            )
             data_for_log = {
-                'namespace_id': namespace.id,
-                'namespace_log_request': namespace.log_request,
-                'namespace_log_response': namespace.log_response,
-                'user_id': authenticated_user.id,
-                'user_request': None,
-                'user_response': None
+                "namespace_id": namespace.id,
+                "namespace_log_request": namespace.log_request,
+                "namespace_log_response": namespace.log_response,
+                "user_id": authenticated_user.id,
+                "user_request": None,
+                "user_response": None,
             }
 
             try:
@@ -341,23 +390,23 @@ def route(*args, **kwargs):
                 response = e.response
             except Exception as e:
                 traceback.print_exc()
-                if hasattr(e, 'error') and isinstance(e.error, Exception):
+                if hasattr(e, "error") and isinstance(e.error, Exception):
                     e = e.error
                 response = error_response(
                     status=500,
                     error=type(e).__name__,
-                    error_descrip=e.name if hasattr(e, 'name') else str(e)
+                    error_descrip=e.name if hasattr(e, "name") else str(e),
                 )
 
-            data_for_log.update({
-                'user_request': request.httprequest,
-                'user_response': response
-            })
+            data_for_log.update(
+                {"user_request": request.httprequest, "user_response": response}
+            )
             create_log_record(**data_for_log)
 
             return response
 
         return controller_method_wrapper
+
     return decorator
 
 
@@ -388,16 +437,23 @@ def get_create_context(namespace, model, canned_context):
     cr, uid = request.cr, request.session.uid
 
     # Singleton by construction (_sql_constraints)
-    openapi_access = request.env(cr, uid)['openapi.access'].search(
-        [('model_id', '=', model), ('namespace_id.name', '=', namespace)])
+    openapi_access = request.env(cr, uid)["openapi.access"].search(
+        [("model_id", "=", model), ("namespace_id.name", "=", namespace)]
+    )
 
-    assert len(openapi_access) == 1, "'openapi_access' is not a singleton, bad construction."
+    assert (
+        len(openapi_access) == 1
+    ), "'openapi_access' is not a singleton, bad construction."
     # Singleton by construction (_sql_constraints)
-    context = openapi_access.create_context_ids.filtered(lambda r: r['name'] == canned_context)
+    context = openapi_access.create_context_ids.filtered(
+        lambda r: r["name"] == canned_context
+    )
     assert len(context) == 1, "'context' is not a singleton, bad construction."
 
     if not context:
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__canned_ctx_not_found))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__canned_ctx_not_found)
+        )
 
     return context
 
@@ -450,69 +506,69 @@ def get_model_openapi_access(namespace, model):
     # TODO: this method has code duplicates with openapi specification code (e.g. get_OAS_definitions_part)
     cr, uid = request.cr, request.session.uid
     # Singleton by construction (_sql_constraints)
-    openapi_access = request.env(cr, uid)['openapi.access'].sudo().search(
-        [('model_id', '=', model), ('namespace_id.name', '=', namespace)])
+    openapi_access = (
+        request.env(cr, uid)["openapi.access"]
+        .sudo()
+        .search([("model_id", "=", model), ("namespace_id.name", "=", namespace)])
+    )
     if not openapi_access.exists():
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__canned_ctx_not_found))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__canned_ctx_not_found)
+        )
 
     res = {
-        'context': {},  # Take ot here FIXME: make sure it is for create_context
-        'out_fields_read_multi': (),
-        'out_fields_read_one': (),
-        'out_fields_create_one': (),  # FIXME: for what?
-        'method': {
-            'public': {
-                'mode': '',
-                'whitelist': []
-            },
-            'private': {
-                'mode': '',
-                'whitelist': []
-            },
-            'main': {
-                'mode': '',
-                'whitelist': []
-            },
+        "context": {},  # Take ot here FIXME: make sure it is for create_context
+        "out_fields_read_multi": (),
+        "out_fields_read_one": (),
+        "out_fields_create_one": (),  # FIXME: for what?
+        "method": {
+            "public": {"mode": "", "whitelist": []},
+            "private": {"mode": "", "whitelist": []},
+            "main": {"mode": "", "whitelist": []},
         },
     }
     # Infer public method mode
     if openapi_access.api_public_methods and openapi_access.public_methods:
-        res['method']['public']['mode'] = 'custom'
-        res['method']['public']['whitelist'] = openapi_access.public_methods.split()
+        res["method"]["public"]["mode"] = "custom"
+        res["method"]["public"]["whitelist"] = openapi_access.public_methods.split()
     elif openapi_access.api_public_methods:
-        res['method']['public']['mode'] = 'all'
+        res["method"]["public"]["mode"] = "all"
     else:
-        res['method']['public']['mode'] = 'none'
+        res["method"]["public"]["mode"] = "none"
 
     # Infer private method mode
     if openapi_access.private_methods:
-        res['method']['private']['mode'] = 'custom'
-        res['method']['private']['whitelist'] = openapi_access.private_methods.split()
+        res["method"]["private"]["mode"] = "custom"
+        res["method"]["private"]["whitelist"] = openapi_access.private_methods.split()
     else:
-        res['method']['private']['mode'] = 'none'
+        res["method"]["private"]["mode"] = "none"
 
-    for c in openapi_access.create_context_ids.mapped('context'):
-        res['context'].update(json.loads(c))
+    for c in openapi_access.create_context_ids.mapped("context"):
+        res["context"].update(json.loads(c))
 
-    res['out_fields_read_multi'] = openapi_access.read_many_id.export_fields.mapped('name') or ('id',)
-    res['out_fields_read_one'] = openapi_access.read_one_id.export_fields.mapped('name') or ('id',)
+    res["out_fields_read_multi"] = openapi_access.read_many_id.export_fields.mapped(
+        "name"
+    ) or ("id",)
+    res["out_fields_read_one"] = openapi_access.read_one_id.export_fields.mapped(
+        "name"
+    ) or ("id",)
 
     if openapi_access.public_methods:
-        res['method']['public']['whitelist'] = openapi_access.public_methods.split()
+        res["method"]["public"]["whitelist"] = openapi_access.public_methods.split()
     if openapi_access.private_methods:
-        res['method']['private']['whitelist'] = openapi_access.private_methods.split()
+        res["method"]["private"]["whitelist"] = openapi_access.private_methods.split()
 
-    main_methods = ['api_create', 'api_read', 'api_update', 'api_delete']
+    main_methods = ["api_create", "api_read", "api_update", "api_delete"]
     for method in main_methods:
         if openapi_access[method]:
-            res['method']['main']['whitelist'].append(method)
+            res["method"]["main"]["whitelist"].append(method)
 
-    if len(res['method']['main']['whitelist']) == len(main_methods):
-        res['method']['main']['mode'] = 'all'
-    elif not res['method']['main']['whitelist']:
-        res['method']['main']['mode'] = 'none'
+    if len(res["method"]["main"]["whitelist"]) == len(main_methods):
+        res["method"]["main"]["mode"] = "all"
+    elif not res["method"]["main"]["whitelist"]:
+        res["method"]["main"]["mode"] = "none"
     else:
-        res['method']['main']['mode'] = 'custom'
+        res["method"]["main"]["mode"] = "custom"
 
     return res
 
@@ -527,7 +583,9 @@ def validate_extra_field(field):
     :raise: werkzeug.exceptions.HTTPException if field is invalid.
     """
     if not isinstance(field, basestring):
-        return werkzeug.exceptions.HTTPException(response=error_response(*CODE__invalid_spec))
+        return werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__invalid_spec)
+        )
 
 
 def validate_spec(model, spec):
@@ -550,20 +608,32 @@ def validate_spec(model, spec):
         if isinstance(field, tuple):
             # Syntax checks
             if len(field) != 2:
-                raise Exception("Tuples representing fields must have length 2. (%r)" % field)
+                raise Exception(
+                    "Tuples representing fields must have length 2. (%r)" % field
+                )
             if not isinstance(field[1], (tuple, list)):
-                raise Exception("""Tuples representing fields must have a tuple wrapped in
-                    a list or a bare tuple as it's second item. (%r)""" % field)
+                raise Exception(
+                    """Tuples representing fields must have a tuple wrapped in
+                    a list or a bare tuple as it's second item. (%r)"""
+                    % field
+                )
             # Validity checks
             fld = self._fields[field[0]]
             if not fld.relational:
-                raise Exception("Tuples representing fields can only specify relational fields. (%r)" % field)
-            if isinstance(field[1],
-                          tuple) and fld.type in ['one2many', 'many2many']:
-                raise Exception("Specification of a 2many record cannot be a bare tuple. (%r)" % field)
+                raise Exception(
+                    "Tuples representing fields can only specify relational fields. (%r)"
+                    % field
+                )
+            if isinstance(field[1], tuple) and fld.type in ["one2many", "many2many"]:
+                raise Exception(
+                    "Specification of a 2many record cannot be a bare tuple. (%r)"
+                    % field
+                )
         elif not isinstance(field, six.string_types):
-            raise Exception("Fields are represented by either a strings or tuples. Found: %r" % type(
-                field))
+            raise Exception(
+                "Fields are represented by either a strings or tuples. Found: %r"
+                % type(field)
+            )
 
 
 def update(d, u):
@@ -607,11 +677,11 @@ def transform_strfields_to_dict(fields_list):
     """
     dct = {}
     for field in fields_list:
-        parts = field.split('/')
+        parts = field.split("/")
         data = None
         for part in parts[::-1]:
-            if part == '.id':
-                part = 'id'
+            if part == ".id":
+                part = "id"
             data = {part: data}
         update(dct, data)
     return dct
@@ -638,14 +708,15 @@ def transform_dictfields_to_list_of_tuples(record, dct):
     :returns: The list of transformed fields.
     :rtype: list
     """
-    fields_with_meta = {k: meta for k, meta in record.fields_get().items() if
-                        k in dct.keys()}
+    fields_with_meta = {
+        k: meta for k, meta in record.fields_get().items() if k in dct.keys()
+    }
     result = {}
     for key, value in dct.items():
         if isinstance(value, dict):
-            model_obj = get_model_for_read(fields_with_meta[key]['relation'])
+            model_obj = get_model_for_read(fields_with_meta[key]["relation"])
             inner_result = transform_dictfields_to_list_of_tuples(model_obj, value)
-            is_2many = fields_with_meta[key]['type'].endswith('2many')
+            is_2many = fields_with_meta[key]["type"].endswith("2many")
             result[key] = list(inner_result) if is_2many else tuple(inner_result)
         else:
             result[key] = value
@@ -655,6 +726,7 @@ def transform_dictfields_to_list_of_tuples(record, dct):
 ##################
 # Pinguin Worker #
 ##################
+
 
 def wrap__resource__create_one(modelname, context, data, success_code, out_fields):
     """Function to create one record.
@@ -776,9 +848,9 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
 
     records = model_obj.browse(ids).exists()
     results = []
-    args = method_params.get('args', [])
-    kwargs = method_params.get('kwargs', {})
-    for record in (records or [model_obj]):
+    args = method_params.get("args", [])
+    kwargs = method_params.get("kwargs", {})
+    for record in records or [model_obj]:
         result = getattr(record, method)(*args, **kwargs)
         results.append(result)
 
@@ -787,7 +859,9 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
     return successful_response(success_code, data=results)
 
 
-def wrap__resource__get_report(namespace, report_external_id, docids, converter, success_code):
+def wrap__resource__get_report(
+    namespace, report_external_id, docids, converter, success_code
+):
     """Return html or pdf report response.
 
     :param namespace: id/ids/browserecord of the records to print (if not used, pass an empty list)
@@ -797,8 +871,8 @@ def wrap__resource__get_report(namespace, report_external_id, docids, converter,
     """
     report = request.env.ref(report_external_id)
 
-    if isinstance(report, type(request.env['ir.ui.view'])):
-        report = request.env['report']._get_report_from_name(report_external_id)
+    if isinstance(report, type(request.env["ir.ui.view"])):
+        report = request.env["report"]._get_report_from_name(report_external_id)
 
     model = report.model
     report_name = report.report_name
@@ -834,15 +908,17 @@ def get_dict_from_model(model, spec, id, **kwargs):
     :raise: werkzeug.exceptions.HTTPException if the record does not exist.
     """
     include_fields = kwargs.get(
-        'include_fields',
-        ())  # Not actually implemented on higher level (ACL!)
-    exclude_fields = kwargs.get('exclude_fields', ())
+        "include_fields", ()
+    )  # Not actually implemented on higher level (ACL!)
+    exclude_fields = kwargs.get("exclude_fields", ())
 
     model_obj = get_model_for_read(model)
 
     record = model_obj.browse([id])
     if not record.exists():
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__res_not_found))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__res_not_found)
+        )
     return get_dict_from_record(record, spec, include_fields, exclude_fields)
 
 
@@ -866,14 +942,14 @@ def get_dictlist_from_model(model, spec, **kwargs):
     :returns: The list of python dictionaries of the requested values.
     :rtype: list
     """
-    domain = kwargs.get('domain', [])
-    offset = kwargs.get('offset', 0)
-    limit = kwargs.get('limit')
-    order = kwargs.get('order')
+    domain = kwargs.get("domain", [])
+    offset = kwargs.get("offset", 0)
+    limit = kwargs.get("limit")
+    order = kwargs.get("order")
     include_fields = kwargs.get(
-        'include_fields',
-        ())  # Not actually implemented on higher level (ACL!)
-    exclude_fields = kwargs.get('exclude_fields', ())
+        "include_fields", ()
+    )  # Not actually implemented on higher level (ACL!)
+    exclude_fields = kwargs.get("exclude_fields", ())
 
     model_obj = get_model_for_read(model)
 
@@ -893,9 +969,7 @@ def get_dictlist_from_model(model, spec, **kwargs):
 
     result = []
     for record in records:
-        result += [
-            get_dict_from_record(record, spec, include_fields, exclude_fields)
-        ]
+        result += [get_dict_from_record(record, spec, include_fields, exclude_fields)]
 
     return result
 
@@ -925,7 +999,7 @@ def get_model_for_read(model):
         return request.env(cr, uid)[model]
     except KeyError:
         err = list(CODE__obj_not_found)
-        err[2] = "The \"%s\" model is not available on this instance." % model
+        err[2] = 'The "%s" model is not available on this instance.' % model
         raise werkzeug.exceptions.HTTPException(response=error_response(*err))
 
 
@@ -949,10 +1023,11 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields):
     """
     map(validate_extra_field, include_fields + exclude_fields)
     result = collections.OrderedDict([])
-    _spec = [fld for fld in spec
-             if fld not in exclude_fields] + list(include_fields)
-    if filter(lambda x: isinstance(x, six.string_types) and '/' in x, _spec):
-        _spec = transform_dictfields_to_list_of_tuples(record, transform_strfields_to_dict(_spec))
+    _spec = [fld for fld in spec if fld not in exclude_fields] + list(include_fields)
+    if filter(lambda x: isinstance(x, six.string_types) and "/" in x, _spec):
+        _spec = transform_dictfields_to_list_of_tuples(
+            record, transform_strfields_to_dict(_spec)
+        )
     validate_spec(record, _spec)
 
     for field in _spec:
@@ -962,30 +1037,32 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields):
             if isinstance(field[1], list):
                 result[field[0]] = []
                 for rec in record[field[0]]:
-                    result[field[0]] += [
-                        get_dict_from_record(rec, field[1], (), ())
-                    ]
+                    result[field[0]] += [get_dict_from_record(rec, field[1], (), ())]
             # It's a 2one
             if isinstance(field[1], tuple):
-                result[field[0]] = get_dict_from_record(record[field[0]],
-                                                        field[1], (), ())
+                result[field[0]] = get_dict_from_record(
+                    record[field[0]], field[1], (), ()
+                )
         # Normal field, or unspecified relational
         elif isinstance(field, six.string_types):
             if not hasattr(record, field):
-                raise odoo.exceptions.ValidationError(odoo._('The model "%s" has no such field: "%s".') % (record._name, field))
+                raise odoo.exceptions.ValidationError(
+                    odoo._('The model "%s" has no such field: "%s".')
+                    % (record._name, field)
+                )
 
             # result[field] = getattr(record, field)
             value = record[field]
             result[field] = value
             fld = record._fields[field]
             if fld.relational:
-                if fld.type.endswith('2one'):
+                if fld.type.endswith("2one"):
                     result[field] = value.id
-                elif fld.type.endswith('2many'):
+                elif fld.type.endswith("2many"):
                     result[field] = value.ids
-            elif (value is False or value is None) and fld.type != 'boolean':
+            elif (value is False or value is None) and fld.type != "boolean":
                 # string field cannot be false in response json
-                result[field] = ''
+                result[field] = ""
     return result
 
 
@@ -1022,17 +1099,21 @@ def method_is_allowed(method, methods_conf, main=False, raise_exception=False):
                                               raise_exception is **True**.
     """
     if main:
-        method_type = 'main'
+        method_type = "main"
     else:
-        method_type = 'private' if method.startswith('_') else 'public'
+        method_type = "private" if method.startswith("_") else "public"
 
-    if methods_conf[method_type]['mode'] == 'all':
+    if methods_conf[method_type]["mode"] == "all":
         return True
-    if methods_conf[method_type]['mode'] == 'custom' and \
-            method in methods_conf[method_type]['whitelist']:
+    if (
+        methods_conf[method_type]["mode"] == "custom"
+        and method in methods_conf[method_type]["whitelist"]
+    ):
         return True
     if raise_exception:
-        raise werkzeug.exceptions.HTTPException(response=error_response(*CODE__method_blocked))
+        raise werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__method_blocked)
+        )
     return False
 
 
@@ -1041,7 +1122,7 @@ def method_is_allowed(method, methods_conf, main=False, raise_exception=False):
 ###############
 
 # Get definition name
-def get_definition_name(modelname, prefix='', postfix='', splitter='-'):
+def get_definition_name(modelname, prefix="", postfix="", splitter="-"):
     """Concatenation of the prefix, modelname, postfix.
 
     :param str modelname: The name of the model.
@@ -1056,7 +1137,9 @@ def get_definition_name(modelname, prefix='', postfix='', splitter='-'):
 
 
 # Get OAS definitions part for model and nested models
-def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix='', definition_postfix=''):
+def get_OAS_definitions_part(
+    model_obj, export_fields_dict, definition_prefix="", definition_postfix=""
+):
     """Recursively gets definition parts of the OAS for model by export fields.
 
     :param odoo.models.Model model_obj: The model object.
@@ -1083,14 +1166,12 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
     :returns: Definitions for the model and relative models.
     :rtype: dict
     """
-    definition_name = get_definition_name(model_obj._name, definition_prefix, definition_postfix)
+    definition_name = get_definition_name(
+        model_obj._name, definition_prefix, definition_postfix
+    )
 
     definitions = {
-        definition_name: {
-            'type': 'object',
-            'properties': {},
-            'required': []
-        },
+        definition_name: {"type": "object", "properties": {}, "required": []},
     }
 
     fields_meta = model_obj.fields_get(export_fields_dict.keys())
@@ -1098,49 +1179,54 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
     for field, child_fields in export_fields_dict.items():
         meta = fields_meta[field]
         if child_fields:
-            child_model = model_obj.env[meta['relation']]
-            child_definition = get_OAS_definitions_part(child_model, child_fields, definition_prefix=definition_name)
+            child_model = model_obj.env[meta["relation"]]
+            child_definition = get_OAS_definitions_part(
+                child_model, child_fields, definition_prefix=definition_name
+            )
 
-            if meta['type'].endswith('2one'):
-                field_property = child_definition[get_definition_name(child_model._name, prefix=definition_name)]
+            if meta["type"].endswith("2one"):
+                field_property = child_definition[
+                    get_definition_name(child_model._name, prefix=definition_name)
+                ]
             else:
                 field_property = {
-                    'type': 'array',
-                    'items': child_definition[get_definition_name(child_model._name, prefix=definition_name)]
+                    "type": "array",
+                    "items": child_definition[
+                        get_definition_name(child_model._name, prefix=definition_name)
+                    ],
                 }
         else:
             field_property = {}
 
-            if meta['type'] == 'integer':
-                field_property.update(type='integer')
-            elif meta['type'] == 'float':
-                field_property.update(type='number', format='float')
-            elif meta['type'] == 'char':
-                field_property.update(type='string')
-            elif meta['type'] == 'text':
-                field_property.update(type='string')
-            elif meta['type'] == 'binary':
-                field_property.update(type='string', format='binary')
-            elif meta['type'] == 'boolean':
-                field_property.update(type='boolean')
-            elif meta['type'] == 'date':
-                field_property.update(type='string', format='date')
-            elif meta['type'] == 'datetime':
-                field_property.update(type='string', format='date-time')
-            elif meta['type'] == 'many2one':
-                field_property.update(type='integer')
-            elif meta['type'] == 'selection':
-                field_property.update({
-                    'type': 'integer' if isinstance(meta['selection'][0][0], int) else 'string',
-                    'enum': [i[0] for i in meta['selection']]
-                })
-            elif meta['type'] in ['one2many', 'many2many']:
-                field_property.update({
-                    'type': 'array',
-                    'items': {
-                        'type': 'integer'
+            if meta["type"] == "integer":
+                field_property.update(type="integer")
+            elif meta["type"] == "float":
+                field_property.update(type="number", format="float")
+            elif meta["type"] == "char":
+                field_property.update(type="string")
+            elif meta["type"] == "text":
+                field_property.update(type="string")
+            elif meta["type"] == "binary":
+                field_property.update(type="string", format="binary")
+            elif meta["type"] == "boolean":
+                field_property.update(type="boolean")
+            elif meta["type"] == "date":
+                field_property.update(type="string", format="date")
+            elif meta["type"] == "datetime":
+                field_property.update(type="string", format="date-time")
+            elif meta["type"] == "many2one":
+                field_property.update(type="integer")
+            elif meta["type"] == "selection":
+                field_property.update(
+                    {
+                        "type": "integer"
+                        if isinstance(meta["selection"][0][0], int)
+                        else "string",
+                        "enum": [i[0] for i in meta["selection"]],
                     }
-                })
+                )
+            elif meta["type"] in ["one2many", "many2many"]:
+                field_property.update({"type": "array", "items": {"type": "integer"}})
 
             # We cannot have both required and readOnly flags in field openapi
             # definition, for that reason we cannot blindly use odoo's
@@ -1156,19 +1242,19 @@ def get_OAS_definitions_part(model_obj, export_fields_dict, definition_prefix=''
             #
             # 2) For odoo-required and odoo-related field, we DO use
             # openapi-readonly, but we don't use openapi-required
-            if meta['readonly'] and (not meta['required'] or meta.get('related')):
+            if meta["readonly"] and (not meta["required"] or meta.get("related")):
                 field_property.update(readOnly=True)
 
-        definitions[definition_name]['properties'][field] = field_property
+        definitions[definition_name]["properties"][field] = field_property
 
-        if meta['required'] and not meta.get('related'):
+        if meta["required"] and not meta.get("related"):
             fld = model_obj._fields[field]
             # Mark as required only if field doesn't have defaul value
             # Boolean always has default value (False)
-            if fld.default is None and fld.type != 'boolean':
-                definitions[definition_name]['required'].append(field)
+            if fld.default is None and fld.type != "boolean":
+                definitions[definition_name]["required"].append(field)
 
-    if not definitions[definition_name]['required']:
-        del definitions[definition_name]['required']
+    if not definitions[definition_name]["required"]:
+        del definitions[definition_name]["required"]
 
     return definitions

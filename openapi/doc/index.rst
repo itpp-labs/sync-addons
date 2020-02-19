@@ -24,7 +24,7 @@ Activating and customization
 * Specify **Name** for integration, e.g. ``test``
 * Set **Log requests** to *Full*
 * Set **Log responses** to *Full*
-* In ``Accessable models`` tab click ``Add an item`` 
+* In ``Accessable models`` tab click ``Add an item``
 
   * Set **Model**, for example *res.users*
   * Configure allowed operations
@@ -73,7 +73,7 @@ Usage
 As the simplest example, you can try API in Swagger Editor. It allows to review and check API
 
 * Open http://editor.swagger.io/
-* Click menu ``File >> Import File`` 
+* Click menu ``File >> Import File``
 * Set **Specification link**
 * RESULT: Specification is parsed succefully and you can see API presentation
 * Click ``[Authorize]`` button
