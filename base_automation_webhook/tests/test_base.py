@@ -10,4 +10,4 @@ class TestAutomation(TransactionCase):
 
     def test_requests(self):
         """Check that requests package is available"""
-        self.env['res.partner'].create({'name': 'New Contact'})
+        self.env["res.partner"].create({"name": "New Contact"})
