@@ -129,7 +129,7 @@ class TestAPI(HttpCase):
         self.assertEqual(resp.json()['error'], pinguin.CODE__user_no_perm[1])
 
     def test_call_allowed_method_on_singleton_record(self):
-        if (not self.env['ir.module.module'].search([('name', '=', 'mail')]) == "installed"):
+        if (not self.env['ir.module.module'].search([('name', '=', 'mail')]).state == "installed"):
             self.skipTest("To run test 'test_call_allowed_method_on_singleton_record' install 'mail'-module")
         partner = self.phantom_env[self.model_name].search([], limit=1)
         method_name = 'message_post'
