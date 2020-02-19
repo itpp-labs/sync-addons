@@ -15,7 +15,7 @@
     "license": "Other OSI approved licence",  # MIT
     "price": 60.00,
     "currency": "EUR",
-    "depends": ["base_action_rule",],
+    "depends": ["base_action_rule"],
     "external_dependencies": {"python": [], "bin": []},
     "data": [],
     "demo": ["data/base_automation_demo.xml"],
