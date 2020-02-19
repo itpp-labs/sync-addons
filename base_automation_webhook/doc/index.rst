@@ -9,7 +9,7 @@ Configuration
 
 * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
 * Open menu ``[[ Settings ]] >> Technical >> Automation >> Automated Actions``
-* Create new record and set field **Action To Do** to *Execute Python Code*. 
+* Create new record and set field **Action To Do** to *Execute Python Code*.
   For example:
 
   * **Action Name**: *Test*
