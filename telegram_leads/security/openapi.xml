@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
@@ -10,15 +10,21 @@
 
   <record id="context_lead" model="openapi.access.create.context">
     <field name="name">telegram leads</field>
-    <field name="model_id" ref="crm.model_crm_lead"/>
-    <field name="context" eval="'{&quot;default_medium_id&quot;:' + str(ref('telegram_leads.utm_medium_telegram')) + '}'"/>
+    <field name="model_id" ref="crm.model_crm_lead" />
+    <field
+            name="context"
+            eval="'{&quot;default_medium_id&quot;:' + str(ref('telegram_leads.utm_medium_telegram')) + '}'"
+        />
   </record>
 
   <record id="access_crm_lead" model="openapi.access">
-    <field name="namespace_id" ref="namespace_telegram"/>
-    <field name="model_id" ref="crm.model_crm_lead"/>
-    <field name="api_public_methods" eval="True"/>
-    <field name="public_methods" eval="'\n'.join(['search_or_create', 'message_post'])"/>
+    <field name="namespace_id" ref="namespace_telegram" />
+    <field name="model_id" ref="crm.model_crm_lead" />
+    <field name="api_public_methods" eval="True" />
+    <field
+            name="public_methods"
+            eval="'\n'.join(['search_or_create', 'message_post'])"
+        />
     <field name="create_context_ids" eval="[(4, ref('context_lead'))]" />
   </record>
 </odoo>

@@ -9,11 +9,11 @@ class TestBase(TransactionCase):
     post_install = True
 
     def test_search_or_create(self):
-        MODEL = 'res.partner'
-        FIELD = 'name'
-        VALUE = 'test_search_or_create'
+        MODEL = "res.partner"
+        FIELD = "name"
+        VALUE = "test_search_or_create"
         d = {FIELD: VALUE}
-        self.env[MODEL].search([(FIELD, '=', VALUE)]).unlink()
+        self.env[MODEL].search([(FIELD, "=", VALUE)]).unlink()
         is_new, record_ids = self.env[MODEL].search_or_create(d.copy())
         record = self.env[MODEL].browse(record_ids)
         self.assertTrue(is_new)
