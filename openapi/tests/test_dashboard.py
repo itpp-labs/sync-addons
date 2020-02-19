@@ -21,7 +21,7 @@ class TestDashboard(HttpCase):
         # Grant Administrator access to demo user
         demo_user = phantom_env.ref("base.user_demo")
         demo_user.write(
-            {"groups_id": [(4, phantom_env.ref("base.group_system").id)],}
+            {"groups_id": [(4, phantom_env.ref("base.group_system").id)]}
         )
         # run as demo
         self.phantom_js(
