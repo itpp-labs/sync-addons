@@ -21,7 +21,7 @@ Authentication
 As a workaround for multi-db Odoo instances, system uses `Basic Authentication <https://swagger.io/docs/specification/2-0/authentication/basic-authentication/>`__ with
 ``db_name:token`` credentials, where ``token`` is a new field in ``res.users``
 model. That is, whenever you see Username / Password to setup OpenAPI
-connection, use Database Name / OpenAPI toekn accordingly.
+connection, use Database Name / OpenAPI token accordingly.
 
 Roadmap
 =======
@@ -33,7 +33,7 @@ Roadmap
     * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
     * Open the developer tools drop down
     * Click menu ``Configure REST API`` located within the dropdown
-    * On the form that opens, activate and configure this module for REST API accessability. 
+    * On the form that opens, activate and configure this module for REST API accessability.
     * Click ``[Apply]``
 
 * TODO: when user is not authenticated api returns 200 with the message below, instead of designed 401

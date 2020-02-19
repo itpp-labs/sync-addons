@@ -16,6 +16,12 @@ class ResUsers(models.Model):
         required=True, copy=False, help='Authentication token for access to API (/api).'
     )
 
+    _sql_constraints = [
+        ('openapi_token_uniq',
+         'unique (openapi_token)',
+         'The OpenAPI Token needs to be unique')
+    ]
+
     def reset_openapi_token(self):
         for record in self:
             record.write({'openapi_token': self._get_unique_openapi_token()})
