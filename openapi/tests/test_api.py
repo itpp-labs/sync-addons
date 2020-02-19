@@ -138,10 +138,10 @@ class TestAPI(HttpCase):
             [("name", "=", "demo")]
         )
         new_user = self.phantom_env["res.users"].create(
-            {"name": "new user", "login": "new_user",}
+            {"name": "new user", "login": "new_user"}
         )
         new_user.write(
-            {"groups_id": [(4, self.phantom_env.ref("openapi.group_user").id)],}
+            {"groups_id": [(4, self.phantom_env.ref("openapi.group_user").id)]}
         )
         new_user.reset_openapi_token()
         new_user.flush()
@@ -162,7 +162,7 @@ class TestAPI(HttpCase):
             )
         partner = self.phantom_env[self.model_name].search([], limit=1)
         method_name = "message_post"
-        method_params = {"kwargs": {"body": MESSAGE,}}
+        method_params = {"kwargs": {"body": MESSAGE}}
         resp = self.request_from_user(
             self.demo_user,
             "PATCH",

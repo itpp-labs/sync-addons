@@ -14,7 +14,7 @@
     "license": "LGPL-3",
     "price": 170.00,
     "currency": "EUR",
-    "depends": ["base_api", "mail",],
+    "depends": ["base_api", "mail"],
     "external_dependencies": {
         "python": ["bravado_core", "swagger_spec_validator"],
         "bin": [],
@@ -29,7 +29,7 @@
         "views/res_users_view.xml",
         "views/ir_model_view.xml",
     ],
-    "demo": ["demo/openapi_demo.xml", "demo/openapi_security_demo.xml",],
+    "demo": ["demo/openapi_demo.xml", "demo/openapi_security_demo.xml"],
     "qweb": [
         # Сommented until we discuss it
         # "static/src/xml/configure_api_button.xml"
