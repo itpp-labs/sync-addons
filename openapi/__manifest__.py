@@ -5,22 +5,20 @@
     "summary": """API to integrate Odoo with whatever system you need""",
     "category": "",
     # "live_test_url": "",
-    "images": ['images/openapi-swagger.png'],
+    "images": ["images/openapi-swagger.png"],
     "version": "11.0.1.1.4",
     "application": False,
-
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
     "website": "https://apps.odoo.com/apps/modules/11.0/openapi/",
     "license": "LGPL-3",
     "price": 180.00,
     "currency": "EUR",
-
-    "depends": [
-        "web_tour",
-        "web_settings_dashboard",
-    ],
-    "external_dependencies": {"python": ['bravado_core', 'swagger_spec_validator'], "bin": []},
+    "depends": ["web_tour", "web_settings_dashboard",],
+    "external_dependencies": {
+        "python": ["bravado_core", "swagger_spec_validator"],
+        "bin": [],
+    },
     "data": [
         "security/openapi_security.xml",
         "security/ir.model.access.csv",
@@ -39,12 +37,10 @@
         # Сommented until we discuss it
         # "static/src/xml/configure_api_button.xml"
     ],
-
     "post_load": "post_load",
     "pre_init_hook": None,
     "post_init_hook": None,
     "uninstall_hook": None,
-
     "auto_install": False,
     "installable": True,
 }
