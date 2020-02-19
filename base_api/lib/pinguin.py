@@ -2,30 +2,34 @@
 # pyling: disable=redefined-builtin
 
 
-import werkzeug.wrappers
-
 import collections
+import datetime
 
 import six
+import werkzeug.wrappers
+from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 import odoo
-
-import datetime
+from odoo.http import request
 
 try:
     import simplejson as json
 except ImportError:
     import json
 
-from odoo.http import request
-from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 # 4xx Client Errors
-CODE__obj_not_found = (404, "Object not found",
-                       "This object is not available on this instance.")
+CODE__obj_not_found = (
+    404,
+    "Object not found",
+    "This object is not available on this instance.",
+)
 # 5xx Server errors
-CODE__invalid_spec = (501, "Invalid Field Spec",
-                      "The field spec supplied is not valid.")
+CODE__invalid_spec = (
+    501,
+    "Invalid Field Spec",
+    "The field spec supplied is not valid.",
+)
 
 
 def error_response(status, error, error_descrip):
@@ -40,11 +44,8 @@ def error_response(status, error, error_descrip):
     """
     return werkzeug.wrappers.Response(
         status=status,
-        content_type='application/json; charset=utf-8',
-        response=json.dumps({
-            'error': error,
-            'error_descrip': error_descrip,
-        }),
+        content_type="application/json; charset=utf-8",
+        response=json.dumps({"error": error, "error_descrip": error_descrip,}),
     )
 
 
@@ -56,7 +57,9 @@ def validate_extra_field(field):
     :raise: werkzeug.exceptions.HTTPException if field is invalid.
     """
     if not isinstance(field, str):
-        return werkzeug.exceptions.HTTPException(response=error_response(*CODE__invalid_spec))
+        return werkzeug.exceptions.HTTPException(
+            response=error_response(*CODE__invalid_spec)
+        )
 
 
 def validate_spec(model, spec):
@@ -77,20 +80,32 @@ def validate_spec(model, spec):
         if isinstance(field, tuple):
             # Syntax checks
             if len(field) != 2:
-                raise Exception("Tuples representing fields must have length 2. (%r)" % field)
+                raise Exception(
+                    "Tuples representing fields must have length 2. (%r)" % field
+                )
             if not isinstance(field[1], (tuple, list)):
-                raise Exception("""Tuples representing fields must have a tuple wrapped in
-                    a list or a bare tuple as it's second item. (%r)""" % field)
+                raise Exception(
+                    """Tuples representing fields must have a tuple wrapped in
+                    a list or a bare tuple as it's second item. (%r)"""
+                    % field
+                )
             # Validity checks
             fld = self._fields[field[0]]
             if not fld.relational:
-                raise Exception("Tuples representing fields can only specify relational fields. (%r)" % field)
-            if isinstance(field[1],
-                          tuple) and fld.type in ['one2many', 'many2many']:
-                raise Exception("Specification of a 2many record cannot be a bare tuple. (%r)" % field)
+                raise Exception(
+                    "Tuples representing fields can only specify relational fields. (%r)"
+                    % field
+                )
+            if isinstance(field[1], tuple) and fld.type in ["one2many", "many2many"]:
+                raise Exception(
+                    "Specification of a 2many record cannot be a bare tuple. (%r)"
+                    % field
+                )
         elif not isinstance(field, six.string_types):
-            raise Exception("Fields are represented by either a strings or tuples. Found: %r" % type(
-                field))
+            raise Exception(
+                "Fields are represented by either a strings or tuples. Found: %r"
+                % type(field)
+            )
 
 
 def update(d, u):
@@ -109,7 +124,7 @@ def update(d, u):
 
 
 # Transform string fields to dictionary
-def transform_strfields_to_dict(fields_list, delim='/'):
+def transform_strfields_to_dict(fields_list, delim="/"):
     """Transform string fields to dictionary.
     Example:
     for ['name', 'email', 'bank_ids/bank_id/id', 'bank_ids/bank_name', 'bank_ids/id']
@@ -133,8 +148,8 @@ def transform_strfields_to_dict(fields_list, delim='/'):
         parts = field.split(delim)
         data = None
         for part in parts[::-1]:
-            if part == '.id':
-                part = 'id'
+            if part == ".id":
+                part = "id"
             data = {part: data}
         update(dct, data)
     return dct
@@ -159,14 +174,15 @@ def transform_dictfields_to_list_of_tuples(record, dct, ENV=False):
     :returns: The list of transformed fields.
     :rtype: list
     """
-    fields_with_meta = {k: meta for k, meta in record.fields_get().items() if
-                        k in dct.keys()}
+    fields_with_meta = {
+        k: meta for k, meta in record.fields_get().items() if k in dct.keys()
+    }
     result = {}
     for key, value in dct.items():
         if isinstance(value, dict):
-            model_obj = get_model_for_read(fields_with_meta[key]['relation'], ENV)
+            model_obj = get_model_for_read(fields_with_meta[key]["relation"], ENV)
             inner_result = transform_dictfields_to_list_of_tuples(model_obj, value, ENV)
-            is_2many = fields_with_meta[key]['type'].endswith('2many')
+            is_2many = fields_with_meta[key]["type"].endswith("2many")
             result[key] = list(inner_result) if is_2many else tuple(inner_result)
         else:
             result[key] = value
@@ -198,16 +214,16 @@ def get_dictlist_from_model(model, spec, **kwargs):
     :returns: The list of python dictionaries of the requested values.
     :rtype: list
     """
-    domain = kwargs.get('domain', [])
-    offset = kwargs.get('offset', 0)
-    limit = kwargs.get('limit')
-    order = kwargs.get('order')
+    domain = kwargs.get("domain", [])
+    offset = kwargs.get("offset", 0)
+    limit = kwargs.get("limit")
+    order = kwargs.get("order")
     include_fields = kwargs.get(
-        'include_fields',
-        ())  # Not actually implemented on higher level (ACL!)
-    exclude_fields = kwargs.get('exclude_fields', ())
-    delim = kwargs.get('delimeter', '/')
-    ENV = kwargs.get('env', False)
+        "include_fields", ()
+    )  # Not actually implemented on higher level (ACL!)
+    exclude_fields = kwargs.get("exclude_fields", ())
+    delim = kwargs.get("delimeter", "/")
+    ENV = kwargs.get("env", False)
 
     model_obj = get_model_for_read(model, ENV)
 
@@ -228,7 +244,9 @@ def get_dictlist_from_model(model, spec, **kwargs):
     result = []
     for record in records:
         result += [
-            get_dict_from_record(record, spec, include_fields, exclude_fields, ENV, delim)
+            get_dict_from_record(
+                record, spec, include_fields, exclude_fields, ENV, delim
+            )
         ]
 
     return result
@@ -259,7 +277,7 @@ def get_model_for_read(model, ENV=False):
         return request.env(cr, uid)[model]
     except KeyError:
         err = list(CODE__obj_not_found)
-        err[2] = "The \"%s\" model is not available on this instance." % model
+        err[2] = 'The "%s" model is not available on this instance.' % model
         raise werkzeug.exceptions.HTTPException(response=error_response(*err))
 
 
@@ -267,7 +285,9 @@ def get_model_for_read(model, ENV=False):
 # def get_dict_from_record(record, spec: tuple, include_fields: tuple, exclude_fields: tuple):
 
 # Extract nested values from a record
-def get_dict_from_record(record, spec, include_fields, exclude_fields, ENV=False, delim='/'):
+def get_dict_from_record(
+    record, spec, include_fields, exclude_fields, ENV=False, delim="/"
+):
     """Generates nested python dict representing one record.
     Going down to the record level, as the framework does not support nested
     data queries natively as they are typical for a REST API.
@@ -280,10 +300,11 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields, ENV=False
     """
     map(validate_extra_field, include_fields + exclude_fields)
     result = collections.OrderedDict([])
-    _spec = [fld for fld in spec
-             if fld not in exclude_fields] + list(include_fields)
+    _spec = [fld for fld in spec if fld not in exclude_fields] + list(include_fields)
     if list(filter(lambda x: isinstance(x, six.string_types) and delim in x, _spec)):
-        _spec = transform_dictfields_to_list_of_tuples(record, transform_strfields_to_dict(_spec, delim), ENV)
+        _spec = transform_dictfields_to_list_of_tuples(
+            record, transform_strfields_to_dict(_spec, delim), ENV
+        )
     validate_spec(record, _spec)
 
     for field in _spec:
@@ -298,12 +319,16 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields, ENV=False
                     ]
             # It's a 2one
             if isinstance(field[1], tuple):
-                result[field[0]] = get_dict_from_record(record[field[0]],
-                                                        field[1], (), (), ENV, delim)
+                result[field[0]] = get_dict_from_record(
+                    record[field[0]], field[1], (), (), ENV, delim
+                )
         # Normal field, or unspecified relational
         elif isinstance(field, six.string_types):
             if not hasattr(record, field):
-                raise odoo.exceptions.ValidationError(odoo._('The model "%s" has no such field: "%s".') % (record._name, field))
+                raise odoo.exceptions.ValidationError(
+                    odoo._('The model "%s" has no such field: "%s".')
+                    % (record._name, field)
+                )
 
             # result[field] = getattr(record, field)
             if isinstance(record[field], datetime.date):
@@ -314,11 +339,11 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields, ENV=False
             result[field] = value
             fld = record._fields[field]
             if fld.relational:
-                if fld.type.endswith('2one'):
+                if fld.type.endswith("2one"):
                     result[field] = value.id
-                elif fld.type.endswith('2many'):
+                elif fld.type.endswith("2many"):
                     result[field] = value.ids
-            elif (value is False or value is None) and fld.type != 'boolean':
+            elif (value is False or value is None) and fld.type != "boolean":
                 # string field cannot be false in response json
-                result[field] = ''
+                result[field] = ""
     return result
