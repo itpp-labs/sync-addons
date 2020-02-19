@@ -39,7 +39,7 @@ class OpenapiWebSettingsDashboard(WebSettingsDashboard):
             for n in namespaces
         ]
 
-        result.update({"openapi": {"namespace_list": namespace_list,}})
+        result.update({"openapi": {"namespace_list": namespace_list}})
 
         return result
 

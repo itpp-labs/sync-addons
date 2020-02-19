@@ -266,7 +266,7 @@ class Access(models.Model):
                     },
                 ],
                 "responses": {
-                    "204": {"description": "successful update",},
+                    "204": {"description": "successful update"},
                     "404": {"description": "%s not found" % model_name},
                 },
             }
@@ -277,7 +277,7 @@ class Access(models.Model):
                 "description": "",
                 "operationId": "delete%s" % capitalized_model_name,
                 "produces": ["application/json"],
-                "parameters": [PARAM_ID,],
+                "parameters": [PARAM_ID],
                 "responses": {
                     "204": {"description": "successful delete"},
                     "404": {"description": "%s not found" % model_name},
@@ -323,9 +323,9 @@ class Access(models.Model):
                 "summary": "Patch %s by single ID" % model_name,
                 "description": "Call model method for single record.",
                 "operationId": "callMethodFor%sSingleRecord" % capitalized_model_name,
-                "consumes": ["application/json",],
-                "produces": ["application/json",],
-                "parameters": [PARAM_ID, PARAM_METHOD_NAME, PARAM_BODY,],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [PARAM_ID, PARAM_METHOD_NAME, PARAM_BODY],
                 "responses": RESPONSES,
             }
 
@@ -333,9 +333,9 @@ class Access(models.Model):
                 "summary": "Patch %s" % model_name,
                 "description": "Call model method on model",
                 "operationId": "callMethodFor%sModel" % capitalized_model_name,
-                "consumes": ["application/json",],
-                "produces": ["application/json",],
-                "parameters": [PARAM_METHOD_NAME, PARAM_BODY,],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [PARAM_METHOD_NAME, PARAM_BODY],
                 "responses": RESPONSES,
             }
 
@@ -343,8 +343,8 @@ class Access(models.Model):
                 "summary": "Patch %s by some IDs" % model_name,
                 "description": "Call model method for recordset.",
                 "operationId": "callMethodFor%sRecordset" % capitalized_model_name,
-                "consumes": ["application/json",],
-                "produces": ["application/json",],
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
                 "parameters": [
                     {
                         "name": "ids",

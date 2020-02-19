@@ -138,7 +138,7 @@ class TestAPI(HttpCase):
             [("name", "=", "demo")]
         )
         new_user = self.phantom_env["res.users"].create(
-            {"name": "new user", "login": "new_user",}
+            {"name": "new user", "login": "new_user"}
         )
         new_user.reset_openapi_token()
         self.assertTrue(new_user.id not in namespace.user_ids.ids)
@@ -151,7 +151,7 @@ class TestAPI(HttpCase):
     def test_call_allowed_method_on_singleton_record(self):
         partner = self.phantom_env[self.model_name].search([], limit=1)
         method_name = "message_post"
-        method_params = {"kwargs": {"body": MESSAGE,}}
+        method_params = {"kwargs": {"body": MESSAGE}}
 
         resp = self.request_from_user(
             self.demo_user,
