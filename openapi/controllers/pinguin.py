@@ -135,7 +135,7 @@ def error_response(status, error, error_descrip):
     return werkzeug.wrappers.Response(
         status=status,
         content_type="application/json; charset=utf-8",
-        response=json.dumps({"error": error, "error_descrip": error_descrip,}),
+        response=json.dumps({"error": error, "error_descrip": error_descrip}),
     )
 
 

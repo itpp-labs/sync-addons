@@ -17,7 +17,7 @@
     "currency": "EUR",
     "depends": ["openapi", "crm"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["data/utm_data.xml", "security/openapi.xml",],
+    "data": ["data/utm_data.xml", "security/openapi.xml"],
     "demo": [],
     "qweb": [],
     "post_load": None,

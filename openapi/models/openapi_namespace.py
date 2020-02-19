@@ -35,13 +35,13 @@ class Namespace(models.Model):
     description = fields.Char("Description")
     log_ids = fields.One2many("openapi.log", "namespace_id", string="Logs")
     log_request = fields.Selection(
-        [("disabled", "Disabled"), ("info", "Short"), ("debug", "Full"),],
+        [("disabled", "Disabled"), ("info", "Short"), ("debug", "Full")],
         "Log Requests",
         default="disabled",
     )
 
     log_response = fields.Selection(
-        [("disabled", "Disabled"), ("error", "Errors only"), ("debug", "Full"),],
+        [("disabled", "Disabled"), ("error", "Errors only"), ("debug", "Full")],
         "Log Responses",
         default="error",
     )
@@ -141,7 +141,7 @@ class Namespace(models.Model):
                 ("schemes", [parsed_current_host.scheme]),
                 (
                     "consumes",
-                    ["multipart/form-data", "application/x-www-form-urlencoded",],
+                    ["multipart/form-data", "application/x-www-form-urlencoded"],
                 ),
                 ("produces", ["application/json"]),
                 (
