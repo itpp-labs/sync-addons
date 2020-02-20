@@ -19,10 +19,12 @@ from odoo.http import (
     rpc_response,
     serialize_exception,
 )
-# Odoo 12+
-# from odoo.tools import date_utils
 from odoo.service.server import memory_info
 from odoo.tools import pycompat
+
+# Odoo 12+
+# from odoo.tools import date_utils
+
 
 try:
     import psutil
