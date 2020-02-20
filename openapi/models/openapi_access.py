@@ -5,8 +5,7 @@
 import collections
 import inspect
 import json
-# python2
-import urllib
+import urllib  # python2
 
 from odoo import _, api, exceptions, fields, models
 
