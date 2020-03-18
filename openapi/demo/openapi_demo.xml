@@ -9,7 +9,6 @@
         <field name="token">demo_token</field>
         <field name="user_ids" eval="[(4, ref('base.user_demo'))]" />
     </record>
-
     <record id="ir_exports_res_partner_one_demo" model="ir.exports">
         <field name="name">demo / res.partner / read_one</field>
         <field name="resource">res.partner</field>
@@ -29,7 +28,6 @@
 ]"
         />
     </record>
-
     <record id="ir_exports_res_partner_many_demo" model="ir.exports">
         <field name="name">demo / res.partner / read_many</field>
         <field name="resource">res.partner</field>
@@ -43,13 +41,11 @@
 ]"
         />
     </record>
-
     <record id="context_res_partner_demo" model="openapi.access.create.context">
         <field name="name">default</field>
         <field name="model_id" ref="base.model_res_partner" />
         <field name="context">{"default_function": "CEO"}</field>
     </record>
-
     <record id="access_res_partner_demo" model="openapi.access">
         <field name="namespace_id" ref="namespace_demo" />
         <field name="model_id" ref="base.model_res_partner" />
@@ -66,6 +62,5 @@
             eval="[(4, ref('context_res_partner_demo'))]"
         />
     </record>
-
     <function model="res.users" name="reset_all_openapi_tokens" />
 </odoo>
