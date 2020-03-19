@@ -2,7 +2,7 @@
 <!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-  <record model="utm.medium" id="utm_medium_telegram">
-    <field name="name">Telegram</field>
-  </record>
+    <record model="utm.medium" id="utm_medium_telegram">
+        <field name="name">Telegram</field>
+    </record>
 </odoo>
