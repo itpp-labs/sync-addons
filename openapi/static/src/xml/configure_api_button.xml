@@ -13,7 +13,7 @@
     </t>
     <t t-extend="ListView.buttons">
         <t t-jquery="button.o_list_button_add" t-operation="after">
-           <t t-call="OpenAPIView.add_button" />
+            <t t-call="OpenAPIView.add_button" />
         </t>
     </t>
     <t t-extend="KanbanView.buttons">
