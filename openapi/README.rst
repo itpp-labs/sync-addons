@@ -26,6 +26,7 @@ connection, use Database Name / OpenAPI toekn accordingly.
 Roadmap
 =======
 
+* TODO: Archive toggle button is not used since odoo 13. Add ribbon widget instead: ``<widget name="web_ribbon" text="Archived" ...`` 
 * TODO: Rewrite tests to replace dependency ``mail`` to ``web`` module.
 * TODO: Add a button to developer menu to grant access to current model
 
