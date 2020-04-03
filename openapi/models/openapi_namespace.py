@@ -1,6 +1,7 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
+# Copyright 2020 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import collections
 import urllib.parse as urlparse
@@ -25,6 +26,7 @@ class Namespace(models.Model):
     )
     description = fields.Char("Description")
     log_ids = fields.One2many("openapi.log", "namespace_id", string="Logs")
+    log_count = fields.Integer("Log count", compute="_compute_log_count")
     log_request = fields.Selection(
         [("disabled", "Disabled"), ("info", "Short"), ("debug", "Full")],
         "Log Requests",
@@ -234,3 +236,15 @@ class Namespace(models.Model):
             while self.search([("token", "=", token)]).exists():
                 token = str(uuid.uuid4())
             record.write({"token": token})
+
+    def action_show_logs(self):
+        return {
+            "name": "Logs",
+            "view_mode": "tree,form",
+            "res_model": "openapi.log",
+            "type": "ir.actions.act_window",
+            "domain": [["namespace_id", "=", self.id]],
+        }
+
+    def _compute_log_count(self):
+        self.log_count = len(self.log_ids)
