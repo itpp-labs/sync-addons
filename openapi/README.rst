@@ -27,7 +27,6 @@ Roadmap
 =======
 
 * TODO: Rewrite tests to replace dependency ``mail`` to ``web`` module.
-* TODO: Add a smart button for Logs in ``openapi.namespace`` form
 * TODO: Add a button to developer menu to grant access to current model
 
     * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
