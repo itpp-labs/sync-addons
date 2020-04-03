@@ -27,7 +27,6 @@ Roadmap
 =======
 
 * TODO: check whether module works in odoo.sh and if not, document what exactly doesn't work and what a possible workarounds
-* TODO: Add a smart button for Logs in ``openapi.namespace`` form
 * TODO: Add a button to developer menu to grant access to current model
 
     * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__

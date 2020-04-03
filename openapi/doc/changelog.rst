@@ -1,3 +1,7 @@
+`1.1.6`
+-------
+- **Improvement:** namespace's logs displays in standalone tree-view by clicking smart-button
+
 `1.1.5`
 -------
 - **Fix:** users got same token on installation
