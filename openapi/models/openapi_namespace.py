@@ -39,9 +39,7 @@ class Namespace(models.Model):
         default="error",
     )
 
-    last_log_date = fields.Datetime(
-        related="log_ids.create_date", string="Latest usage"
-    )
+    last_log_date = fields.Datetime(compute="_compute_last_used", string="Latest usage")
 
     access_ids = fields.One2many(
         "openapi.access",
@@ -246,5 +244,20 @@ class Namespace(models.Model):
             "domain": [["namespace_id", "=", self.id]],
         }
 
+    def _compute_last_used(self):
+        for s in self:
+            s.last_log_date = (
+                s.env["openapi.log"]
+                .search(
+                    [("namespace_id", "=", s.id), ("create_date", "!=", False)],
+                    limit=1,
+                    order="id desc",
+                )
+                .create_date
+            )
+
     def _compute_log_count(self):
-        self.log_count = len(self.log_ids)
+        self._cr.execute(
+            "SELECT COUNT(*) FROM openapi_log WHERE namespace_id=(%s);", [str(self.id)]
+        )
+        self.log_count = self._cr.dictfetchone()["count"]
