@@ -64,6 +64,12 @@ odoo.define("openapi.dashboard", function(require) {
             return ret;
         },
         load_openapi: function(data) {
+            if (data.openapi_not_allowed === true) {
+                return $.when();
+            }
+            this.$(".o_web_settings_dashboard_openapi")
+                .parent()
+                .show();
             return new DashboardOpenAPI(this, data.openapi).replace(
                 this.$(".o_web_settings_dashboard_openapi")
             );
