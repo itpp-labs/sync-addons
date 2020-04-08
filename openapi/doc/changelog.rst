@@ -1,3 +1,7 @@
+`1.1.6`
+-------
+- **Fix:** Slow loading of integration view due to loading logs in python
+
 `1.1.5`
 -------
 - **Improvement:** namespace's logs displays in standalone tree-view by clicking smart-button
