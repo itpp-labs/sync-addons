@@ -9,6 +9,7 @@
             t-operation="after"
         >
             <div
+                style="display:none"
                 class="col-lg-6 col-md-6 col-sm-12 col-xs-12 o_web_settings_dashboard_col"
             >
                 <div class="text-center o_web_settings_dashboard_openapi" />
