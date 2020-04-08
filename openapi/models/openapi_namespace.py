@@ -242,15 +242,16 @@ class Namespace(models.Model):
         }
 
     def _compute_last_used(self):
-        self.last_log_date = (
-            self.env["openapi.log"]
-            .search(
-                [("namespace_id", "=", self.id), ("create_date", "!=", False)],
-                limit=1,
-                order="id desc",
+        for s in self:
+            s.last_log_date = (
+                s.env["openapi.log"]
+                .search(
+                    [("namespace_id", "=", s.id), ("create_date", "!=", False)],
+                    limit=1,
+                    order="id desc",
+                )
+                .create_date
             )
-            .create_date
-        )
 
     def _compute_log_count(self):
         self._cr.execute(
