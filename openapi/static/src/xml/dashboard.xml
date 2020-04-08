@@ -8,7 +8,10 @@
             t-jquery=".o_web_settings_dashboard_col:has(.o_web_settings_dashboard_invitations)"
             t-operation="after"
         >
-            <div class="col-12 col-lg-4 o_web_settings_dashboard_col">
+            <div
+                style="display:none"
+                class="col-12 col-lg-4 o_web_settings_dashboard_col"
+            >
                 <div class="text-center o_web_settings_dashboard_openapi" />
             </div>
         </t>
