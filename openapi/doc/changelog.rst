@@ -1,3 +1,7 @@
+`1.1.8`
+-------
+- **Fix:** Error on opening Setting Dashboard by Admin without OpenAPI access
+
 `1.1.7`
 -------
 - **Fix:** Slow loading of integration view due to loading logs in python

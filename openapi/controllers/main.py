@@ -1,5 +1,6 @@
 # Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2020 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import json
 import logging
@@ -17,13 +18,16 @@ _logger = logging.getLogger(__name__)
 class OpenapiWebSettingsDashboard(WebSettingsDashboard):
     @http.route("/web_settings_dashboard/data", type="json", auth="user")
     def web_settings_dashboard_data(self, **kw):
-
         result = super(OpenapiWebSettingsDashboard, self).web_settings_dashboard_data(
             **kw
         )
+        env = http.request.env
 
-        namespaces = http.request.env["openapi.namespace"].search([])
+        if not env.user.has_group("openapi.group_user"):
+            result.update({"openapi_not_allowed": True})
+            return result
 
+        namespaces = env["openapi.namespace"].search([])
         # TODO: replace dummy data
         namespace_list = [
             {
