@@ -1,5 +1,9 @@
 `1.1.8`
 -------
+- **Fix:** Possible crash on reading multiple openapi.namespace records at once
+
+`1.1.8`
+-------
 - **Fix:** Slow loading of integration view due to loading logs in python
 
 `1.1.7`
