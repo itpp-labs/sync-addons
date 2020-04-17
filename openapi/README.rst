@@ -26,14 +26,13 @@ connection, use Database Name / OpenAPI toekn accordingly.
 Roadmap
 =======
 
-* TODO: Archive toggle button is not used since odoo 13. Add ribbon widget instead: ``<widget name="web_ribbon" text="Archived" ...`` 
 * TODO: Rewrite tests to replace dependency ``mail`` to ``web`` module.
 * TODO: Add a button to developer menu to grant access to current model
 
     * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
     * Open the developer tools drop down
     * Click menu ``Configure REST API`` located within the dropdown
-    * On the form that opens, activate and configure this module for REST API accessability. 
+    * On the form that opens, activate and configure this module for REST API accessability.
     * Click ``[Apply]``
 
 * TODO: when user is not authenticated api returns 200 with the message below, instead of designed 401
