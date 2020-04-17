@@ -53,7 +53,12 @@
         <field name="arch" type="xml">
             <form string="Access">
                 <sheet>
-                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}" />
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
                     <div class="oe_title">
                         <group>
                             <field name="id" invisible="1" />
@@ -155,7 +160,12 @@
                             <field string="Logs" name="log_count" widget="statinfo" />
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
                         <h1>
