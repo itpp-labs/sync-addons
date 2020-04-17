@@ -1,3 +1,7 @@
+`1.2.0`
+-------
+- **Improvement:** Improve archive options and toggle button
+
 `1.1.8`
 -------
 - **Fix:** Possible crash on reading multiple openapi.namespace records at once
