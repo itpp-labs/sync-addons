@@ -53,25 +53,18 @@
         <field name="arch" type="xml">
             <form string="Access">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button
-                            name="toggle_active"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-archive"
-                        >
-                            <field
-                                name="active"
-                                widget="boolean_button"
-                                options='{"terminology": "archive"}'
-                            />
-                        </button>
-                    </div>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
                     <div class="oe_title">
                         <group>
                             <field name="id" invisible="1" />
                             <field name="model" invisible="1" />
                             <field name="model_id" options="{'no_create': True}" />
+                            <field name="active" />
                             <field name="api_create" />
                             <field name="api_read" />
                             <field name="api_update" />
@@ -159,18 +152,6 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button
-                            name="toggle_active"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-archive"
-                        >
-                            <field
-                                name="active"
-                                widget="boolean_button"
-                                options='{"terminology": "archive"}'
-                            />
-                        </button>
-                        <button
                             name="action_show_logs"
                             type="object"
                             class="oe_stat_button"
@@ -179,10 +160,17 @@
                             <field string="Logs" name="log_count" widget="statinfo" />
                         </button>
                     </div>
+                    <widget
+                        name="web_ribbon"
+                        title="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only" />
                         <h1>
                             <field name="name" class="oe_inline" />
+                            <field name="active" invisible="1" />
                         </h1>
                         <label for="description" class="oe_edit_only" />
                         <h3>
