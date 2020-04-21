@@ -11,7 +11,7 @@ Installation
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 * Add ``openapi`` to `--load parameter <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
-    ./odoo-bin --workers=2 --load openapi,web --config=/path/to/odoo.conf
+    ./odoo-bin --workers=2 --load openapi,base,web --config=/path/to/odoo.conf
   + Note: Skipping this step may lead to error response::
 
       werkzeug.exception.BadRequest: 400 Bad Request <..> :
