@@ -12,6 +12,7 @@ Installation
 * Add ``openapi`` to `--load parameter <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
     ./odoo-bin --workers=2 --load openapi,base,web --config=/path/to/odoo.conf
+
   + Note: Skipping this step may lead to error response::
 
       werkzeug.exception.BadRequest: 400 Bad Request <..> :
@@ -66,23 +67,72 @@ Authentication
 --------------
 
 * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
-* Open menu ``[[ Settings ]] >> Users >> Users``
+* Open menu ``[[ Settings ]] >> Users & Companies >> Users``
 * Select a user that will be used for iteracting over API
 * In **Allowed Integration** select some integrations
 * Copy **OpenAPI Token** to use it in any system that support OpenAPI
 
+If necessary, you can reset the token pressing ``Reset OpenAPI Token``
+
 Usage
 =====
 
+Swagger Editor
+--------------
 As the simplest example, you can try API in Swagger Editor. It allows to review and check API
 
 * Open http://editor.swagger.io/
-* Click menu ``File >> Import File``
+* Click menu ``File >> Import URL``
 * Set **Specification link**
 * RESULT: Specification is parsed succefully and you can see API presentation
 * Click ``[Authorize]`` button
 
   * **Username** -- set database name
-  * **Password** -- set **OpenAPI Token**
+  * **Password** -- set **OpenAPI Token** (described `here <#authentication>`__)
+
+Note:
+  The Swagger Editor sends requests directly from browser which leads to CORS error and work with it is not available in `odoo.sh`.
+  The easiest solution is to simply copy-past the curl command from Swagger Editor and run it from the terminal.
+
+  If you're using Nginx you can add a setting like this::
+
+    location /api/v1 {
+       if ($request_method = 'OPTIONS') {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Credentials' 'true';
+          add_header 'Access-Control-Max-Age' 1728000;
+          add_header 'Content-Type' 'text/plain charset=UTF-8';
+          add_header 'Content-Length' 0;
+          return 204;
+       }
+       if ($request_method = 'POST') {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Credentials' 'true';
+       }
+       if ($request_method = 'GET') {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Credentials' 'true';
+       }
+    }
+
+How to call methods with arguments via API
+------------------------------------------
+
+Here is an example of calling a search method with domain.
+
+This is how it is usually done from the odoo model:
+
+.. code-block:: python
+
+  partner_ids = self.env['res.partner'].search([("is_company", "=", "True")])
+
+Using API:
+
+.. code-block:: bash
+
+  curl -X PATCH "http://example.com/api/v1/demo/res.partner/call/search" -H "accept: application/json" \
+  -H "authorization: Basic BASE64_ENCODED_EXPRESSION" -H "Content-Type: application/json" \
+  -d '{ "args": [[["is_company", "=", "True" ]]]}'
+
 
 For more examples visit https://itpp.dev/sync website
