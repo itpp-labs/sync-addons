@@ -72,7 +72,7 @@ Authentication
 * In **Allowed Integration** select some integrations
 * Copy **OpenAPI Token** to use it in any system that support OpenAPI
 
-If necessary, you can reset the token pressing ``Reset OpenAPI Token``
+If necessary, you can reset the token by pressing ``[Reset OpenAPI Token]`` button
 
 Usage
 =====
@@ -88,13 +88,13 @@ As the simplest example, you can try API in Swagger Editor. It allows to review 
 * Click ``[Authorize]`` button
 
   * **Username** -- set database name
-  * **Password** -- set **OpenAPI Token** (described `here <#authentication>`__)
+  * **Password** -- set **OpenAPI Token** (how to get one is described in `authentication <#authentication>`__ above)
 
 Note:
   The Swagger Editor sends requests directly from browser which leads to CORS error and work with it is not available in `odoo.sh`.
   The easiest solution is to simply copy-past the curl command from Swagger Editor and run it from the terminal.
 
-  If you're using Nginx you can add a setting like this::
+  Alternatively, you can grant CORS headers in your web server. Below is example for Nginx::
 
     location /api/v1 {
        if ($request_method = 'OPTIONS') {
@@ -120,13 +120,13 @@ How to call methods with arguments via API
 
 Here is an example of calling a search method with domain.
 
-This is how it is usually done from the odoo model:
+This is how it is usually done from python code:
 
 .. code-block:: python
 
   partner_ids = self.env['res.partner'].search([("is_company", "=", "True")])
 
-Using API:
+On using API it would be as following:
 
 .. code-block:: bash
 
