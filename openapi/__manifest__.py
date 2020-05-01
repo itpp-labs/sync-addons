@@ -23,17 +23,11 @@
         "security/openapi_security.xml",
         "security/ir.model.access.csv",
         "security/res_users_token.xml",
-        # Сommented until we discuss it
-        # "views/assets.xml",
         "views/openapi_view.xml",
         "views/res_users_view.xml",
         "views/ir_model_view.xml",
     ],
     "demo": ["demo/openapi_demo.xml", "demo/openapi_security_demo.xml"],
-    "qweb": [
-        # Сommented until we discuss it
-        # "static/src/xml/configure_api_button.xml"
-    ],
     "post_load": "post_load",
     "pre_init_hook": None,
     "post_init_hook": None,

@@ -200,6 +200,26 @@ class TestAPI(HttpCase):
         for partner in partners:
             self.assertEqual(partner.name, method_params["args"][0]["name"])
 
+    def test_call_model_method(self):
+        domain = [["id", "=", 1]]
+        record = self.phantom_env[self.model_name].search(domain)
+        self.assertTrue(record, "Record with ID 1 is not available")
+
+        method_name = "search"
+        method_params = {
+            "args": [domain],
+        }
+        resp = self.request_from_user(
+            self.demo_user,
+            "PATCH",
+            "/{model}/call/{method_name}",
+            method_name=method_name,
+            data_json=method_params,
+        )
+
+        self.assertEqual(resp.status_code, pinguin.CODE__success)
+        self.assertEqual(resp.json(), [1])
+
     # TODO: doesn't work in test environment
     def _test_log_creating(self):
         logs_count_before_request = len(self.phantom_env["openapi.log"].search([]))
