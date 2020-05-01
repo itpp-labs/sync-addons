@@ -127,6 +127,7 @@
                             <field
                                 name="create_context_ids"
                                 attrs="{'readonly': [('model_id', '=', False)]}"
+                                context="{'default_model_id': model_id}"
                             >
                                 <form string="Creation Context Presets">
                                     <group>
