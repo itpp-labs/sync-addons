@@ -3,6 +3,8 @@
 - **Fix:** error on creating openapi. namespace record with context presets
 - **Fix:** OpenAPI user can't create log records
 - **Fix:** wrong handling error in PATCH method
+- **Fix:** Error "Object of type datetime is not JSON serializable" in json
+  response
 
 `1.2.0`
 -------
