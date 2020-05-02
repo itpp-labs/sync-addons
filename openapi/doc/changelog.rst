@@ -1,6 +1,7 @@
 `1.1.8`
 -------
 - **Fix:** error on creating openapi. namespace record with context presets
+- **Fix:** OpenAPI user can't create log records
 
 `1.1.7`
 -------
