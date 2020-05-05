@@ -1,8 +1,12 @@
+`1.2.1`
+-------
+- **Fix:** error on creating openapi. namespace record with context presets
+
 `1.2.0`
 -------
 - **Improvement:** Improve archive options and toggle button
 
-`1.1.8`
+`1.1.9`
 -------
 - **Fix:** Possible crash on reading multiple openapi.namespace records at once
 
