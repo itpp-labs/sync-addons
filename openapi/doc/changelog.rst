@@ -1,3 +1,7 @@
+`1.1.8`
+-------
+- **Fix:** error on creating openapi. namespace record with context presets
+
 `1.1.7`
 -------
 - **Fix:** Error on opening Setting Dashboard by Admin without OpenAPI access
