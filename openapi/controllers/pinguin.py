@@ -57,7 +57,7 @@ CODE__ok_no_content = 204
 # 4xx Client Errors
 CODE__server_rejects = (400, "Server rejected", "Welcome to macondo!")
 CODE__no_user_auth = (401, "Authentication", "Your token could not be authenticated.")
-CODE__user_no_perm = (401, "Permissions", "%s")
+CODE__user_no_perm = (403, "Permissions", "%s")
 CODE__method_blocked = (
     403,
     "Blocked Method",
