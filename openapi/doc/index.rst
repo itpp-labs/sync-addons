@@ -39,7 +39,7 @@ Activating and customization
       * Set **Creation Context Presets**, for example
 
         * **Name**: ``brussels``
-        * **Context**: ``{'default_tz':'Europe/Brussels', 'default_lang':'fr_BE'}``
+        * **Context**: ``{"default_tz":"Europe/Brussels", "default_lang":"fr_BE"}``
 
     * **[x] Read via API**
 
@@ -124,7 +124,7 @@ This is how it is usually done from python code:
 
 .. code-block:: python
 
-  partner_ids = self.env['res.partner'].search([("is_company", "=", "True")])
+  partner_ids = self.env["res.partner"].search([("is_company", "=", "True")])
 
 On using API it would be as following:
 
