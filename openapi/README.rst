@@ -48,6 +48,7 @@ Roadmap
 * TODO: use sudo for log creating and disable write access rights
 * TODO: finish unitttests (see ``test_api.py``)
 * TODO: ``.../swagger.json`` url doesn't work in multi-db mode in odoo 12.0 at least: it make strange redirection to from ``/api/v1/demo/swagger.json?token=demo_token&db=source`` to ``/api/v1/demo/swagger.json?token%3Ddemo_token%26db%3Dsource``
+* TODO: remove access to create logs and use sudo (SUPERUSER_ID)  instead. It prevents making fake logs by malicous user
 
 Credits
 =======
