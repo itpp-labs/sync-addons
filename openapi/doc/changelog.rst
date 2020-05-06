@@ -2,6 +2,7 @@
 -------
 - **Fix:** error on creating openapi. namespace record with context presets
 - **Fix:** OpenAPI user can't create log records
+- **Fix:** wrong handling error in PATCH method
 
 `1.1.7`
 -------
