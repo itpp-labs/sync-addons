@@ -31,6 +31,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 import odoo
 from odoo.http import request
 from odoo.service import security
+from odoo.tools import date_utils
 
 from odoo.addons.web.controllers.main import ReportController
 
@@ -108,7 +109,7 @@ def successful_response(status, data=None):
     try:
         response = json.dumps(data.ids)
     except AttributeError:
-        response = json.dumps(data) if data else None
+        response = json.dumps(data, default=date_utils.json_default) if data else None
 
     return werkzeug.wrappers.Response(
         status=status,
