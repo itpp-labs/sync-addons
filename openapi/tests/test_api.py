@@ -251,3 +251,17 @@ class TestAPI(HttpCase):
             auth=requests.auth.HTTPBasicAuth(self.db_name, super_user.openapi_token),
         )
         self.assertEqual(resp.status_code, pinguin.CODE__success)
+
+    def test_response_has_no_error(self):
+        method_name = "search_read"
+        method_params = {
+            "args": [[["id", "=", "1"]]],
+        }
+        resp = self.request_from_user(
+            self.demo_user,
+            "PATCH",
+            "/{model}/call/{method_name}",
+            method_name=method_name,
+            data_json=method_params,
+        )
+        self.assertNotIn("error", resp.json())
