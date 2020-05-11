@@ -88,9 +88,12 @@ class ApiJsonRequest(WebRequest):
             response["error"] = error
 
         mime = "application/json"
-        body = json.dumps(response, default=date_utils.json_default)
         status = error and error.pop("code") or result.status_code
-        body = response and json.dumps(response) or result.data
+        body = (
+            response
+            and json.dumps(response, default=date_utils.json_default)
+            or result.data
+        )
 
         return Response(
             body,
@@ -116,9 +119,10 @@ class ApiJsonRequest(WebRequest):
             ):
                 _logger.exception("Exception during JSON request handling.")
             error = {
-                "code": 200,
+                "code": exception.response.status_code,
                 "message": "Odoo Server Error",
                 "data": serialize_exception(exception),
+                "openapi_message": json.loads(exception.response.response[0]),
             }
             if isinstance(exception, werkzeug.exceptions.NotFound):
                 error["http_status"] = 404
@@ -173,7 +177,6 @@ class ApiJsonRequest(WebRequest):
                     rpc_response.debug("%s, %s", logline, pprint.pformat(result))
                 else:
                     rpc_request.debug(logline)
-
             return self._json_response(result)
         except Exception as e:
             return self._handle_exception(e)
