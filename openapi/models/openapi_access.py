@@ -412,6 +412,7 @@ class Access(models.Model):
                                 "body": "Message is posted via API by calling message_post method",
                                 "subject": "Test API",
                             },
+                            "context": {},
                         },
                     }
                 }
