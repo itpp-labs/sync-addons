@@ -1,8 +1,14 @@
+# Copyright 2018, XOE Solutions
+# Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2019 Yan Chirino <https://xoe.solutions/>
+# Copyright 2019-2020 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
+# Copyright 2020 Ivan Yelizariev
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pyling: disable=redefined-builtin
 
 
 import collections
+import collections.abc
 import datetime
 
 import six
@@ -116,7 +122,7 @@ def update(d, u):
     :rtype: dict
     """
     for k, v in u.items():
-        if isinstance(v, collections.Mapping):
+        if isinstance(v, collections.abc.Mapping):
             d[k] = update(d.get(k, collections.OrderedDict([])), v)
         else:
             d[k] = v
