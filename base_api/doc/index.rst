@@ -110,16 +110,16 @@ search_read_nested
 *– Purpose*:
   - Simplifies reading data to one request;
   - Comparing to default **search\_read**:
-      - it returns list of record-dictionaries with nested fields
-        from related models (via *x2many*, *many2one*), by using
-        dot-notation in `fields`
-      - e.g.
+      - ``fields`` can be nested, so the method will return list of
+        record-dictionaries with nested fields from related models (via
+        *x2many*, *many2one*). Nested fields are specified as slash-separated
+        sequence, for example:
           .. code-block::
 
-             fields = [
-                        company_id,
-                        company_id/name
-                        ]
+             fields = [
+                 'company_id/id',
+                 'company_id/name'
+             ]
 
 *– Input data*:
   - `domain`-variable:
@@ -138,17 +138,17 @@ search_read_nested
       - fields to be read from founded records (including nested
         fields via dot-notation)
       - list of *strings*
-      - e.g. 
+      - e.g. if ``author_id``, ``edition_ids`` are many2one and many2many
+        fields, then the variable can be specified as following:
           .. code-block::
 
             fields = [
-                        'book_name',
-                        'author_id',
-                        'author_id/name',
-                        `edition_ids`,
-                        `edition_ids/year`
-                        # author_id, edition_ids - x2x fields
-                        ]
+                'book_name',
+                'author_id/id',
+                'author_id/name',
+                `edition_ids/id`,
+                `edition_ids/year`
+            ]
 
   - `offset`-variable:
       - number of records to ignore
