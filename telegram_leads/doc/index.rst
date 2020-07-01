@@ -88,6 +88,6 @@ Usage
 Support
 =======
 
-If something goes wrong feel free to Contact us at sync@it-projects.info.
+If something goes wrong feel free to Contact us at apps@itpp.dev.
 
 We may need Odoo logs and `CloudWatch logs <https://aws.amazon.com/cloudwatch/>`__ information as well as proof of purchase.
