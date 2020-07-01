@@ -114,7 +114,7 @@ odoo = SwaggerClient.from_url(
 result = odoo.res_partner.callMethodForResPartnerModel(
     method_name="search",
     body={
-        'args': [[('email', '=', 'sync@it-projects.info')]]
+        'args': [[('email', '=', 'apps@itpp.dev')]]
     }
 ).response().incoming_response.json()
 
@@ -123,7 +123,7 @@ partner_id = result and result[0]
 if not partner_id:
     result = odoo.res_partner.addResPartner(body={
         "name": "OpenAPI Support",
-        "email": "sync@it-projects.info"
+        "email": "apps@itpp.dev"
     }).response().result
     partner_id = result.id
 
@@ -335,9 +335,9 @@ Comming soon...
     <div class="oe_row oe_spaced">
         <div class="oe_span8">
             <h2>Need our service?</h2>
-            <p class="oe_mt32">Contact us by <a href="mailto:sync@it-projects.info">email</a> or fill out <a href="https://www.it-projects.info/page/website.contactus " target="_blank">request form</a></p>
+            <p class="oe_mt32">Contact us by <a href="mailto:apps@itpp.dev">email</a> or fill out <a href="https://www.it-projects.info/page/website.contactus " target="_blank">request form</a></p>
             <ul>
-                <li><a href="mailto:sync@it-projects.info">sync@it-projects.info <i class="fa fa-envelope-o"></i></a></li>
+                <li><a href="mailto:apps@itpp.dev">apps@itpp.dev <i class="fa fa-envelope-o"></i></a></li>
                 <li><a href="https://www.it-projects.info/page/website.contactus " target="_blank">https://www.it-projects.info/page/website.contactus <i class="fa fa-list-alt"></i></a></li>
                 <li><a href="https://m.me/itprojectsllc" target="_blank">https://m.me/itprojectsllc <i class="fa fa-facebook-square"></i></a></li>
                 <li>skype@it-projects.info <i class="fa fa-skype"></i></li>

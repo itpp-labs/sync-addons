@@ -9,7 +9,7 @@
     "version": "13.0.1.2.1",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "sync@it-projects.info",
+    "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/13.0/openapi/",
     "license": "LGPL-3",
     "price": 170.00,
