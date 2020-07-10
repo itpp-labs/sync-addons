@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_job_view_tree" model="ir.ui.view">
+        <field name="name">sync.job.tree</field>
+        <field name="model">sync.job</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-danger="state == 'failed'"
+                decoration-success="state == 'done'"
+                decoration-warning="state == 'done_warning'"
+            >
+                <field name="create_date" />
+                <field name="trigger_name" />
+                <field name="state" />
+                <field name="project_id" />
+                <field name="task_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_job_view_form" model="ir.ui.view">
+        <field name="name">sync.job.form</field>
+        <field name="model">sync.job</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="refresh_button"
+                        string="Refresh Form"
+                        type="object"
+                        attrs="{'invisible': [('in_progress', '=', False)]}"
+                    />
+                    <field name="in_progress" invisible="1" />
+                    <button
+                        name="requeue_button"
+                        string="Restart Failed Job"
+                        type="object"
+                        class="oe_highlight"
+                        groups="sync.sync_group_dev"
+                        attrs="{'invisible': [('queue_job_state', '!=', 'failed')]}"
+                    />
+                    <field name="queue_job_state" invisible="1" />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="enqueued,started,done"
+                    />
+                </header>
+                <sheet>
+                    <!--
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            type="action"
+                            name="%(sync.ir_logging_action_from_job)d"
+                            class="oe_stat_button"
+                            icon="fa-tasks"
+                        >
+                            <field string="Logs" name="log_count" widget="statinfo" />
+                        </button>
+                    </div>
+                    -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="trigger_name" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id" />
+                            <field name="task_id" />
+                            <field name="parent_job_id" />
+                        </group>
+                        <group>
+                            <field name="trigger_cron_id" />
+                            <field name="trigger_automation_id" />
+                            <field name="trigger_webhook_id" />
+                            <field
+                                name="trigger_button_id"
+                                options="{'no_open':True}"
+                            />
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('queue_job_id', '=', False)]}">
+                        <group>
+                            <field name="queue_job_id" />
+                            <field name="func_string" />
+                        </group>
+                        <group colspan="4">
+                            <div>
+                                <label for="retry" string="Starts:" />
+                                <field name="retry" class="oe_inline" />
+                                /
+                                <field name="max_retries_str" class="oe_inline" />
+                                <span class="oe_grey oe_inline">
+                                    The job is restarted only if code raises
+                                    <code>RetryableJobError</code>
+                                    exception. On
+                                    manual restarting the counter is reset.
+                                </span>
+                            </div>
+                        </group>
+                    </group>
+                    <group
+                        string="Sub Jobs"
+                        attrs="{'invisible': [('job_ids', '=', [])]}"
+                    >
+                        <field name="job_ids" nolabel="1">
+                            <tree
+                                decoration-danger="state == 'failed'"
+                                decoration-success="state == 'done'"
+                                decoration-warning="state == 'done_warning'"
+                                default_order="id"
+                            >
+                                <field name="id" />
+                                <field name="create_date" />
+                                <field name="trigger_name" />
+                                <field name="state" />
+                                <field name="queue_job_id" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Logs">
+                        <field
+                            name="log_ids"
+                            nolabel="1"
+                            readonly="1"
+                            editable="bottom"
+                        >
+                            <tree
+                                decoration-muted="level == 'debug'"
+                                decoration-danger="level in ['error', 'critical']"
+                                decoration-warning="level == 'warning'"
+                                default_order="id"
+                            >
+                                <field name="id" />
+                                <field name="create_date" />
+                                <field name="level" />
+                                <field name="name" />
+                                <field name="message_short" />
+                            </tree>
+                            <form>
+                                <field name="message" />
+                            </form>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_job_action_from_project" model="ir.actions.act_window">
+        <field name="name">Project Jobs</field>
+        <field name="res_model">sync.job</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('project_id', '=', active_id)]</field>
+    </record>
+    <record id="sync_job_action_from_task" model="ir.actions.act_window">
+        <field name="name">Task Jobs</field>
+        <field name="res_model">sync.job</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('task_id', '=', active_id)]</field>
+    </record>
+    <record id="sync_job_action" model="ir.actions.act_window">
+        <field name="name">Jobs</field>
+        <field name="res_model">sync.job</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem
+        id="sync_job_menu_action"
+        name="Jobs"
+        parent="sync_menu"
+        action="sync_job_action"
+        sequence="20"
+    />
+</odoo>
