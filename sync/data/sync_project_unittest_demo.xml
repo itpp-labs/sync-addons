@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <!-- unittest -->
+    <record id="test_project" model="sync.project">
+        <field name="name">Project For Unittests</field>
+        <!-- disable to hide from UI -->
+        <field name="active" eval="False" />
+    </record>
+    <record id="test_project_param" model="sync.project.param">
+        <field name="key">PARTNER_RELATION</field>
+        <field name="value">sync_unittest_partner</field>
+        <field name="project_id" ref="sync.test_project" />
+    </record>
+    <record id="test_task" model="sync.task">
+        <field name="name">Assign ref to new partners</field>
+        <field name="project_id" ref="sync.test_project" />
+        <field name="code">
+<![CDATA[
+def handle_db(records):
+    for r in records:
+        r.set_link(params.PARTNER_RELATION, r.id)
+]]>
+        </field>
+    </record>
+    <record id="test_trigger_automation" model="sync.trigger.automation">
+        <field name="name">Sync test: Run code On partner created</field>
+        <field name="trigger_name">ON_PARTNER_CREATED</field>
+        <field name="sync_task_id" ref="sync.test_task" />
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="trigger">on_create</field>
+    </record>
+</odoo>

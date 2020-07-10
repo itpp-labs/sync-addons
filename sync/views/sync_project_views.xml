@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_project_action" model="ir.actions.act_window">
+        <field name="name">Sync Projects</field>
+        <field name="res_model">sync.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"active_test": False}</field>
+    </record>
+    <record id="sync_project_view_tree" model="ir.ui.view">
+        <field name="name">sync.project.tree</field>
+        <field name="model">sync.project</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_project_view_form" model="ir.ui.view">
+        <field name="name">sync.project.form</field>
+        <field name="model">sync.project</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <!-- Delete in Odoo 13 -->
+                        <button
+                            name="toggle_active"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-archive"
+                        >
+                            <field
+                                name="active"
+                                widget="boolean_button"
+                                options='{"terminology": "archive"}'
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_job_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                        >
+                            <field string="Jobs" name="job_count" widget="statinfo" />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.ir_logging_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-book"
+                        >
+                            <field string="Logs" name="log_count" widget="statinfo" />
+                        </button>
+                        <!--
+                        <button
+                            type="action"
+                            name="%(sync.sync_task_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-tasks"
+                        >
+                            <field
+                                string="Available Tasks"
+                                name="task_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        -->
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_cron_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
+                        >
+                            <field
+                                string="Crons"
+                                name="trigger_cron_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_automation_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-database"
+                        >
+                            <field
+                                string="DB Triggers"
+                                name="trigger_automation_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_webhook_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-globe"
+                        >
+                            <field
+                                string="Webhooks"
+                                name="trigger_webhook_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <!--
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_button_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-hand-pointer-o"
+                        >
+                            <field
+                                string="Buttons"
+                                name="trigger_button_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        -->
+                    </div>
+                    <!-- Uncomment in Odoo 13
+                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <field name="active" invisible="1" />
+                    -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="E.g. Legacy Migration" />
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page name="buttons" string="Manual Triggers">
+                            <p class="oe_edit_only">
+                                <br />
+                                Hint: to add manual triggers navigate to corresponding
+                                Task via "Available Tasks" tab
+                            </p>
+                            <field name="trigger_button_ids">
+                                <tree create="0">
+                                    <field name="sync_task_id" />
+                                    <field name="trigger_name" />
+                                    <button
+                                        name="start_button"
+                                        string="Run Now"
+                                        class="oe_highlight"
+                                        type="object"
+                                    />
+                                    <field name="name" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="code" string="Shared Code">
+                            <separator string="Protected Code" />
+                            <p>
+                                <em>
+                                    # Protected code can be edited by Sync Managers
+                                    only.
+                                    <br />
+                                    # Python statement
+                                    <code>import</code>
+                                    and variable
+                                    <code>secrets</code>
+                                    can be used in this code only.
+                                    <br />
+                                    # Add underscore prefix to variables and functions
+                                    (e.g.
+                                    <code>_something</code>
+                                    ) to make them not available in task code and common
+                                    code
+                                </em>
+                            </p>
+                            <field
+                                name="secret_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                            <separator string="Common Code" />
+                            <p>
+                                <em>
+                                    # Put here a code that will be accesable from any
+                                    task code
+                                </em>
+                            </p>
+                            <field
+                                name="common_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                        </page>
+                        <page name="tasks" string="Available Tasks">
+                            <field name="task_ids" context="{'active_test': False}">
+                                <tree decoration-muted="not active">
+                                    <field name="name" />
+                                    <field name="active" />
+                                    <field
+                                        name="active_cron_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_automation_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_webhook_ids"
+                                        widget="many2many_tags"
+                                    />
+                                </tree>
+                            </field>
+                            <p>
+                                <em>
+                                    Hint: Cron, Webhooks and DB Triggers are not
+                                    executed
+                                    until both the Project and the Task are active (i.e.
+                                    not Archived)
+                                </em>
+                            </p>
+                        </page>
+                        <page name="params" string="Parameters">
+                            <separator string="Parameters" />
+                            <field name="param_ids">
+                                <tree editable="bottom" decoration-danger="not value">
+                                    <field name="key" />
+                                    <field name="value" />
+                                    <field name="description" />
+                                    <field name="url" widget="url" text="Open Link" />
+                                </tree>
+                            </field>
+                            <separator string="Secrets" />
+                            <p class="oe_read_only">
+                                <em>
+                                    Secret parameters values are available for Sync
+                                    Managers only (click on a line to see the value)
+                                </em>
+                            </p>
+                            <field name="secret_ids">
+                                <tree editable="bottom" decoration-danger="not value">
+                                    <field name="key" />
+                                    <field
+                                        name="value"
+                                        password="True"
+                                        decoration-danger="not value"
+                                    />
+                                    <field name="description" />
+                                    <field name="url" widget="url" text="Open Link" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_project_param_view_form" model="ir.ui.view">
+        <field name="name">sync.project.param.form</field>
+        <field name="model">sync.project.param</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="key" />
+                    <field name="value" />
+                    <field name="url" widget="url" />
+                </group>
+                <field name="description" />
+            </form>
+        </field>
+    </record>
+    <record id="sync_project_secret_view_form" model="ir.ui.view">
+        <field name="name">sync.project.secret.form</field>
+        <field name="model">sync.project.secret</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="key" />
+                    <field name="value" />
+                    <field name="url" widget="url" />
+                </group>
+                <field name="description" />
+            </form>
+        </field>
+    </record>
+    <menuitem
+        id="sync_project_menu_action"
+        name="Sync Projects"
+        parent="sync_menu"
+        action="sync_project_action"
+        sequence="10"
+    />
+    <act_window
+        id="sync_make_module_action"
+        name="Export to XML"
+        src_model="sync.project"
+        res_model="sync.make.module"
+        view_mode="form"
+        target="new"
+        context="{'default_project_id': active_id}"
+    />
+</odoo>

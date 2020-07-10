@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_make_module" model="ir.ui.view">
+        <field name="model">sync.make.module</field>
+        <field name="arch" type="xml">
+            <form>
+                <field invisible="1" name="state" />
+                <group states="choose" string="Export Settings">
+                    <field name="module" />
+                    <field name="copyright_years" />
+                    <field name="author_name" />
+                    <field name="author_url" />
+                    <field name="license_line" />
+                    <field name="name" invisible="1" />
+                    <field name="name2" invisible="1" />
+                </group>
+                <div states="get">
+                    <p>
+                        Here is the xml file to be put into a module:
+                        <field name="data" readonly="1" filename="name" />
+                        <br />
+                        Generation time:
+                        <field name="write_date" />
+                    </p>
+                    <div class="alert alert-success" role="alert">
+                        <p>
+                            You are welcome to make a contribution to our
+                            <a
+                                target="_blank"
+                                href="https://github.com/itpp-labs/sync-addons"
+                            >
+                                open source integration addons
+                            </a>
+                            . It could be either:
+                            <ul>
+                                <li>a new module</li>
+                                <li>an update to existing module</li>
+                                <li>
+                                    an issue with the data xml file attached (due to
+                                    github restrictions you need to use file ended with
+                                    .txt:
+                                    <field name="data2" readonly="1" filename="name2" />
+                                    )
+                                </li>
+                                <li>a bug report</li>
+                                <li>a feature request</li>
+                            </ul>
+                        </p>
+                        <p>
+                            Your contribution will make other Odoo users happy
+                            <span class="fa fa-smile-o" />
+                            , while
+                            <a target="_blank" href="https://itpp.dev/">
+                                IT Projects Labs
+                            </a>
+                            will assist you on it:
+                            <ul>
+                                <li>we will test the updates</li>
+                                <li>we will check bug reports</li>
+                                <li>we will document the modules</li>
+                                <li>we will port modules to the new Odoo versions</li>
+                            </ul>
+                        </p>
+                        <p>
+                            Sincerely,
+                            <a target="_blank" href="https://twitter.com/yelizariev">
+                                Ivan Yelizariev
+                            </a>
+                        </p>
+                    </div>
+                </div>
+                <footer states="choose">
+                    <button
+                        name="act_makefile"
+                        string="Export"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button
+                        special="cancel"
+                        string="Cancel"
+                        type="object"
+                        class="btn-secondary"
+                    />
+                </footer>
+                <footer states="get">
+                    <button
+                        name="act_makefile"
+                        string="Update"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button
+                        name="act_configure"
+                        string="Configure"
+                        type="object"
+                        class="btn-primary"
+                    />
+                    <button special="cancel" string="Close" type="object" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

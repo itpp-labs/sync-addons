@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_trigger_webhook_view_tree" model="ir.ui.view">
+        <field name="name">sync.trigger.webhook.tree</field>
+        <field name="model">sync.trigger.webhook</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="trigger_name" />
+                <field name="website_url" />
+                <field name="sync_project_id" />
+                <field name="sync_task_id" required="1" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_trigger_webhook_view_form" model="ir.ui.view">
+        <field name="name">sync.trigger.webhook.form</field>
+        <field name="model">sync.trigger.webhook</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="trigger_name" />
+                        <field name="website_url" />
+                        <field name="active" />
+                    </group>
+                    <group>
+                        <field name="sync_project_id" />
+                        <field name="sync_task_id" required="1" />
+                    </group>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="sync_trigger_webhook_action_from_project" model="ir.actions.act_window">
+        <field name="name">Webhook Triggers</field>
+        <field name="res_model">sync.trigger.webhook</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('sync_project_id', '=', active_id)]</field>
+    </record>
+</odoo>
