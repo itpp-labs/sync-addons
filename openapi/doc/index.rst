@@ -135,4 +135,23 @@ On using API it would be as following:
   -d '{ "args": [[["is_company", "=", "True" ]]]}'
 
 
+Updating existing record
+-----------------------------
+
+For example, to set *phone* value for a partner, make a PUT request in the following way:
+
+.. code-block:: bash
+
+  curl -X PUT -H "Authorization: Basic BASE64_ENCODED_EXPRESSION" \
+  -H "Content-Type: application/json" -H "Accept: */*" \
+  -d '{ "phone": "+7123456789"}' "http://example.com/api/v1/demo/res.partner/41"
+
+To set many2one field, you need to pass id as a value:
+
+.. code-block:: bash
+
+  curl -X PUT -H "Authorization: Basic BASE64_ENCODED_EXPRESSION" \
+  -H "Content-Type: application/json" -H "Accept: */*" \
+  -d '{ "parent_id": *RECORD_ID*}' "http://example.com/api/v1/demo/res.partner/41"
+
 For more examples visit https://itpp.dev/sync website
