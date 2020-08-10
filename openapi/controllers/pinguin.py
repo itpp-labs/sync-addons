@@ -190,7 +190,9 @@ def get_data_from_auth_header(header):
     """
     normalized_token = header.replace("Basic ", "").replace("\\n", "").encode("utf-8")
     try:
-        decoded_token_parts = base64.decodestring(normalized_token).split(b":")
+        decoded_token_parts = (
+            base64.b64decode(normalized_token).decode("utf-8").split(":")
+        )
     except TypeError:
         raise werkzeug.exceptions.HTTPException(
             response=error_response(
