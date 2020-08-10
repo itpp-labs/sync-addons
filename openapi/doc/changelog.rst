@@ -1,3 +1,8 @@
+`1.1.9`
+-------
+
+- **Fix:** error while working with two or more databases
+
 `1.1.8`
 -------
 - **Fix:** error on creating openapi. namespace record with context presets
