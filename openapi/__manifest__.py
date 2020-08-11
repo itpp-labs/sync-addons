@@ -1,4 +1,5 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
     "name": """REST API/OpenAPI/Swagger""",
@@ -6,7 +7,7 @@
     "category": "",
     # "live_test_url": "",
     "images": ["images/openapi-swagger.png"],
-    "version": "12.0.1.1.8",
+    "version": "12.0.1.1.9",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
