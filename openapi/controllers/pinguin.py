@@ -2,6 +2,7 @@
 # Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pylint: disable=redefined-builtin
 
@@ -207,7 +208,9 @@ def get_data_from_auth_header(header):
     """
     normalized_token = header.replace("Basic ", "").replace("\\n", "").encode("utf-8")
     try:
-        decoded_token_parts = base64.decodestring(normalized_token).split(b":")
+        decoded_token_parts = (
+            base64.b64decode(normalized_token).decode("utf-8").split(":")
+        )
     except TypeError:
         raise werkzeug.exceptions.HTTPException(
             response=error_response(
