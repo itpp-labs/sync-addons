@@ -98,7 +98,12 @@ class ApiJsonRequest(WebRequest):
         return Response(
             body,
             status=status,
-            headers=[("Content-Type", mime), ("Content-Length", len(body))],
+            headers=[
+                ("Access-Control-Allow-Origin", "*"),
+                ("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH"),
+                ("Content-Type", mime),
+                ("Content-Length", len(body)),
+            ],
         )
 
     def _handle_exception(self, exception):

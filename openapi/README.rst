@@ -59,6 +59,7 @@ Contributors
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
 * `Rafis Bikbov <https://it-projects.info/team/RafiZz>`__
 * `Stanislav Krotov <https://it-projects.info/team/ufaks>`__
+* `Eugene Molotov <https://it-projects.info/team/em230418>`__
 
 Sponsors
 --------

@@ -114,6 +114,10 @@ def successful_response(status, data=None):
 
     return werkzeug.wrappers.Response(
         status=status,
+        headers=[
+            ("Access-Control-Allow-Origin", "*"),
+            ("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH"),
+        ],
         content_type="application/json; charset=utf-8",
         response=response,
     )
@@ -136,6 +140,10 @@ def error_response(status, error, error_descrip):
     return werkzeug.wrappers.Response(
         status=status,
         content_type="application/json; charset=utf-8",
+        headers=[
+            ("Access-Control-Allow-Origin", "*"),
+            ("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH"),
+        ],
         response=json.dumps({"error": error, "error_descrip": error_descrip}),
     )
 

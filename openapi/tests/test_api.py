@@ -46,7 +46,19 @@ class TestAPI(HttpCase):
 
     def request_from_user(self, user, *args, **kwargs):
         kwargs["auth"] = requests.auth.HTTPBasicAuth(self.db_name, user.openapi_token)
-        return self.request(*args, **kwargs)
+        response = self.request(*args, **kwargs)
+        self.assertEqual(response.headers["Access-Control-Allow-Origin"], "*")
+        allowed_methods = list(
+            map(
+                lambda x: x.strip(),
+                response.headers["Access-Control-Allow-Methods"].split(","),
+            )
+        )
+        self.assertIn("GET", allowed_methods)
+        self.assertIn("POST", allowed_methods)
+        self.assertIn("PATCH", allowed_methods)
+        self.assertIn("PUT", allowed_methods)
+        return response
 
     def test_read_many_all(self):
         resp = self.request_from_user(self.demo_user, "GET", "/{model}")

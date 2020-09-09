@@ -1,3 +1,8 @@
+`1.1.11`
+--------
+
+- **Improvement:** CORS headers are added to response
+
 `1.1.10`
 --------
 
