@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import uuid
@@ -8,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 def generate_ref():
@@ -51,13 +53,13 @@ class TestLink(TransactionCase):
         now = datetime.now() - relativedelta(days=1)
         all_links.update_links(now)
         glink = self.get_link(REL, ref)
-        self.assertEqual(glink.sync_date, now)
+        self.assertEqual(glink.sync_date, now.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
 
         # update sync_date
         now = datetime.now()
         glink.update_links(now)
         glink = self.get_link(REL, ref)
-        self.assertEqual(glink.sync_date, now)
+        self.assertEqual(glink.sync_date, now.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
 
         # check search_links
         all_links = self.env["res.partner"].search([]).search_links(REL)
@@ -116,7 +118,7 @@ class TestLink(TransactionCase):
         self.assertNotEqual(1, len(all_links.odoo))
         self.assertIsInstance(all_links.odoo.ids, list)
         self.assertIsInstance(all_links.external, list)
-        self.assertIsInstance(all_links.sync_date, datetime)
+        self.assertIsInstance(all_links.sync_date, str)
         for link in all_links:
             self.assertIsInstance(link.odoo.id, int)
 
@@ -144,14 +146,18 @@ class TestLink(TransactionCase):
         now = datetime.now()
         glink.update_links(now)
         glink = self.get_link(REL, {"github": None, "trello": 101})
-        self.assertEqual(glink.sync_date, now)
+        self.assertEqual(glink.sync_date, now.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
 
         # search_links
         all_links = self.search_links(REL, {"github": None, "trello": None})
         self.assertEqual(1, len(all_links))
-        self.assertEqual(now, all_links.sync_date)
+        self.assertEqual(
+            now.strftime(DEFAULT_SERVER_DATETIME_FORMAT), all_links.sync_date
+        )
         for link in all_links:
-            self.assertEqual(now, link.sync_date)
+            self.assertEqual(
+                now.strftime(DEFAULT_SERVER_DATETIME_FORMAT), link.sync_date
+            )
         all_links.update_links(now)
 
         # sets operations

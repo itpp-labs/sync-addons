@@ -1,15 +1,17 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
 
-from odoo.tests.common import TransactionCase, tagged
+from odoo.tests.common import TransactionCase, at_install, post_install
 
 _logger = logging.getLogger(__name__)
 
 
 # Use the same tags as in base_automation module tests
-@tagged("post_install", "-at_install")
+@post_install(True)
+@at_install(False)
 class TestTriggerDB(TransactionCase):
     def setUp(self):
         super(TestTriggerDB, self).setUp()

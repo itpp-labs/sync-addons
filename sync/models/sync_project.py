@@ -14,7 +14,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval, test_python_expr
 from odoo.tools.translate import _
 
-from odoo.addons.base.models.ir_actions import dateutil
+from odoo.addons.base.ir.ir_actions import dateutil
 from odoo.addons.queue_job.exception import RetryableJobError
 
 from ..tools import safe_eval_extra, test_python_expr_extra

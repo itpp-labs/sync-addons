@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
@@ -6,7 +7,7 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY""",
     "category": "Extra Tools",
     "images": [],
-    "version": "12.0.1.0.0",
+    "version": "11.0.1.0.0",
     "application": True,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "apps@it-projects.info",

@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 from odoo import api, fields, models
@@ -43,12 +44,11 @@ class SyncTriggerMixinModelId(models.AbstractModel):
     _name = "sync.trigger.mixin.model_id"
     _description = "Mixing to fill model_id field"
 
-    @api.model_create_multi
-    def create(self, vals_list):
+    @api.model
+    def create(self, vals):
         model_id = self.env.ref("base.model_res_partner").id
-        for vals in vals_list:
-            vals.setdefault("model_id", model_id)
-        return super(SyncTriggerMixinModelId, self).create(vals_list)
+        vals.setdefault("model_id", model_id)
+        return super(SyncTriggerMixinModelId, self).create(vals)
 
 
 class SyncTriggerMixinActions(models.AbstractModel):
@@ -62,9 +62,8 @@ class SyncTriggerMixinActions(models.AbstractModel):
         vals["state"] = "code"
         return vals
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        records = super().create(vals_list)
-        for r in records:
-            r.code = r.get_code()
-        return records
+    @api.model
+    def create(self, vals):
+        record = super().create(vals)
+        record.code = record.get_code()
+        return record

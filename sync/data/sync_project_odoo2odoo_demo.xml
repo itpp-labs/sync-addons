@@ -135,10 +135,14 @@ def handle_cron():
         log("Cron: there are no associated partners")
         return
     # Fetch external partners with new updates
+    if isinstance(links.external, list):
+        external = links.external
+    else:
+        external = [links.external]
     external_partners = odoo_execute_kw(
         "res.partner",
         "search_read",
-        [["id", "in", links.external], ["write_date", ">", links.sync_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)]],
+        [["id", "in", external], ["write_date", ">", links.sync_date]],
         fields=["write_date", IMAGE_FIELD]
     )
     # Save fetched data in local Odoo
@@ -146,7 +150,7 @@ def handle_cron():
         link = get_link(PARTNER_REL,  ep["id"])
         p = link.odoo
         sync_date = parse_date(ep["write_date"])
-        if sync_date > link.sync_date:
+        if sync_date > parse_date(link.sync_date):
             p.write({IMAGE_FIELD: ep[IMAGE_FIELD]})
             link.update_links(sync_date)
 ]]>

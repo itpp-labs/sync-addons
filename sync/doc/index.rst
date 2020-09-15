@@ -8,11 +8,11 @@
 Installation
 ============
 
-* Make configuration required for `queue_job <https://apps.odoo.com/apps/modules/12.0/queue_job/#id12>`__ module. In particular:
+* Make configuration required for `queue_job <https://apps.odoo.com/apps/modules/11.0/queue_job/#configuration>`__ module. In particular:
 
   * add ``queue_job`` to `server wide modules <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
-        ``--load base,web,queue_job``
+        ``--load web,queue_job``
 
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 * Install python package that you need to use. For example, to try demo projects install following packages:
