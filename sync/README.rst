@@ -102,4 +102,4 @@ Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/11.0/sync.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/11.0/sync.atom>`_
 
-Tested on Odoo 12.0 3fbfa87df85d6463dfcba47416f360fcdef4448e
+Tested on Odoo 11.0 cf5c3c766ba42861ede4ec9b4027dfc910818a01
