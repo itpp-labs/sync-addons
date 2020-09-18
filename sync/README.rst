@@ -44,7 +44,7 @@ If you run Odoo locally and need to test webhook, you can use ssh tunneling:
 
 * Connect your server:
 
-  * Edit file ``/etc/ssh/ssd_config``:
+  * Edit file ``/etc/ssh/sshd_config``:
 
     * Find ``GatewayPorts`` attribute and set value to ``yes``
 
