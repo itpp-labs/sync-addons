@@ -45,7 +45,7 @@ Project
 
       * **Key**
       * **Value**
-    * **Secrets**: Parameters with restricted access: key values are visiable for Managers only
+    * **Secrets**: Parameters with restricted access: key values are visible for Managers only
 
   * In the ``Shared Code`` tab
 
@@ -85,7 +85,7 @@ Project
             * ``return data_str, status, headers``
 
               * ``status`` is a response code, e.g. ``200``, ``403``, etc.
-              * ``headers`` is a list of key-value turples, e.g. ``[('Content-Type', 'text/html')]``
+              * ``headers`` is a list of key-value tuples, e.g. ``[('Content-Type', 'text/html')]``
       * ``handle_button()``
 
     * **Cron Triggers**, **DB Triggers**, **Webhook Triggers**, **Manual
