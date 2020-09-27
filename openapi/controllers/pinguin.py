@@ -341,7 +341,10 @@ def _create_log_record(
         elif namespace_log_request == "info":
             log_data["request_data"] = user_request.__dict__
             for k in ["form", "files"]:
-                del log_data["request_data"][k]
+                try:
+                    del log_data["request_data"][k]
+                except KeyError:
+                    pass
 
         if namespace_log_response == "debug":
             log_data["response_data"] = user_response.__dict__
