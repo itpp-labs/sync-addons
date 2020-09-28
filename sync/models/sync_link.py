@@ -34,7 +34,6 @@ class SyncLink(models.Model):
     )
     model = fields.Char("Odoo Model", index=True)
 
-    @api.model_cr_context
     def _auto_init(self):
         res = super(SyncLink, self)._auto_init()
         tools.create_unique_index(
