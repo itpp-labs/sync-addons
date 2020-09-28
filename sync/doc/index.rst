@@ -185,7 +185,7 @@ Odoo Link usage:
 * ``for link in links:``: iterate over links
 * ``if links``: check that link set is not empty
 * ``len(links)``: number of links in the set
-* sets operaions:
+* sets operations:
 
   * ``links1 == links2``: sets are equal
   * ``links1 - links2``: links that are in first set, but not in another
@@ -282,7 +282,7 @@ Event
 Asynchronous work
 ~~~~~~~~~~~~~~~~~
 
-* ``add_job(func_name, **options)(*func_args, **func_kwargs)``: call a function asyncroniously; options are similar to ``with_delay`` method of ``queue_job`` module:
+* ``add_job(func_name, **options)(*func_args, **func_kwargs)``: call a function asynchronously; options are similar to ``with_delay`` method of ``queue_job`` module:
 
   * ``priority``: Priority of the job, 0 being the higher priority. Default is 10.
   * ``eta``: Estimated Time of Arrival of the job. It will not be executed before this date/time.
@@ -309,7 +309,7 @@ Exceptions
 
 * ``UserError``
 * ``ValidationError``
-* ``RetryableJobError``: raise to restart job from beginning; e.g. in case of temporarly errors like broken connection
+* ``RetryableJobError``: raise to restart job from beginning; e.g. in case of temporary errors like broken connection
 * ``OSError``
 
 Running Job
@@ -349,7 +349,7 @@ Webhook
 Button
 ------
 
-* runs immediatly
+* runs immediately
 * to retry click the button again
 
 Execution Logs
@@ -372,7 +372,7 @@ In this project we create new partners and attach messages sent to telegram bot.
 Odoo Messages prefixed with ``/telegram`` are sent back to telegram.
 
 To try it, you need to install this module in demo mode. Also, your odoo
-instance must be accessable over internet to receive telegram webhooks. Due to
+instance must be accessible over internet to receive telegram webhooks. Due to
 telegram requirements, your web server must use http**s** connection.
 
 How it works
@@ -388,7 +388,7 @@ How it works
 
 *DB trigger* waits for a message attached to a telegram partner (telegram partners are filtered by **Internal Reference** field). If the message has ``/telegram`` prefix, task's code is run:
 
-* a message copy (after removeing the prefix) is sent to corresponding telegram user
+* a message copy (after removing the prefix) is sent to corresponding telegram user
 * attach report message to the partner record
 
 Configuration
@@ -495,15 +495,18 @@ Usage
 
 * Go back to the *Demo Odoo2odoo Integration* project in our Odoo
 * Click ``Available Tasks`` tab
+* Click ``[Edit]``
 * Go to ``Sync Remote Partners Updates`` task
 * Click on ``Available Triggers`` tab and go inside ``CHECK_EXTERNAL_ODOO`` trigger
+* Configure cron
 * Make trigger Active on the upper right corner
+* Click ``[Save]``
 
 * Then you can trigger synchronization in some of the following ways:
 
   1. Click ``[Run Manually]`` inside the trigger
 
-  2. Simply wait up to 15 minutes :)
+  2. Simply wait up to cron job will start on a schedule :)
 
 * Now open the partner in our Odoo
 * RESULT: avatar is synced from external Odoo
@@ -557,8 +560,8 @@ with success, but label was not attached) or if odoo was stopped when github
 tried to notify about updates. In some cases, we can just retry the handler
 (e.g. there was an error on api request to github/trello, then the system tries
 few times to repeat label attaching/detaching). As a solution for cases when
-retrieng didn't help (e.g. api is still not working) or cannot help (e.g. odoo
-didn't get webhhook notification), we run a *Cron Trigger* at night to check for
+retrying didn't help (e.g. api is still not working) or cannot help (e.g. odoo
+didn't get webhook notification), we run a *Cron Trigger* at night to check for
 labels mismatch and synchronize them. In ``LABELS_MERGE_STRATEGY`` you can
 choose which strategy to use:
 
@@ -588,6 +591,7 @@ Configuration
 
     * Open *CONFLICT_RESOLVING* Cron
     * Change **Next Execution Date** in webhook to the night time
+    * Set **Number of Calls**, a negative value means no limit (e.g. `-1`)
     * Make it active on the upper right corner
   * Click ``[Save]``
 * Make integration Active on the upper right corner
@@ -601,11 +605,10 @@ Configuration
 
       .. code-block:: nginx
 
-            location /website/action-json/ {
-                proxy_set_header Content-Type "application/json";
-                proxy_set_header Host $host;
-                proxy_pass http://localhost:8069;
-            }
+        location /website/action-json/ {
+            return 200 "{}";
+        }
+
 
   * After a successful *SETUP_TRELLO* trigger run, return everything to its original position, otherwise the project will not work correctly
 
@@ -624,7 +627,8 @@ Usage
 * Post a message
 * Now go back to the trello card
 * RESULT: you see a copy of the message
-* You can also add/remove github issue labels or trello card labels.
+* You can also add/remove github issue labels or trello card labels (note that the name of the label must be added
+  in Trello so that there are no errors in the GitHub).
 
   * RESULT: once you change them on one side, after short time, you will see the changes on another side
 
@@ -649,7 +653,7 @@ Usage
 
   2. Change **Next Execution Date** to a past time and wait up to 1 minute
 
-* RESULT: the github issue and corresponding trello card the same set of labels. The merging is done according to selected stragegy in ``LABELS_MERGE_STRATEGY`` parameter.
+* RESULT: the github issue and corresponding trello card the same set of labels. The merging is done according to selected strategy in ``LABELS_MERGE_STRATEGY`` parameter.
 
 
 **Syncing all existing Github issues.**
@@ -657,7 +661,7 @@ Usage
 * Open menu ``[[ Sync Studio ]] >> Projects``
 * Select *Demo Tello-Github Integration* project
 * Click button ``[Run Now]`` near to ``PUSH_ALL_ISSUES`` manual trigger
-* It will start asyncronious jobs. You can check progress via button *Jobs*
+* It will start asynchronous jobs. You can check progress via button *Jobs*
 * After some time open Trello
 
   * RESULT: copies of all *open* github issues are in trello; they have *GITHUB:* prefix (can be configured in project parameter ISSUE_FROM_GITHUB_PREFIX)
