@@ -8,7 +8,7 @@
 Installation
 ============
 
-* Make configuration required for `queue_job <https://apps.odoo.com/apps/modules/12.0/queue_job/#id12>`__ module. In particular:
+* Make configuration required for `queue_job <https://apps.odoo.com/apps/modules/13.0/queue_job/#id12>`__ module. In particular:
 
   * add ``queue_job`` to `server wide modules <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
@@ -439,7 +439,7 @@ You can continue chatting in this way
 Demo Project: Odoo2odoo
 =======================
 
-In this project we push partners to external Odoo 12.0 and sync back avatar changes.
+In this project we push partners to external Odoo 13.0 and sync back avatar changes.
 
 To try it, you need to install this module in demo mode.
 
