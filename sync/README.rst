@@ -94,12 +94,12 @@ Contributors
 Further information
 ===================
 
-HTML Description: https://apps.odoo.com/apps/modules/12.0/sync/
+HTML Description: https://apps.odoo.com/apps/modules/13.0/sync/
 
 Usage instructions: `<doc/index.rst>`__
 
 Changelog: `<doc/changelog.rst>`_
 
-Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/12.0/sync.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/12.0/sync.atom>`_
+Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/13.0/sync.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/13.0/sync.atom>`_
 
-Tested on Odoo 12.0 3fbfa87df85d6463dfcba47416f360fcdef4448e
+Tested on Odoo 13.0 9fe7d55e64867d177519e99cc45f9ecfeb3746a3

@@ -34,7 +34,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
         <field name="common_code">
 <![CDATA[
 PARTNER_REL = "odoo2odoo_partner"
-IMAGE_FIELD = "image"
+IMAGE_FIELD = "image_1920"
 def partner2vals(partner):
     FIELDS = ["name", IMAGE_FIELD]
     res = {}
@@ -42,6 +42,8 @@ def partner2vals(partner):
         res[f] = getattr(partner, f)
     if res[IMAGE_FIELD]:
         res[IMAGE_FIELD] = res[IMAGE_FIELD].decode("utf-8")
+    else:
+        res[IMAGE_FIELD] = False
     return res
 
 def parse_date(s):

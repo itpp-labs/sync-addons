@@ -291,7 +291,7 @@
     <act_window
         id="sync_make_module_action"
         name="Export to XML"
-        src_model="sync.project"
+        binding_model="sync.project"
         res_model="sync.make.module"
         view_mode="form"
         target="new"
