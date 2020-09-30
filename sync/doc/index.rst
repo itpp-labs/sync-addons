@@ -153,7 +153,9 @@ Base
   * ``LOG_INFO``
   * ``LOG_WARNING``
   * ``LOG_ERROR``
-  * ``LOG_CRITICAL``
+  *
+
+* ``type2str``: get type of the given object
 
 * ``log_transmission(recipient_str, data_str)``: report on data transfer to external recipients
 

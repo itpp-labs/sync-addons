@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
@@ -195,6 +196,9 @@ class SyncProject(models.Model):
             if k.startswith("_"):
                 raise ValidationError(_("You cannot use %s with setattr") % k)
             return setattr(o, k, v)
+
+        def type2str(obj):
+            return "%s" % type(obj)
 
         context = dict(self.env.context, log_function=log)
         env = self.env(context=context)
