@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_link_view_tree" model="ir.ui.view">
+        <field name="name">sync.link.tree</field>
+        <field name="model">sync.link</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="relation" />
+                <field name="system1" />
+                <field name="ref1" />
+                <field name="system2" />
+                <field name="ref2" />
+                <field name="model" />
+                <field name="date" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_link_view_form" model="ir.ui.view">
+        <field name="name">sync.link.form</field>
+        <field name="model">sync.link</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="relation" />
+                            <field name="system1" />
+                            <field name="ref1" />
+                            <field name="system2" />
+                            <field name="ref2" />
+                            <field name="model" />
+                            <field name="date" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_link_view_search" model="ir.ui.view">
+        <field name="name">sync.link.search</field>
+        <field name="model">sync.link</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="ref1"
+                    string="Reference"
+                    filter_domain="['|', ('ref1', '=', self), ('ref2', '=', self)]"
+                />
+                <filter
+                    string="Odoo Links"
+                    name="odoo"
+                    domain="[('system2', '=', '__odoo__')]"
+                />
+                <filter
+                    string="External Links"
+                    name="external"
+                    domain="[('system2', '!=', '__odoo__')]"
+                />
+                <group expand="0" string="Group By">
+                    <filter
+                        string="Relation"
+                        name='relation'
+                        context="{'group_by':'relation'}"
+                    />
+                    <filter
+                        string="Odoo Model"
+                        name='model'
+                        context="{'group_by':'model'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="sync_link_action" model="ir.actions.act_window">
+        <field name="name">Links</field>
+        <field name="res_model">sync.link</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="sync_link_view_search" />
+    </record>
+    <menuitem
+        id="sync_link_menu_action"
+        name="Links"
+        parent="sync_menu"
+        action="sync_link_action"
+        groups="base.group_no_one"
+        sequence="100"
+    />
+</odoo>

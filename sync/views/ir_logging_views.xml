@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="ir_logging_view_tree" model="ir.ui.view">
+        <field name="name">ir.logging.tree</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <tree
+                decoration-muted="level == 'debug'"
+                decoration-danger="level in ['error', 'critical']"
+                decoration-warning="level == 'warning'"
+            >
+                <field name="create_date" />
+                <field name="level" />
+                <field name="name" />
+                <field name="message_short" />
+                <field name="sync_project_id" />
+                <field name="sync_task_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="ir_logging_view_form" model="ir.ui.view">
+        <field name="name">ir.logging.form</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="create_date" />
+                        <field name="create_uid" />
+                        <field name="sync_job_id" />
+                        <field name="sync_project_id" />
+                        <field name="sync_task_id" />
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="level" />
+                        <field name="name" />
+                    </group>
+                </group>
+                <field name="message" />
+            </form>
+        </field>
+    </record>
+    <record id="ir_logging_view_search" model="ir.ui.view">
+        <field name="name">ir.logging.search</field>
+        <field name="model">ir.logging</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter
+                    string="Non-debug"
+                    name="non_debug"
+                    domain="[('level', '!=', 'debug')]"
+                />
+                <filter
+                    string="Warnings"
+                    name="warning"
+                    domain="[('level', '=', 'warning')]"
+                />
+                <filter
+                    string="Errors"
+                    name="error_and_critical"
+                    domain="[('level', 'in', ['error', 'critical'])]"
+                />
+                <group expand="0" string="Group By">
+                    <filter
+                        string="Sync Project"
+                        name='sync_project_id'
+                        context="{'group_by':'sync_project_id'}"
+                    />
+                    <filter
+                        string="Sync Task"
+                        name='sync_task_id'
+                        context="{'group_by':'sync_task_id'}"
+                    />
+                    <filter
+                        string="Sync Job"
+                        name='sync_job_id'
+                        context="{'group_by':'sync_job_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="ir_logging_action" model="ir.actions.act_window">
+        <field name="name">Logs</field>
+        <field name="res_model">ir.logging</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_job_id', '!=', False)]</field>
+        <field name="search_view_id" ref="ir_logging_view_search" />
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
+        />
+    </record>
+    <menuitem
+        id="ir_logging_menu_action"
+        name="Logs"
+        parent="sync_menu"
+        action="ir_logging_action"
+        sequence="30"
+    />
+    <record id="ir_logging_action_from_project" model="ir.actions.act_window">
+        <field name="name">Project Logs</field>
+        <field name="res_model">ir.logging</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_project_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
+        />
+    </record>
+    <record id="ir_logging_action_from_task" model="ir.actions.act_window">
+        <field name="name">Task Logs</field>
+        <field name="res_model">ir.logging</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_task_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
+        />
+    </record>
+    <record id="ir_logging_action_from_job" model="ir.actions.act_window">
+        <field name="name">Job Logs</field>
+        <field name="res_model">ir.logging</field>
+        <field name="view_mode">tree,form</field>
+        <!-- TODO: use search filters instead -->
+        <field name="domain">[('sync_job_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
+        />
+    </record>
+</odoo>
