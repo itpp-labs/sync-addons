@@ -15,5 +15,9 @@ class IrActionsServer(models.Model):
     @api.model
     def _get_eval_context(self, action=None):
         eval_context = super(IrActionsServer, self)._get_eval_context(action)
-        eval_context["requests"] = requests
+
+        def make_request(*args, **kwargs):
+            return requests.request(*args, **kwargs)
+
+        eval_context["make_request"] = make_request
         return eval_context

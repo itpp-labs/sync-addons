@@ -8,7 +8,7 @@
         <field name="code">
 log("code is executed")
 # don't make actual request, but just check the package is available
-requests.get
+make_request
 </field>
     </record>
     <record id="test_rule" model="base.action.rule">
