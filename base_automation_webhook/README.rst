@@ -6,7 +6,7 @@
  Outgoing Webhooks
 ===================
 
-The modules extends ``base.action.rule`` model to allow sending webhook on Odoo events. Technically, it adds ``requests`` package to eval context.
+The modules extends ``base.action.rule`` model to allow sending webhook on Odoo events. Technically, it adds ``make_request(...)`` which is equal to ``requests.request(...)``
 
 Credits
 =======
@@ -44,4 +44,4 @@ Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/misc-addons/commits/13.0/base_automation_webhook.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/misc-addons/commits/13.0/base_automation_webhook.atom>`_
 
-Tested on Odoo 12.0 0d4feadef836338acccbd42dfeefc5b5304fc8fa
+Tested on Odoo 13.0 d3f043345c04674bba81762d0afd88dab52aab36
