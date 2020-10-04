@@ -11,17 +11,18 @@ from pytz import timezone
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict
 from odoo.tools.safe_eval import safe_eval, test_python_expr
 from odoo.tools.translate import _
 
 from odoo.addons.base.models.ir_actions import dateutil
 from odoo.addons.queue_job.exception import RetryableJobError
 
-from ..tools import safe_eval_extra, test_python_expr_extra
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
 
 _logger = logging.getLogger(__name__)
 DEFAULT_LOG_NAME = "Log"
+EVAL_CONTEXT_PREFIX = "_eval_context_"
 
 
 def cleanup_eval_context(eval_context):
@@ -40,22 +41,9 @@ class SyncProject(models.Model):
         "Name", help="e.g. Legacy Migration or eCommerce Synchronization", required=True
     )
     active = fields.Boolean(default=True)
-    secret_code = fields.Text(
-        "Protected Code",
-        groups="sync.sync_group_manager",
-        help="""First code to eval.
+    eval_context = fields.Selection([], string="Evaluation context")
+    eval_context_description = fields.Text(compute="_compute_eval_context_description")
 
-        Secret Params and package importing are available here only.
-
-        Any variables and functions that don't start with underscore symbol will be available in Common Code and task's code.
-
-        To log transmitted data, use log_transmission(receiver, data) function.
-        """,
-    )
-
-    secret_code_readonly = fields.Text(
-        "Protected Code (Readonly)", compute="_compute_secret_code_readonly"
-    )
     common_code = fields.Text(
         "Common Code",
         help="""
@@ -88,9 +76,12 @@ class SyncProject(models.Model):
     log_ids = fields.One2many("ir.logging", "sync_project_id")
     log_count = fields.Integer(compute="_compute_log_count")
 
-    def _compute_secret_code_readonly(self):
+    def _compute_eval_context_description(self):
         for r in self:
-            r.secret_code_readonly = (r.sudo().secret_code or "").strip()
+            if not r.eval_context:
+                r.eval_context_description = ""
+            method = getattr(self, EVAL_CONTEXT_PREFIX + r.eval_context)
+            r.eval_context_description = method.__doc__
 
     def _compute_network_access_readonly(self):
         for r in self:
@@ -119,15 +110,8 @@ class SyncProject(models.Model):
             r.trigger_button_count = len(r.mapped("task_ids.button_ids"))
             r.trigger_button_ids = r.mapped("task_ids.button_ids")
 
-    @api.constrains("secret_code", "common_code")
+    @api.constrains("common_code")
     def _check_python_code(self):
-        for r in self.sudo().filtered("secret_code"):
-            msg = test_python_expr_extra(
-                expr=(r.secret_code or "").strip(), mode="exec"
-            )
-            if msg:
-                raise ValidationError(msg)
-
         for r in self.sudo().filtered("common_code"):
             msg = test_python_expr(expr=(r.common_code or "").strip(), mode="exec")
             if msg:
@@ -195,10 +179,6 @@ class SyncProject(models.Model):
         for p in self.param_ids:
             params[p.key] = p.value
 
-        secrets = AttrDict()
-        for p in self.sudo().secret_ids:
-            secrets[p.key] = p.value
-
         webhooks = AttrDict()
         for w in self.task_ids.mapped("webhook_ids"):
             webhooks[w.trigger_name] = w.website_url
@@ -230,7 +210,6 @@ class SyncProject(models.Model):
                 "LOG_ERROR": LOG_ERROR,
                 "LOG_CRITICAL": LOG_CRITICAL,
                 "params": params,
-                "secrets": secrets,
                 "webhooks": webhooks,
                 "user": self.env.user,
                 "trigger": job.trigger_name,
@@ -248,17 +227,25 @@ class SyncProject(models.Model):
                 "timezone": timezone,
                 "b64encode": base64.b64encode,
                 "b64decode": base64.b64decode,
+                "type2str": type2str,
+                "DEFAULT_SERVER_DATETIME_FORMAT": DEFAULT_SERVER_DATETIME_FORMAT,
             }
         )
         reading_time = time.time() - start_time
 
-        start_time = time.time()
-        safe_eval_extra(
-            self.secret_code_readonly, eval_context, mode="exec", nocopy=True
-        )
-        executing_secret_code = time.time() - start_time
-        del eval_context["secrets"]
-        cleanup_eval_context(eval_context)
+        executing_custom_context = 0
+        if self.eval_context:
+            start_time = time.time()
+
+            secrets = AttrDict()
+            for p in self.sudo().secret_ids:
+                secrets[p.key] = p.value
+            eval_context_frozen = frozendict(eval_context)
+            method = getattr(self, EVAL_CONTEXT_PREFIX + self.eval_context)
+            eval_context = dict(**eval_context, **method(secrets, eval_context_frozen))
+            cleanup_eval_context(eval_context)
+
+            executing_custom_context = time.time() - start_time
 
         start_time = time.time()
         safe_eval(
@@ -266,8 +253,8 @@ class SyncProject(models.Model):
         )
         executing_common_code = time.time() - start_time
         log(
-            "Evalution context is prepared. Reading project data: %05.3f sec; Executing secret code: %05.3f sec; Executing Common Code: %05.3f sec"
-            % (reading_time, executing_secret_code, executing_common_code),
+            "Evalution context is prepared. Reading project data: %05.3f sec; preparing custom evalution context: %05.3f sec; Executing Common Code: %05.3f sec"
+            % (reading_time, executing_custom_context, executing_common_code),
             LOG_DEBUG,
         )
         cleanup_eval_context(eval_context)
@@ -284,7 +271,7 @@ class SyncProjectParamMixin(models.AbstractModel):
     value = fields.Char("Value")
     description = fields.Char("Description", translate=True)
     url = fields.Char("Documentation")
-    project_id = fields.Many2one("sync.project")
+    project_id = fields.Many2one("sync.project", ondelete="cascade")
 
     _sql_constraints = [("key_uniq", "unique (project_id, key)", "Key must be unique.")]
 

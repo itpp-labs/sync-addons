@@ -5,220 +5,7 @@
     <record id="trello-github_project" model="sync.project">
         <field name="name">Demo Trello-Github Integration</field>
         <field name="active" eval="False" />
-        <field
-            name="secret_code"
-        ><![CDATA[# consts
-GITHUB="github"
-TRELLO="trello"
-
-
-
-def _trello(secrets):
-    for key in ["TRELLO_TOKEN", "TRELLO_KEY", "TRELLO_BOARD_ID"]:
-        if not getattr(secrets, key):
-            raise Exception("{} is not set".format(key))
-
-    # https://github.com/sarumont/py-trello/tree/master/trello
-    from trello import TrelloClient
-    from trello.exceptions import ResourceUnavailable
-    client = TrelloClient(
-        api_key=secrets.TRELLO_KEY,
-        api_secret=secrets.TRELLO_TOKEN,
-    )
-    board = client.get_board(secrets.TRELLO_BOARD_ID)
-
-    # Webhook
-    def set_webhook(url):
-        id_model = board.id
-        desc = "Demo Trello-Github Integration"
-        log_transmission(TRELLO, "set webhook: {}".format([url, id_model, desc]))
-
-        # original create_hook is not used. See: https://github.com/sarumont/py-trello/pull/323
-        # hook = client.create_hook(url, id_model, desc, token=secrets.TRELLO_TOKEN)
-        token = secrets.TRELLO_TOKEN
-        res = client.fetch_json(
-            "tokens/{}/webhooks/".format(token),
-            http_method="POST",
-            post_args={
-                "callbackURL": url,
-                "idModel": id_model,
-                "description": desc,
-            }
-        )
-        log("Trello response: %s" % json.dumps(res))
-
-    def delete_webhooks():
-        for hook in client.list_hooks(secrets.TRELLO_TOKEN):
-            if hook.id_model == board.id:
-                log_transmission(TRELLO, "delete webhook: {}".format([hook.callback_url]))
-                hook.delete()
-
-    # Trello cards
-    def card_create(name, issue_id):
-        description = "https://github.com/{}/issues/{}".format(secrets.GITHUB_REPO, issue_id)
-        log_transmission(TRELLO, "create: {}".format([name, description]))
-        card_list = board.open_lists()[0]
-        card = card_list.add_card(name, description)
-        return card.id
-
-    def card_add_labels(card_id, tlabel_ids):
-        log_transmission(TRELLO, "add labels to card#%s: %s" % (card_id, tlabel_ids))
-        card = client.get_card(card_id)
-        for label_id in tlabel_ids:
-            try:
-                label = client.get_label(label_id, board.id)
-            except ResourceUnavailable:
-                log("Label is deleted in trello: %s" % label_id, LOG_WARNING)
-                continue
-            if label_id in card.idLabels:
-                log("Label is already in card: %s" % label)
-                continue
-            card.add_label(label)
-
-    def card_remove_labels(card_id, tlabel_ids):
-        log_transmission(TRELLO, "remove labels from card#%s: %s" % (card_id, tlabel_ids))
-        card = client.get_card(card_id)
-        for label_id in tlabel_ids:
-            label = client.get_label(label_id, board.id)
-            if label_id not in card.idLabels:
-                log("Label is already removed: %s" % label)
-                continue
-            card.remove_label(label)
-
-    def card_add_message(card_id, message):
-        log_transmission(TRELLO, "add message to card#%s: %s" % (card_id, message))
-        card = client.get_card(card_id)
-        card.comment(message)
-
-    # Trello labels
-    def label_create(name, color):
-        log_transmission(TRELLO, "create label: %s" % (name))
-        label = board.add_label(name, color)
-        return label.id
-
-    def label_delete(tlabel_id):
-        log_transmission(TRELLO, "delete label: %s" % (tlabel_id))
-        board.delete_label(tlabel_id)
-
-    def label_update(tlabel_id, new_name, new_color):
-        log_transmission(TRELLO, "label#%s update: %s" % (tlabel_id, [new_name, new_color]))
-        res = client.fetch_json(
-          '/labels/{0}'.format(tlabel_id),
-          http_method='PUT',
-          post_args={'id': tlabel_id, 'name': new_name, 'color': new_color})
-        log("Trello response: {}".format(res))
-
-    def get_labels_colors():
-        return dict([(lb.id, lb.color) for lb in board.get_labels()])
-
-    def get_all_cards():
-        return [{"id": card.id, "idLabels": card.idLabels} for card in board.all_cards()]
-
-    return {
-        "set_webhook": set_webhook,
-        "delete_webhooks": delete_webhooks,
-        "card_create": card_create,
-        "card_add_labels": card_add_labels,
-        "card_remove_labels": card_remove_labels,
-        "card_add_message": card_add_message,
-        "label_create": label_create,
-        "label_delete": label_delete,
-        "label_update": label_update,
-        "get_labels_colors": get_labels_colors,
-        "get_all_cards": get_all_cards,
-    }
-
-
-# Github
-def _github(secrets):
-    # https://pygithub.readthedocs.io/en/latest/
-    from github import Github
-    from github.GithubException import UnknownObjectException
-    if not secrets.GITHUB_TOKEN:
-        raise Exception("github token is not set")
-    if not secrets.GITHUB_REPO:
-        raise Exception("github repo is not set")
-
-    g = Github(secrets.GITHUB_TOKEN)
-    repo = g.get_repo(secrets.GITHUB_REPO)
-
-    # Github Webhook
-    def set_webhook(url, events):
-        # API: https://docs.github.com/en/rest/reference/repos#create-a-repository-webhook
-        # Events: https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads
-        config = {"url": url, "content_type": "json"}
-        log_transmission(GITHUB, "set webhook: {}".format([config, events]))
-        repo.create_hook("web", config, events)
-
-    # Github Issues
-    def issue_add_labels(issue_id, glabel_ids):
-        issue = repo.get_issue(int(issue_id))
-        labels = ids2labels(glabel_ids)
-        log_transmission(GITHUB, "add labels: {}".format([issue_id, labels]))
-        for lb in labels:
-            issue.add_to_labels(lb)
-
-    def issue_remove_labels(issue_id, glabel_ids):
-        issue = repo.get_issue(int(issue_id))
-        labels = ids2labels(glabel_ids)
-        log_transmission(GITHUB, "remove labels: {}".format([issue_id, labels]))
-        for lb in labels:
-            issue.remove_from_labels(lb)
-
-    # Github Labels
-    def ids2labels(glabel_ids):
-        # the arg is list of str!
-        res = []
-        for label in repo.get_labels():
-            if str(label.raw_data["id"]) in glabel_ids:
-                res.append(label)
-        return res
-
-    def label_create(name, color):
-        # check first if label already exist:
-        label = None
-        try:
-            log_transmission(GITHUB, "get label: %s" % (name))
-            label = repo.get_label(name)
-        except UnknownObjectException:
-            pass
-        if not label:
-            log_transmission(GITHUB, "create label: %s" % (name))
-            label = repo.create_label(name, color)
-        return label.raw_data["id"]
-
-    def label_delete(glabel_id):
-        labels = ids2labels([int(glabel_id)])
-        lb = labels[0]
-        log_transmission(GITHUB, "delete label: {}".format([lb]))
-        lb.delete()
-
-    def label_update(glabel_id, new_name, new_color):
-        labels = ids2labels([int(glabel_id)])
-        lb = labels[0]
-        log_transmission(GITHUB, "update label: {}".format([lb, new_name, new_color]))
-        lb.edit(new_name, new_color)
-
-    def get_all_issues(page=None):
-        issues =repo.get_issues()
-        if page is not None:
-            issues = issues.get_page(page)
-        return [{"id": issue.number, "name": issue.title, "labels": issue.raw_data["labels"], "body": issue.body} for issue in issues]
-
-    return {
-        "set_webhook": set_webhook,
-        "issue_add_labels": issue_add_labels,
-        "issue_remove_labels": issue_remove_labels,
-        "label_create": label_create,
-        "label_delete": label_delete,
-        "label_update": label_update,
-        "get_all_issues": get_all_issues,
-    }
-
-github = _github(secrets)
-trello = _trello(secrets)
-from math import sqrt
-]]></field>
+        <field name="eval_context">trello_github</field>
         <field
             name="common_code"
         ><![CDATA[
@@ -232,7 +19,7 @@ def get_related_label(from_id, name, color, from_system, to_system):
     if elink:
         return elink.get(to_system)[0]
     else:
-        to_id = github["label_create"](name, color) if to_system == GITHUB else trello["label_create"](name, color)
+        to_id = github.label_create(name, color) if to_system == GITHUB else trello.label_create(name, color)
         elink = set_link(LABELS_REL, {from_system: from_id, to_system: to_id})
         return to_id
 
@@ -247,7 +34,7 @@ def github2trello_labels(labels):
     return tlabel_ids
 
 def trello2github_labels(labels):
-    id2color = trello["get_labels_colors"]()
+    id2color = trello.get_labels_colors()
     glabel_ids = []
     for lb in labels:
         label_id = lb["id"]
@@ -404,14 +191,14 @@ INTERSECTION: remove labes that are not attached on another side
         ><![CDATA[
 def handle_button():
     if trigger == "SETUP_GITHUB":
-        github["set_webhook"](webhooks.GITHUB_ISSUE_UPDATES, ["issues"])
-        github["set_webhook"](webhooks.GITHUB_ISSUE_COMMENT, ["issue_comment"])
-        github["set_webhook"](webhooks.GITHUB_LABEL_UPDATES, ["label"])
+        github.set_webhook(webhooks.GITHUB_ISSUE_UPDATES, ["issues"])
+        github.set_webhook(webhooks.GITHUB_ISSUE_COMMENT, ["issue_comment"])
+        github.set_webhook(webhooks.GITHUB_LABEL_UPDATES, ["label"])
     elif trigger == "SETUP_TRELLO":
-        trello["set_webhook"](webhooks.TRELLO_CARD_UPDATES)
-        trello["set_webhook"](webhooks.TRELLO_LABEL_UPDATES)
+        trello.set_webhook(webhooks.TRELLO_CARD_UPDATES)
+        trello.set_webhook(webhooks.TRELLO_LABEL_UPDATES)
     elif trigger == "DELETE_TRELLO_WEBHOOKS":
-        trello["delete_webhooks"]()
+        trello.delete_webhooks()
     else:
         raise Exception("Unknown button event: %s" % trigger)
 ]]></field>
@@ -475,7 +262,7 @@ def handle_webhook_issue_comment(data):
     card_id = issue_id2card_id(issue_id)
     issue_message = data["comment"]["body"]
     message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
-    trello["card_add_message"](card_id, message)
+    trello.card_add_message(card_id, message)
 
 def handle_webhook_issues_update(data):
     # https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#issues
@@ -487,14 +274,14 @@ def handle_webhook_issues_update(data):
     issue_name = issue["title"]
     card_id = issue_id2card_id(issue_id)
     if not card_id:
-        card_id = trello["card_create"](params.ISSUE_FROM_GITHUB_PREFIX + issue_name, issue_id)
+        card_id = trello.card_create(params.ISSUE_FROM_GITHUB_PREFIX + issue_name, issue_id)
         set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
 
     if data["action"] == "opened":
         issue_message = issue["body"]
         if issue_message:
             message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
-            trello["card_add_message"](card_id, message)
+            trello.card_add_message(card_id, message)
 
     # attached labels:
     labels = []
@@ -506,7 +293,7 @@ def handle_webhook_issues_update(data):
         tlabel_ids = github2trello_labels(labels)
 
         if tlabel_ids:
-            trello["card_add_labels"](card_id, tlabel_ids)
+            trello.card_add_labels(card_id, tlabel_ids)
 
     # detached labels:
     if data["action"] == "unlabeled":
@@ -517,7 +304,7 @@ def handle_webhook_issues_update(data):
         tlabel_ids = github2trello_labels(labels)
 
         if tlabel_ids:
-            trello["card_remove_labels"](card_id, tlabel_ids)
+            trello.card_remove_labels(card_id, tlabel_ids)
 
 def issue_id2card_id(issue_id):
     elink = get_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: None})
@@ -531,7 +318,7 @@ def handle_button():
 def fetch_github_issues(page=0):
     CHUNK_SIZE=10
     # fetch page
-    issues = github["get_all_issues"](page)
+    issues = github.get_all_issues(page)
     if not issues:
         log("No more issues. Page={}".format(page))
         return
@@ -549,19 +336,19 @@ def process_github_issues(issues):
             log("Issue is already pushed: %s" % data["id"])
             continue
         issue_name = params.ISSUE_FROM_GITHUB_PREFIX + data["name"]
-        card_id = trello["card_create"](issue_name, issue_id)
+        card_id = trello.card_create(issue_name, issue_id)
         set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
 
         issue_message = data["body"]
         if issue_message:
             message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
-            trello["card_add_message"](card_id, message)
+            trello.card_add_message(card_id, message)
 
         labels = data["labels"]
         tlabel_ids = github2trello_labels(labels)
 
         if tlabel_ids:
-            trello["card_add_labels"](card_id, tlabel_ids)
+            trello.card_add_labels(card_id, tlabel_ids)
 ]]></field>
     </record>
     <record
@@ -614,9 +401,9 @@ def process_github_issues(issues):
     labels = [data["action"]["data"]["label"]]
     glabel_ids = trello2github_labels(labels)
     if action_type == "addLabelToCard":
-        github["issue_add_labels"](issue_id, glabel_ids)
+        github.issue_add_labels(issue_id, glabel_ids)
     elif action_type == "removeLabelFromCard":
-        github["issue_remove_labels"](issue_id, glabel_ids)
+        github.issue_remove_labels(issue_id, glabel_ids)
 
 
 ]]></field>
@@ -689,16 +476,16 @@ def process_github_issues(issues):
     tlabel_id = elinks.get(TRELLO)[0]
     if is_updated:
         if trigger == "TRELLO_LABEL_UPDATES":
-            github["label_update"](glabel_id, new_name, new_color)
+            github.label_update(glabel_id, new_name, new_color)
         elif trigger == "GITHUB_LABEL_UPDATES":
-            trello["label_update"](tlabel_id, new_name, new_color)
+            trello.label_update(tlabel_id, new_name, new_color)
 
     if is_deleted:
         elinks.unlink()
         if trigger == "TRELLO_LABEL_UPDATES":
-            github["label_delete"](glabel_id)
+            github.label_delete(glabel_id)
         elif trigger == "GITHUB_LABEL_UPDATES":
-            trello["label_delete"](tlabel_id)
+            trello.label_delete(tlabel_id)
 
 ]]></field>
     </record>
@@ -733,7 +520,7 @@ def handle_cron():
     issue_ids = elinks.get(GITHUB)
     # https://docs.github.com/en/rest/reference/issues#list-repository-issues
     # issue is {id: int, labels: [{id: int, name: str, ...}]}
-    issues = github["get_all_issues"]()
+    issues = github.get_all_issues()
     # issue_id -> issue
     issues_index = {}
     for issue in issues:
@@ -745,7 +532,7 @@ def handle_cron():
     # https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-cards-get
     # https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-get
     # card is dict {id: int, idLabels: [int], ...}
-    cards = trello["get_all_cards"]()
+    cards = trello.get_all_cards()
     # card_id -> card
     cards_index = {}
     for card in cards:
@@ -791,13 +578,13 @@ def handle_cron():
             raise Exception("Unknown LABELS_MERGE_STRATEGY: %s" % LABELS_MERGE_STRATEGY, level=LOG_ERROR)
 
         if tlinks_add:
-            trello["card_add_labels"](card_id, tlinks_add.get(TRELLO))
+            trello.card_add_labels(card_id, tlinks_add.get(TRELLO))
         if glinks_add:
-            github["issue_add_labels"](issue_id, glinks_add.get(GITHUB))
+            github.issue_add_labels(issue_id, glinks_add.get(GITHUB))
         if tlinks_remove:
-            trello["card_remove_labels"](card_id, tlinks_remove.get(TRELLO))
+            trello.card_remove_labels(card_id, tlinks_remove.get(TRELLO))
         if glinks_remove:
-            github["issue_remove_labels"](issue_id, glinks_remove.get(GITHUB))
+            github.issue_remove_labels(issue_id, glinks_remove.get(GITHUB))
 
         ]]></field>
     </record>

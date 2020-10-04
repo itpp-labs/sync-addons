@@ -152,31 +152,11 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="code" string="Shared Code">
-                            <separator string="Protected Code" />
-                            <p>
-                                <em>
-                                    # Protected code can be edited by Sync Managers
-                                    only.
-                                    <br />
-                                    # Python statement
-                                    <code>import</code>
-                                    and variable
-                                    <code>secrets</code>
-                                    can be used in this code only.
-                                    <br />
-                                    # Add underscore prefix to variables and functions
-                                    (e.g.
-                                    <code>_something</code>
-                                    ) to make them not available in task code and common
-                                    code
-                                </em>
-                            </p>
-                            <field
-                                name="secret_code"
-                                widget="ace"
-                                options="{'mode': 'python'}"
-                            />
+                        <page name="code" string="Evaluation Context">
+                            <group>
+                                <field name="eval_context" />
+                            </group>
+                            <field name="eval_context_description" />
                             <separator string="Common Code" />
                             <p>
                                 <em>
