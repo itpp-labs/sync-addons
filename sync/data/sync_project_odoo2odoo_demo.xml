@@ -6,31 +6,7 @@
     <record id="odoo2odoo_project" model="sync.project">
         <field name="name">Demo Odoo2odoo Integration</field>
         <field name="active" eval="False" />
-        <field name="secret_code">
-<![CDATA[
-def _odoo_execute_kw(secrets):
-    import xmlrpc.client as _client
-    if not all([params.URL, params.DB, secrets.USERNAME, secrets.PASSWORD]):
-        raise UserError("External Odoo Credentials are not set")
-
-    def f(model, method, *args, **kwargs):
-        log_transmission("XMLRPC DB=%s URL=%s" % (params.DB, params.URL), json.dumps([method, args, kwargs]))
-        try:
-            common = _client.ServerProxy('{}/xmlrpc/2/common'.format(params.URL))
-            uid = common.authenticate(params.DB, secrets.USERNAME, secrets.PASSWORD, {})
-            models = _client.ServerProxy('{}/xmlrpc/2/object'.format(params.URL))
-        except OSError:
-            raise RetryableJobError("Error on connecting to external Odoo")
-        res = models.execute_kw(params.DB, uid, secrets.PASSWORD, model, method, args, kwargs)
-        log("Response: %s" % res, level="debug")
-        return res
-    return f
-
-odoo_execute_kw = _odoo_execute_kw(secrets)
-
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-]]>
-        </field>
+        <field name="eval_context">odoo2odoo</field>
         <field name="common_code">
 <![CDATA[
 PARTNER_REL = "odoo2odoo_partner"
@@ -138,7 +114,7 @@ def handle_cron():
     external_partners = odoo_execute_kw(
         "res.partner",
         "search_read",
-        [["id", "in", links.external], ["write_date", ">", links.sync_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)]],
+        [["id", "in", [int(id) for id in links.external]], ["write_date", ">", links.sync_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)]],
         fields=["write_date", IMAGE_FIELD]
     )
     # Save fetched data in local Odoo
