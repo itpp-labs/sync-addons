@@ -6,7 +6,7 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY""",
     "category": "Extra Tools",
     "images": [],
-    "version": "13.0.1.0.0",
+    "version": "13.0.2.0.1",
     "application": True,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "apps@it-projects.info",
