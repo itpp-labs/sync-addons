@@ -22,7 +22,7 @@ class SyncTask(models.Model):
     _name = "sync.task"
     _description = "Sync Task"
 
-    project_id = fields.Many2one("sync.project")
+    project_id = fields.Many2one("sync.project", ondelete="cascade")
     name = fields.Char("Name", help="e.g. Sync Products", required=True)
     code = fields.Text("Code")
     active = fields.Boolean(default=True)
@@ -165,3 +165,9 @@ class SyncTask(models.Model):
             name = r.project_id.name + ": " + r.name
             result.append((r.id, name))
         return result
+
+    def unlink(self):
+        self.with_context(active_test=False).mapped("cron_ids").unlink()
+        self.with_context(active_test=False).mapped("automation_ids").unlink()
+        self.with_context(active_test=False).mapped("webhook_ids").unlink()
+        return super(SyncTask, self).unlink()
