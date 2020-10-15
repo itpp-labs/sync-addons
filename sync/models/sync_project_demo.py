@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import json
@@ -80,6 +81,8 @@ class SyncProjectDemo(models.Model):
         * telegram.setWebhook
         * telegram.parse_data
         """
+        from odoo.tools import html2plaintext
+        from lxml.html.clean import Cleaner
 
         log_transmission = eval_context["log_transmission"]
 
@@ -109,7 +112,11 @@ class SyncProjectDemo(models.Model):
             }
         )
 
-        return {"telegram": telegram}
+        return {
+            "telegram": telegram,
+            "html2plaintext": html2plaintext,
+            "Cleaner": Cleaner,
+        }
 
     @api.model
     def _eval_context_trello_github(self, secrets, eval_context):
