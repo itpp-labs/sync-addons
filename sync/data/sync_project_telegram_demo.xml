@@ -20,7 +20,7 @@ def user2name(user):
 
 def html_sanitize_telegram(html):
     allowed_tags = set({"b", "i", "u", "s", "a", "code", "pre"})
-    cleaner = clean.Cleaner(safe_attrs_only=True, safe_attrs=set(), allow_tags=allowed_tags, remove_unknown_tags=False)
+    cleaner = Cleaner(safe_attrs_only=True, safe_attrs=set(), allow_tags=allowed_tags, remove_unknown_tags=False)
     html = cleaner.clean_html(html)
     # remove surrounding div
     return html[5:-6]
