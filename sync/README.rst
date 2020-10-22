@@ -21,7 +21,6 @@ Provides a single place to handle synchronization trigered by one of the followi
 
 Difference with built-in code evaluation:
 
-* Allows to add extra imports to eval context
 * Allows to use json format for incomming webhooks
 * Provides helpers for resource linking. See *Links* section in `<doc/index.rst>`__
 * Uses queue_job module as a job broker
@@ -44,7 +43,7 @@ If you run Odoo locally and need to test webhook, you can use ssh tunneling:
 
 * Connect your server:
 
-  * Edit file ``/etc/ssh/ssd_config``:
+  * Edit file ``/etc/ssh/sshd_config``:
 
     * Find ``GatewayPorts`` attribute and set value to ``yes``
 
@@ -89,7 +88,8 @@ Contributors
 ------------
 * `Ivan Yelizariev <https://twitter.com/yelizariev>`__:
 
-      * :one::zero: init version of the module
+      * :one::two: init version of the module
+      * :one::two: redesign module to prevent odoo container escapes
 
 Further information
 ===================
