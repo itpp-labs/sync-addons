@@ -141,7 +141,7 @@ class SyncProjectDemo(models.Model):
 
         # closure is not really needed, but let's keep as it was done in previous
         # version when it was mandatory
-        def _trello():
+        def _trello(secrets):
             for key in ["TRELLO_TOKEN", "TRELLO_KEY", "TRELLO_BOARD_ID"]:
                 if not getattr(secrets, key):
                     raise Exception("{} is not set".format(key))
