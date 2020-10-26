@@ -1,3 +1,8 @@
+`1.2.3`
+-------
+
+- **Fix:** error on logging with info level
+
 `1.2.2`
 -------
 
