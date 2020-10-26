@@ -1,3 +1,8 @@
+`1.1.10`
+--------
+
+- **Fix:** error on logging with info level
+
 `1.1.9`
 -------
 
