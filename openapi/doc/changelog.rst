@@ -1,3 +1,8 @@
+`1.1.9`
+-------
+
+- **Fix:** error on logging with info level
+
 `1.1.8`
 -------
 - **Fix:** error on creating openapi. namespace record with context presets
