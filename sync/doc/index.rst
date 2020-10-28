@@ -29,7 +29,7 @@ User Access Levels
 
 * ``Sync Studio: User``: read-only access
 * ``Sync Studio: Developer``: restricted write access
-* ``Sync Studio: Manager``: same as Developer, but with access to **Secrets** and **Protected Code**
+* ``Sync Studio: Manager``: same as Developer, but with access to **Secrets**
 
 Project
 =======
@@ -47,11 +47,11 @@ Project
       * **Value**
     * **Secrets**: Parameters with restricted access: key values are visible for Managers only
 
-  * In the ``Shared Code`` tab
+  * In the ``Evaluation Context`` tab
 
-    * **Protected Code**, **Common Code**: code that is executed before running any
-      project's task. Can be used for initialization or for helpers. Secret params
-      and package importing are available in **Protected Code** only. Any variables
+    * **Evaluation context**: predefined additional variables and methods
+    * **Common_code**: code that is executed before running any
+      project's task. Can be used for initialization or for helpers. Any variables
       and functions that don't start with underscore symbol will be available in
       task's code.
 
@@ -155,6 +155,10 @@ Base
   * ``LOG_ERROR``
   * ``LOG_CRITICAL``
 
+* ``log_transmission(recipient_str, data_str)``: report on data transfer to external recipients
+
+* ``DEFAULT_SERVER_DATETIME_FORMAT``
+
 Links
 ~~~~~
 
@@ -242,35 +246,10 @@ External Link is similar to Odoo link with the following differences:
 
 * ``elink.get(<system>)``, e.g. ``elink.get("github")``: reference value for system; it's a replacement for ``link.odoo`` and ``link.external`` in Odoo link
 
-Network
-~~~~~~~
-
-* ``log_transmission(recipient_str, data_str)``: report on data transfer to external recipients; example of a function in *Protected Code*:
-
-  .. code-block:: python
-
-    def httpPOST(url, *args, **kwargs):
-        import requests
-        log_transmission(url, json.dumps([args, kwargs]))
-        r = requests.post(url, *args, **kwargs)
-        return r.text
-
-
 Project Values
 ~~~~~~~~~~~~~~
 
 * ``params.<PARAM_NAME>``: project params
-* ``secrets.<SECRET_NAME>``: available in **Protected Code** only; you need to use closure to use it, for example:
-
-  .. code-block:: python
-
-    def _make_request(secrets):
-        import requests
-        def f(data):
-            return requests.post(params.API_URL, data=data, auth=(secrets.API_USER, secrets.API_PASSWORD))
-        return f
-    make_request = _make_request(secrets)
-
 * ``webhooks.<WEBHOOK_NAME>``: contains webhook url; only in tasks' code
 
 Event
@@ -311,6 +290,40 @@ Exceptions
 * ``ValidationError``
 * ``RetryableJobError``: raise to restart job from beginning; e.g. in case of temporary errors like broken connection
 * ``OSError``
+
+Evaluation context
+------------------
+
+Evaluation provides additional variables and methods for a project. For example, for telegram integration is could be method to send message to a telegram user. To make such additional context, you need to make a new module and make extension for ``sync.project`` model. Example:
+
+.. code-block:: python
+
+   import requests
+   from odoo import api, fields, models
+
+   class SyncProject(models.Model):
+
+       _inherit = "sync.project"
+       eval_context = fields.Selection(selection_add=[
+           ("my_project", "My Project"),
+       ])
+
+       @api.model
+       def _eval_context_my_project(self, secrets, eval_context):
+           """Additional function to make http request
+
+           * httpPost(url, **kwargs)
+           """
+           log_transmission = eval_context["log_transmission"]
+           log = eval_context["log"]
+           def httpPOST(url, **kwargs):
+               log_transmission(url, json.dumps(kwargs))
+               r = requests.request("POST", url, **kwargs)
+               log("Response: %s" % r.text)
+               return r.text
+           return {
+               "httpPost": httpPost
+           }
 
 Running Job
 ===========
