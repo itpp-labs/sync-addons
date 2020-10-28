@@ -118,7 +118,7 @@ def handle_cron():
     external_partners = odoo_execute_kw(
         "res.partner",
         "search_read",
-        [["id", "in", [int(id) for id in links.external]], ["write_date", ">", links.sync_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)]],
+        [["id", "in", [int(id) for id in external]], ["write_date", ">", links.sync_date]],
         fields=["write_date", IMAGE_FIELD]
     )
     # Save fetched data in local Odoo
