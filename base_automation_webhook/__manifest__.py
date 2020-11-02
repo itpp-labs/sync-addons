@@ -10,7 +10,7 @@
     "version": "10.0.2.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "sync@it-projects.info",
+    "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/10.0/base_automation_webhook/",
     "license": "Other OSI approved licence",  # MIT
     "price": 60.00,
