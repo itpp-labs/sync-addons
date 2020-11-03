@@ -29,6 +29,7 @@ Configuration
     * **Condition**: Optional. You can specify a condition that must be satisfied before executing the Action.
     * **Python Code**:
       ::
+
           WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
           data = {
               "partner_id": record.id,
