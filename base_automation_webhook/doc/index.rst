@@ -4,6 +4,11 @@
 
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 
+Documentation
+=============
+
+``make_request`` is a wrapper for ``requests.request``. Check `requests lib documentation <https://requests.readthedocs.io/en/latest/api/#requests.request>`__ for details.
+
 Configuration
 =============
 
@@ -18,21 +23,25 @@ Configuration
   * **Before Update Domain**: Optional. You can specify a condition that must be
     satisfied before record is updated. The field may not be available
     depending on **Trigger Condition** value.
-  * **Action To Do**: *Execute Python Code*
-  * **Apply on**: Optional. You can specify a condition that must be satisfied before executing the Python Code.
-  * **Python Code**:
-    ::
-        WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
-        data = {
-            "partner_id": record.id,
-            "partner_name": record.name,
-        }
-        requests.post(WEBHOOK, data)
+  * **Server actions to run**:
+
+    * **Action Name**: *Test Action*
+    * **Action To Do**: *Execute Python Code*
+    * **Condition**: Optional. You can specify a condition that must be satisfied before executing the Action.
+    * **Python Code**:
+      ::
+
+          WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
+          data = {
+              "partner_id": record.id,
+              "partner_name": record.name,
+          }
+          make_request("POST", WEBHOOK, data=data)
 
   * Save everything
 
-Usage
-=====
+Testing
+=======
 
 * Make corresponding action (in our example, create new Contact)
 * RESULT: the event is notified via webhook
