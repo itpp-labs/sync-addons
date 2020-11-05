@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <!-- Odoo2odoo -->
+    <record id="odoo2odoo_project" model="sync.project">
+        <field name="name">Demo Odoo2odoo Integration</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">odoo2odoo</field>
+        <field name="common_code">
+<![CDATA[
+PARTNER_REL = "odoo2odoo_partner"
+IMAGE_FIELD = "image_1920"
+def partner2vals(partner):
+    FIELDS = ["name", IMAGE_FIELD]
+    res = {}
+    for f in FIELDS:
+        res[f] = getattr(partner, f)
+    if res[IMAGE_FIELD]:
+        res[IMAGE_FIELD] = res[IMAGE_FIELD].decode("utf-8")
+    else:
+        res[IMAGE_FIELD] = False
+    return res
+
+def parse_date(s):
+    return datetime.datetime.strptime(s, DEFAULT_SERVER_DATETIME_FORMAT)
+]]>
+        </field>
+    </record>
+    <record id="odoo2odoo_project_param_prefix" model="sync.project.param">
+        <field name="key">UPLOAD_ALL_PARTNER_PREFIX</field>
+        <field name="value">Sync Studio:</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+    </record>
+    <record id="odoo2odoo_project_param_url" model="sync.project.param">
+        <field name="key">URL</field>
+        <field name="description">
+            URL to external Odoo, e.g. https://odoo.example
+        </field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+    </record>
+    <record id="odoo2odoo_project_param_DB" model="sync.project.param">
+        <field name="key">DB</field>
+        <field name="description">Odoo database name</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+    </record>
+    <record id="odoo2odoo_project_secret_username" model="sync.project.secret">
+        <field name="key">USERNAME</field>
+        <field name="description">e.g. admin</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+    </record>
+    <record id="odoo2odoo_project_secret_password" model="sync.project.secret">
+        <field name="key">PASSWORD</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+    </record>
+    <!-- TODO: split tasks:
+         * Local Odoo to Remote Odoo
+         * Remote Odoo to Local Odoo
+    -->
+    <record id="odoo2odoo_task_local2remote" model="sync.task">
+        <field name="name">Sync Local Partners To Remote Odoo</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+        <field name="code">
+<![CDATA[
+def create_external_partners(partners, name_prefix=""):
+    for partner in partners:
+        vals = partner2vals(partner)
+        if name_prefix:
+            vals["name"] = name_prefix + " " + vals["name"]
+        external_partner_id = odoo_execute_kw("res.partner", "create", vals)
+        res = odoo_execute_kw("res.partner", "read", [external_partner_id], fields=["create_date"])
+        sync_date = res[0]["create_date"]
+        partner.set_link(PARTNER_REL, external_partner_id, sync_date)
+
+def handle_db(records):
+    # records are instances of created res.partner
+    create_external_partners(records)
+
+def handle_button():
+    # PUSH_ALL_LOCAL_PARTNERS
+    chunk = None
+    CHUNK_SIZE = 10
+    def process_chunk(chunk):
+        add_job("create_external_partners")(chunk, name_prefix=params.UPLOAD_ALL_PARTNER_PREFIX)
+
+    for r in env["res.partner"].search([]):
+        # check that record is not created yet
+        link = r.search_links(PARTNER_REL)
+        if link:
+            # object already exists
+            continue
+
+        if not chunk:
+            chunk = r
+        else:
+            chunk |= r
+        if len(chunk) == CHUNK_SIZE:
+            process_chunk(chunk)
+            chunk = None
+    if chunk:
+        process_chunk(chunk)
+]]>
+        </field>
+    </record>
+    <record id="odoo2odoo_task_remote2local" model="sync.task">
+        <field name="name">Sync Remote Partners Updates</field>
+        <field name="project_id" ref="sync.odoo2odoo_project" />
+        <field name="code">
+<![CDATA[
+def handle_cron():
+    links = env["res.partner"].search([]).search_links(PARTNER_REL)
+    if not links:
+        log("Cron: there are no associated partners")
+        return
+    # Fetch external partners with new updates
+    external_partners = odoo_execute_kw(
+        "res.partner",
+        "search_read",
+        [["id", "in", [int(id) for id in links.external]], ["write_date", ">", links.sync_date.strftime(DEFAULT_SERVER_DATETIME_FORMAT)]],
+        fields=["write_date", IMAGE_FIELD]
+    )
+    # Save fetched data in local Odoo
+    for ep in external_partners:
+        link = get_link(PARTNER_REL,  ep["id"])
+        p = link.odoo
+        sync_date = parse_date(ep["write_date"])
+        if sync_date > link.sync_date:
+            p.write({IMAGE_FIELD: ep[IMAGE_FIELD]})
+            link.update_links(sync_date)
+]]>
+        </field>
+    </record>
+    <record id="odoo2odoo_trigger_automation" model="sync.trigger.automation">
+        <field name="trigger_name">LOCAL_PARTNER_CREATED</field>
+        <field name="sync_task_id" ref="sync.odoo2odoo_task_local2remote" />
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="trigger">on_create</field>
+    </record>
+    <record id="odoo2odoo_trigger_cron" model="sync.trigger.cron">
+        <field name="trigger_name">CHECK_EXTERNAL_ODOO</field>
+        <field name="sync_task_id" ref="sync.odoo2odoo_task_remote2local" />
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+    </record>
+    <record id="odoo2odoo_trigger_button" model="sync.trigger.button">
+        <field name="trigger_name">PUSH_ALL_LOCAL_PARTNERS</field>
+        <field name="sync_task_id" ref="sync.odoo2odoo_task_local2remote" />
+    </record>
+</odoo>

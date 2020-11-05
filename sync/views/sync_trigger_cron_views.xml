@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_trigger_cron_view_tree" model="ir.ui.view">
+        <field name="name">sync.trigger.cron.tree</field>
+        <field name="model">sync.trigger.cron</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="trigger_name" />
+                <field name="interval_number" />
+                <field name="interval_type" />
+                <field name="nextcall" />
+                <field name="numbercall" />
+                <field name="active" />
+                <field name="sync_project_id" />
+                <field name="sync_task_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_trigger_cron_view_form" model="ir.ui.view">
+        <field name="name">sync.trigger.cron.form</field>
+        <field name="model">sync.trigger.cron</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="start_button"
+                        type="object"
+                        string="Run Manually"
+                        class="oe_highlight"
+                        attrs="{'invisible': [('active', '=', False)]}"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="toggle_active"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-archive"
+                        >
+                            <field
+                                name="active"
+                                widget="boolean_button"
+                                options='{"terminology": "archive"}'
+                            />
+                        </button>
+                    </div>
+                    <group>
+                        <field name="trigger_name" />
+                        <label for="interval_number" string="Execute Every" />
+                        <div>
+                            <field name="interval_number" class="oe_inline" />
+                            <field name="interval_type" class="oe_inline" />
+                        </div>
+                        <field name="nextcall" />
+                        <field name="numbercall" />
+                        <field name="priority" />
+                        <field name="doall" />
+                        <field name="user_id" />
+                        <field name="sync_task_id" invisible="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_trigger_cron_view_form_full" model="ir.ui.view">
+        <field name="name">sync.trigger.cron.form full</field>
+        <field name="model">sync.trigger.cron</field>
+        <field name="inherit_id" ref="sync_trigger_cron_view_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sync_task_id']" position="attributes">
+                <attribute name="invisible" />
+                <attribute name="required" eval="1" />
+            </xpath>
+        </field>
+    </record>
+    <record id="sync_trigger_cron_action_from_project" model="ir.actions.act_window">
+        <field name="name">Cron Triggers</field>
+        <field name="res_model">sync.trigger.cron</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_project_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('sync_trigger_cron_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('sync_trigger_cron_view_form_full')})]"
+        />
+    </record>
+</odoo>
