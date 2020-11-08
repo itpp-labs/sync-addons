@@ -1,3 +1,7 @@
+`2.1.0`
+-------
+
+- **Improvement:** add helpers for one2one synchronization
 - **Improvement:** show icon in app switcher in Odoo EE
 - **Fix:** error on opening "Project for Unittests"
 - **Fix:** Export XML: add missed fields webhook_type
