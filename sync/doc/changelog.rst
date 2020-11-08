@@ -1,3 +1,8 @@
+`2.1.0`
+-------
+
+- **Improvement:** add helpers for one2one synchronization
+
 `2.0.0`
 -------
 
