@@ -16,7 +16,7 @@
   * Задайте логин и пароль
 * Нажмите кнопку ``Сохранить``
 
-OData must be accessable via internet. For 1cfresh instances ODATA_URL should be something like this: https://1cfresh.com/a/ea_demo/123456/odata/standard.odata/
+OData must be accessible via internet. For 1cfresh instances ODATA_URL should be something like this: https://1cfresh.com/a/ea_demo/123456/odata/standard.odata/
 
 To work with employee syncing:
 
@@ -32,10 +32,11 @@ Installation
 Configuration
 =============
 
-* Open menu ``[[ Sync Studio ]] >> Projects``
+* Open menu ``[[ Sync Studio ]] >> Sync Projects``
 * Choose ``1c`` project
+* Go to ``Parameters`` tab
 * Click ``[Edit]``
-* Set **Secrets**:
+* Set **Parameters** and **Secrets**:
 
   * ``ODATA_URL``
   * ``ODATA_USERNAME``
@@ -43,10 +44,10 @@ Configuration
 
 * For initial synchronization click ``[Run Now]`` on corresponding Manual Triggers that get records from one system and create on another. E.g. to sync employees there are 2 available buttons:
 
-  * CREATE_EMPLOYEES_1C2ODOO
+  * CREATE_EMPLOYEES_1C_TO_ODOO
   * CREATE_EMPLOYEES_ODOO21C
 
-* To schedule automatic updates open corresponding taks via  *Available Tasks* tab, configure and activate Cron Triggers
+* To schedule automatic updates open corresponding task via  *Available Tasks* tab, configure and activate Cron Triggers
 
 Usage
 =====

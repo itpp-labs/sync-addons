@@ -9,7 +9,7 @@
     "version": "12.0.1.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "apps@itpp.dev",
+    "support": "help@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/12.0/sync_1c/",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "hr"],
