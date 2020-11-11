@@ -5,6 +5,7 @@
     <record id="1c_sync-project" model="sync.project">
         <field name="name">1c</field>
         <field name="active" eval="False" />
+        <field name="eval_context">1c</field>
         <field
             name="common_code"
         ><![CDATA[EMPLOYEE_REL="1c_employee"
@@ -76,9 +77,6 @@ EMPLOYEE_SYNC = {
     </record>
     <record id="odata-url_project-parameter" model="sync.project.param">
         <field name="key">ODATA_URL</field>
-        <field
-            name="value"
-        >https://1cfresh.com/a/ea_demo/1265573/odata/standard.odata/</field>
         <field name="description">API URL</field>
         <field name="url">https://its.1c.ru/db/v838doc/bookmark/dev/TI000000783</field>
         <field name="project_id" ref="1c_sync-project" />
