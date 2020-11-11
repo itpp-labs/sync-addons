@@ -16,6 +16,9 @@ class SyncProject1c(models.Model):
 
     @api.model
     def _eval_context_1c(self, secrets, eval_context):
+        """Adds tools 1c API:
+        * odata_request(method, name, url_data=None, body_data=None)
+        """
         log_transmission = eval_context["log_transmission"]
         log = eval_context["log"]
         params = eval_context["params"]
