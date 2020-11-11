@@ -9,7 +9,7 @@
     "version": "12.0.2.1.0",
     "application": True,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "apps@it-projects.info",
+    "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["base_automation", "mail", "website", "queue_job"],
