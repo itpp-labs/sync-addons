@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="1c_sync-project" model="sync.project">
+        <field name="name">1c</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">1c</field>
+        <field
+            name="common_code"
+        ><![CDATA[EMPLOYEE_REL="1c_employee"
+
+def employee_x2odoo(data):
+    name = data['Description']
+    return {"name": name}
+def employee_odoo2x(odoo):
+    return  {
+      'Description': odoo.name
+    }
+
+def x_employee2ref(data):
+    return data["Ref_Key"]
+def x_employee_get_all():
+    return odata_request("GET", "Catalog_Сотрудники")["value"]
+def x_employee_create(odoo):
+    data = employee_odoo2x(odoo)
+    res = odata_request("POST", "Catalog_Сотрудники", body_data=data)
+    return res['Ref_Key']
+def x_employee_update(ref, odoo):
+    data = employee_odoo2x(odoo)
+    api_name = "Catalog_Сотрудники(guid'%s')" % ref
+    res = odata_request("PATCH", api_name, body_data=data)
+    return ref
+
+def odoo_employee_get_all(to_create=False, to_update=False):
+    all_records = env["hr.employee"].search([])
+    if to_create and to_update:
+        return all_records
+    linked = all_records.search_links(EMPLOYEE_REL).mapped(lambda link: link.odoo)
+    if to_create:
+        return all_records - linked
+    if to_update:
+        return linked
+def odoo_employee_create(data):
+    vals = employee_x2odoo(data)
+    log("env[\"hr.employee\"].create(%s)" % vals, LOG_DEBUG)
+    return env["hr.employee"].create(vals)
+def odoo_employee_update(odoo, data):
+    vals = employee_x2odoo(data)
+    log("%s.write(%s)" % (odoo, vals), LOG_DEBUG)
+    return odoo.write(vals)
+
+EMPLOYEE_SYNC = {
+  "relation": EMPLOYEE_REL,
+  "x": {
+    "get_ref": x_employee2ref,
+    "create": x_employee_create,
+    "update": x_employee_update,
+  },
+  "odoo": {
+    "create": odoo_employee_create,
+    "update": odoo_employee_update,
+  }
+}]]></field>
+    </record>
+    <record id="odata-username_project-secret-parameter" model="sync.project.secret">
+        <field name="key">ODATA_USERNAME</field>
+        <field name="description">API Username</field>
+        <field name="url" />
+        <field name="project_id" ref="1c_sync-project" />
+    </record>
+    <record id="odata-password_project-secret-parameter" model="sync.project.secret">
+        <field name="key">ODATA_PASSWORD</field>
+        <field name="description">API Passowrd</field>
+        <field name="url" />
+        <field name="project_id" ref="1c_sync-project" />
+    </record>
+    <record id="odata-url_project-parameter" model="sync.project.param">
+        <field name="key">ODATA_URL</field>
+        <field name="description">API URL</field>
+        <field name="url">https://its.1c.ru/db/v838doc/bookmark/dev/TI000000783</field>
+        <field name="project_id" ref="1c_sync-project" />
+    </record>
+    <record id="sync-1c-employees-to-odoo_sync-task" model="sync.task">
+        <field name="name">Sync 1c employees to Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="1c_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_x2odoo(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_EMPLOYEES_1C_TO_ODOO":
+        _sync_x2odoo(update=True)
+    elif trigger == "CREATE_EMPLOYEES_1C_TO_ODOO":
+        _sync_x2odoo(create=True)
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+
+def _sync_x2odoo(create=False, update=False):
+    return sync_x2odoo(x_employee_get_all(), EMPLOYEE_SYNC, create=create, update=update)
+    ]]></field>
+    </record>
+    <record
+        id="create-employees-1c2odoo-fetch-new-unlinked-records-from-1c-and-create-them-in-odoo_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">CREATE_EMPLOYEES_1C_TO_ODOO</field>
+        <field name="name">Fetch all records from 1c and create new ones in Odoo</field>
+        <field name="sync_task_id" ref="sync-1c-employees-to-odoo_sync-task" />
+    </record>
+    <record
+        id="update-employees-1c2odoo-fetch-from-1c-linked-records-and-update-corresponding-records-in-odoo_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">UPDATE_EMPLOYEES_1C_TO_ODOO</field>
+        <field
+            name="name"
+        >Fetch all records from 1c  records and update corresponding records in Odoo</field>
+        <field name="sync_task_id" ref="sync-1c-employees-to-odoo_sync-task" />
+    </record>
+    <record
+        id="cron-employees-1c2odoo-every-1-months-1-times_cron-trigger"
+        model="sync.trigger.cron"
+    >
+        <field name="trigger_name">CRON_EMPLOYEES_1C_TO_ODOO</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-1c-employees-to-odoo_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="sync-odoo-employees-to-1c_sync-task" model="sync.task">
+        <field name="name">Sync Odoo employees to 1c (doesn't work in 1cfresh)</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="1c_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_odoo2x(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_EMPLOYEES_ODOO_TO_1C":
+        _sync_odoo2x(update=True)
+    elif trigger == "CREATE_EMPLOYEES_ODOO_TO_1C":
+        _sync_odoo2x(create=True)
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+def handle_db(records):
+    return sync_odoo2x(records, EMPLOYEE_SYNC, create=True, update=True)
+
+def _sync_odoo2x(create=False, update=False):
+    return sync_odoo2x(odoo_employee_get_all(to_create=create, to_update=update), EMPLOYEE_SYNC, create=create, update=update)
+
+
+        ]]></field>
+    </record>
+    <record
+        id="create-employees-odoo-2-1c-push-new-unlinked-odoo-records-to-1c_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">CREATE_EMPLOYEES_ODOO_TO_1C</field>
+        <field name="name">Push new (unlinked) odoo records to 1c</field>
+        <field name="sync_task_id" ref="sync-odoo-employees-to-1c_sync-task" />
+    </record>
+    <record
+        id="update-employees-odoo-2-1c-push-updates-of-linked-records-to-1c_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">UPDATE_EMPLOYEES_ODOO_TO_1C</field>
+        <field name="name">Push updates of linked records to 1c</field>
+        <field name="sync_task_id" ref="sync-odoo-employees-to-1c_sync-task" />
+    </record>
+    <record
+        id="cron-employees-odoo-2-1c-every-1-months-1-times_cron-trigger"
+        model="sync.trigger.cron"
+    >
+        <field name="trigger_name">CRON_EMPLOYEES_ODOO_TO_1C</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-employees-to-1c_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="odoo-employees-update_db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ODOO_EMPLOYEES_UPDATE</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-employees-to-1c_sync-task" />
+        <field name="model_id" ref="hr.model_hr_employee" />
+        <field name="trigger">on_write</field>
+    </record>
+</odoo>

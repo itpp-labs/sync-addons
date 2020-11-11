@@ -80,6 +80,7 @@ class SyncProject(models.Model):
         for r in self:
             if not r.eval_context:
                 r.eval_context_description = ""
+                continue
             method = getattr(self, EVAL_CONTEXT_PREFIX + r.eval_context)
             r.eval_context_description = method.__doc__
 
@@ -198,8 +199,10 @@ class SyncProject(models.Model):
 
         context = dict(self.env.context, log_function=log)
         env = self.env(context=context)
+        link_functions = env["sync.link"]._get_eval_context()
         eval_context = dict(
-            **env["sync.link"]._get_eval_context(),
+            **link_functions,
+            **self._get_sync_functions(log, link_functions),
             **{
                 "env": env,
                 "log": log,
@@ -258,6 +261,111 @@ class SyncProject(models.Model):
         )
         cleanup_eval_context(eval_context)
         return eval_context
+
+    def _get_sync_functions(self, log, link_functions):
+        def _sync(src_list, src2dst, link_src_dst, create=None, update=None):
+            # * src_list: iterator of src_data
+            # * src2dst: src_data -> dst_ref
+            # * link_src_dst: links pair (src_data, dst_ref)
+            # * create(src_data) -> dst_ref
+            # * update(dst_ref, src_data)
+            for src_data in src_list:
+                dst_ref = src2dst(src_data)
+                if dst_ref and update:
+                    update(dst_ref, src_data)
+                elif not dst_ref and create:
+                    dst_ref = create(src_data)
+                    link_src_dst(src_data, dst_ref)
+                elif dst_ref:
+                    log("Destination record already exists: %s" % dst_ref, LOG_DEBUG)
+                elif not dst_ref:
+                    log("Destination record not found for %s" % src_data, LOG_DEBUG)
+
+        def sync_odoo2x(src_list, sync_info, create=False, update=False):
+            # sync_info["relation"]
+            # sync_info["x"]["update"]: (external_ref, odoo_record)
+            # sync_info["x"]["create"]: odoo_record -> external_ref
+            relation = sync_info["relation"]
+
+            def _odoo2external(odoo_record):
+                link = odoo_record.search_links(relation)
+                return link.external
+
+            def _add_link(odoo_record, external):
+                odoo_record.set_link(relation, external)
+
+            return _sync(
+                src_list,
+                _odoo2external,
+                _add_link,
+                create and sync_info["x"]["create"],
+                update and sync_info["x"]["update"],
+            )
+
+        def sync_x2odoo(src_list, sync_info, create=False, update=False):
+            # sync_info["relation"]
+            # sync_info["x"]["get_ref"]
+            # sync_info["odoo"]["update"]: (odoo_record, x)
+            # sync_info["odoo"]["create"]: x -> odoo_record
+            relation = sync_info["relation"]
+            x2ref = sync_info["x"]["get_ref"]
+
+            def _x2odoo(x):
+                ref = x2ref(x)
+                link = link_functions["get_link"](relation, ref)
+                return link.odoo
+
+            def _add_link(x, odoo_record):
+                ref = x2ref(x)
+                link = odoo_record.set_link(relation, ref)
+                return link
+
+            return _sync(
+                src_list,
+                _x2odoo,
+                _add_link,
+                create and sync_info["odoo"]["create"],
+                update and sync_info["odoo"]["update"],
+            )
+
+        # def sync_x2y(src_list, sync_info, create=False, update=False):
+        #     return sync_external(src_list, sync_info["relation"], sync_info["x"], sync_info["y"], create=create, update=update)
+        # def sync_y2x(src_list, sync_info, create=False, update=False):
+        #     return sync_external(src_list, sync_info["relation"], sync_info["y"], sync_info["x"], create=create, update=update)
+        def sync_external(
+            src_list, relation, src_info, dst_info, create=False, update=False
+        ):
+            # src_info["get_ref"]
+            # src_info["system"]: e.g. "github"
+            # src_info["update"]: (dst_ref, src_data)
+            # src_info["create"]: src_data -> dst_ref
+            # dst_info["system"]: e.g. "trello"
+            def src2dst(src_data):
+                src_ref = src_info["get_ref"](src_data)
+                refs = {src_info["system"]: src_ref, dst_info["system"]: None}
+                link = link_functions["get_link"](relation, refs)
+                res = link.get(dst_info["system"])
+                if len(res) == 1:
+                    return res[0]
+
+            def link_src_dst(src_data, dst_ref):
+                src_ref = src_info["get_ref"](src_data)
+                refs = {src_info["system"]: src_ref, dst_info["system"]: dst_ref}
+                return link_functions["set_link"](relation, refs)
+
+            return _sync(
+                src_list,
+                src2dst,
+                link_src_dst,
+                create and src_info["odoo"]["create_odoo"],
+                update and src_info["odoo"]["update_odoo"],
+            )
+
+        return {
+            "sync_odoo2x": sync_odoo2x,
+            "sync_x2odoo": sync_x2odoo,
+            "sync_external": sync_external,
+        }
 
 
 class SyncProjectParamMixin(models.AbstractModel):

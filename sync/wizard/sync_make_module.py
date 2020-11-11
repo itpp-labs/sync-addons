@@ -78,7 +78,7 @@ class SyncMakeModule(models.TransientModel):
         root = etree.Element("odoo")
         project = self.project_id.with_context(active_test=False)
         records = [
-            (project, ("name", "active", "common_code")),
+            (project, ("name", "active", "eval_context", "common_code")),
         ]
         for secret in project.secret_ids:
             records.append((secret, ("key", "description", "url", "project_id")))
@@ -174,7 +174,7 @@ class SyncMakeModule(models.TransientModel):
         elif field.type == "text":
             xml.text = etree.CDATA(value or "")
         elif field.type == "many2one":
-            xml.set("ref", self.module + "." + self._record2id(value))
+            xml.set("ref", self._record2id(value))
         elif field.type == "boolean":
             xml.set("eval", str(value))
         return xml
