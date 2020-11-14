@@ -10,7 +10,7 @@
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "help@itpp.dev",
-    "website": "https://apps.odoo.com/apps/modules/12.0/sync_1c/",
+    "website": "https://apps.odoo.com/apps/modules/12.0/sync",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "hr"],
     "external_dependencies": {"python": [], "bin": []},
