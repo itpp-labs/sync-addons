@@ -10,6 +10,6 @@ addons:
   server_wide_modules:
     - web
 
-  repo_readme:
-    addons:
-      - openapi
+repo_readme:
+  addons:
+    - openapi
