@@ -1,3 +1,7 @@
+.. image:: https://itpp.dev/images/infinity-readme.png
+   :alt: Tested and maintained by IT Projects Labs
+   :target: https://itpp.dev
+
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://opensource.org/licenses/MIT
    :alt: License: MIT
@@ -19,32 +23,22 @@ Roadmap
 * TODO: UTM source is not used. It's required to update openapi module and add
   posibility to use predefined context in method calls (currently it's supported for creation only)
 
-Credits
-=======
+Questions?
+==========
+
+To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
 Contributors
-------------
+============
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
 
-Sponsors
---------
-* `IT-Projects LLC <https://it-projects.info>`__
-
-Maintainers
------------
-* `IT-Projects LLC <https://it-projects.info>`__
 
 Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/11.0
+Odoo Apps Store: https://apps.odoo.com/apps/modules/11.0/telegram_leads/
 
-HTML Description: https://apps.odoo.com/apps/modules/11.0/telegram_leads/
-
-Usage instructions: `<doc/index.rst>`_
-
-Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/11.0/telegram_leads.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/11.0/telegram_leads.atom>`_
 
-Tested on Odoo 11.0 903e4f52ec9109ae6b489899b55bd8c3d55081be
+Tested on `Odoo 11.0 <https://github.com/odoo/odoo/commit/903e4f52ec9109ae6b489899b55bd8c3d55081be>`_
