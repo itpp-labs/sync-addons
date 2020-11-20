@@ -1,3 +1,7 @@
+.. image:: https://itpp.dev/images/infinity-readme.png
+   :alt: Tested and maintained by IT Projects Labs
+   :target: https://itpp.dev
+
 .. image:: https://img.shields.io/badge/license-LGPL--3-blue.png
    :target: https://www.gnu.org/licenses/lgpl
    :alt: License: LGPL-3
@@ -51,42 +55,25 @@ Roadmap
 * TODO: remove access to create logs and use sudo (SUPERUSER_ID)  instead. It prevents making fake logs by malicous user
 * TODO: Check that swagger specification and module documentaiton covers how to pass context to method calls
 
-Credits
-=======
+Questions?
+==========
+
+To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
 Contributors
-------------
+============
 * `David Arnold <dar@xoe.solutions>`__
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
 * `Rafis Bikbov <https://it-projects.info/team/RafiZz>`__
 * `Stanislav Krotov <https://it-projects.info/team/ufaks>`__
 
-Sponsors
---------
-* `IT-Projects LLC <https://it-projects.info>`__
 * `XOE Solutions <https://xoe.solutions>`__
 
-Maintainers
------------
-* `IT-Projects LLC <https://it-projects.info>`__
-
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/13.0/openapi/>`__.
-
-      Thank you for understanding!
-
-      `IT-Projects Team <https://www.it-projects.info/team>`__
-
-Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/13.0
+Odoo Apps Store: https://apps.odoo.com/apps/modules/13.0/openapi/
 
-HTML Description: https://apps.odoo.com/apps/modules/13.0/openapi/
-
-Usage instructions: `<doc/index.rst>`_
-
-Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_
 
-Tested on Odoo 13.0 eed3171f2f057223c3fbedd95ce6bcde2124f46c
+Tested on `Odoo 13.0 <https://github.com/odoo/odoo/commit/eed3171f2f057223c3fbedd95ce6bcde2124f46c>`_
