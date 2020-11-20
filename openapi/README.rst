@@ -1,3 +1,7 @@
+.. image:: https://itpp.dev/images/infinity-readme.png
+   :alt: Tested and maintained by IT Projects Labs
+   :target: https://itpp.dev
+
 .. image:: https://img.shields.io/badge/license-LGPL--3-blue.png
    :target: https://www.gnu.org/licenses/lgpl
    :alt: License: LGPL-3
@@ -48,42 +52,25 @@ Roadmap
 * TODO: use sudo for log creating and disable write access rights
 * TODO: finish unitttests (see ``test_api.py``)
 
-Credits
-=======
+Questions?
+==========
+
+To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
 Contributors
-------------
+============
 * `David Arnold <dar@xoe.solutions>`__
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
 * `Rafis Bikbov <https://it-projects.info/team/RafiZz>`__
 * `Stanislav Krotov <https://it-projects.info/team/ufaks>`__
 
-Sponsors
---------
-* `IT-Projects LLC <https://it-projects.info>`__
 * `XOE Solutions <https://xoe.solutions>`__
 
-Maintainers
------------
-* `IT-Projects LLC <https://it-projects.info>`__
-
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/11.0/openapi/>`__.
-
-      Thank you for understanding!
-
-      `IT-Projects Team <https://www.it-projects.info/team>`__
-
-Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/11.0
+Odoo Apps Store: https://apps.odoo.com/apps/modules/11.0/openapi/
 
-HTML Description: https://apps.odoo.com/apps/modules/11.0/openapi/
-
-Usage instructions: `<doc/index.rst>`_
-
-Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/11.0/openapi.atom>`_
 
-Tested on Odoo 11.0 855447fc77fdbe2972be043b7ba9131567d21b9f
+Tested on `Odoo 11.0 <https://github.com/odoo/odoo/commit/855447fc77fdbe2972be043b7ba9131567d21b9f>`_

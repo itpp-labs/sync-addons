@@ -1,3 +1,7 @@
+.. image:: https://itpp.dev/images/infinity-readme.png
+   :alt: Tested and maintained by IT Projects Labs
+   :target: https://itpp.dev
+
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://opensource.org/licenses/MIT
    :alt: License: MIT
@@ -81,11 +85,13 @@ Few more steps requires to use https connection (e.g. telegram api works with ht
 
 Now set corresponding ``https://...`` value for ``web.base.url`` parameter.
 
-Credits
-=======
+Questions?
+==========
+
+To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
 Contributors
-------------
+============
 * `Ivan Yelizariev <https://twitter.com/yelizariev>`__:
 
       * :one::two: init version of the module
@@ -94,12 +100,9 @@ Contributors
 Further information
 ===================
 
-HTML Description: https://apps.odoo.com/apps/modules/11.0/sync/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/11.0/sync/
 
-Usage instructions: `<doc/index.rst>`__
-
-Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/11.0/sync.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/11.0/sync.atom>`_
 
-Tested on Odoo 11.0 cf5c3c766ba42861ede4ec9b4027dfc910818a01
+Tested on `Odoo 11.0 <https://github.com/odoo/odoo/commit/cf5c3c766ba42861ede4ec9b4027dfc910818a01>`_
