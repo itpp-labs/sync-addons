@@ -1,3 +1,7 @@
+.. image:: https://itpp.dev/images/infinity-readme.png
+   :alt: Tested and maintained by IT Projects Labs
+   :target: https://itpp.dev
+
 .. image:: https://img.shields.io/badge/license-LGPL--3-blue.png
    :target: https://www.gnu.org/licenses/lgpl
    :alt: License: LGPL-3
@@ -50,42 +54,25 @@ Roadmap
 * TODO: finish unitttests (see ``test_api.py``)
 * TODO: ``.../swagger.json`` url doesn't work in multi-db mode in odoo 12.0 at least: it make strange redirection to from ``/api/v1/demo/swagger.json?token=demo_token&db=source`` to ``/api/v1/demo/swagger.json?token%3Ddemo_token%26db%3Dsource``
 
-Credits
-=======
+Questions?
+==========
+
+To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
 Contributors
-------------
+============
 * `David Arnold <dar@xoe.solutions>`__
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
 * `Rafis Bikbov <https://it-projects.info/team/RafiZz>`__
 * `Stanislav Krotov <https://it-projects.info/team/ufaks>`__
 
-Sponsors
---------
-* `IT-Projects LLC <https://it-projects.info>`__
 * `XOE Solutions <https://xoe.solutions>`__
 
-Maintainers
------------
-* `IT-Projects LLC <https://it-projects.info>`__
-
-      To get a guaranteed support you are kindly requested to purchase the module at `odoo apps store <https://apps.odoo.com/apps/modules/12.0/openapi/>`__.
-
-      Thank you for understanding!
-
-      `IT-Projects Team <https://www.it-projects.info/team>`__
-
-Further information
 ===================
 
-Demo: http://runbot.it-projects.info/demo/sync-addons/12.0
+Odoo Apps Store: https://apps.odoo.com/apps/modules/12.0/openapi/
 
-HTML Description: https://apps.odoo.com/apps/modules/12.0/openapi/
-
-Usage instructions: `<doc/index.rst>`_
-
-Changelog: `<doc/changelog.rst>`_
 
 Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/12.0/openapi.atom>`_
 
-Tested on Odoo 12.0 e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6
+Tested on `Odoo 12.0 <https://github.com/odoo/odoo/commit/e1aee2aac2fd2c19dfd55734b1f51aedbc0393a6>`_
