@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT).-->
+<odoo noupdate="1">
+    <template id="pagadito_acquirer_button">
+        <form
+            t-if="acquirer.pagadito_uid"
+            t-att-action="pagadito_url"
+            method="get"
+            target="_self"
+        >
+            <!-- submit -->
+            <t t-foreach="pagadito_args" t-as="a">
+                <input type="hidden" t-att-name="a" t-att-value="a_value[0]" />
+            </t>
+            <button type="submit" width="100px" t-att-class="submit_class">
+                <img
+                    t-if="not submit_txt"
+                    src="/payment_pagadito/static/src/img/pagadito_icon.png"
+                />
+                <span t-if="submit_txt">
+                    <t t-esc="submit_txt" />
+                    <span class="fa fa-long-arrow-right" />
+                </span>
+            </button>
+        </form>
+    </template>
+</odoo>

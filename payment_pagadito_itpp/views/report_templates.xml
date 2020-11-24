@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT).-->
+<odoo>
+    <template
+        id="report_shop_saleorder_document"
+        inherit_id="website_sale.report_shop_saleorder_document"
+    >
+        <xpath expr="//tbody[@class='sale_tbody']/tr/td[1]" position="inside">
+            <t t-if="doc.payment_acquirer_id.provider == 'pagadito'">
+                <br /><strong>Payment confirmation codes:</strong> NAP=<t
+                    t-raw="doc.payment_tx_id.acquirer_reference"
+                />, ERN=<t t-raw="doc.payment_tx_id.reference" />
+            </t>
+        </xpath>
+    </template>
+</odoo>
