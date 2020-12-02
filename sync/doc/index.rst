@@ -418,7 +418,7 @@ In Odoo:
 * `Activate Developer Mode <https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html>`__
 * Open menu ``[[ Settings ]] >> Technical >> Parameters >> System Parameters``
 * Check that parameter ``web.base.url`` is properly set and it's accessible over
-  internet (it should not localhost)
+  internet (it should not localhost). Also, telegram accepts https addresses only
 * Open menu ``[[ Sync Studio ]] >> Sync Projects``
 * Select *Demo Telegram Integration* project
 * Go to ``Parameters`` tab
