@@ -12,14 +12,12 @@ Installation
 
   * add ``queue_job`` to `server wide modules <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
-        ``--load base,web,queue_job``
+        --load base,web,queue_job
 
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 * Install python package that you need to use. For example, to try demo projects install following packages:
 
-    sudo pip3 install python-telegram-bot
-    sudo pip3 install PyGithub
-    sudo pip3 install py-trello
+    python3 -m pip install python-telegram-bot PyGithub py-trello
 
 * If your Sync projects use webhooks (most likely), be sure that url opens correct database without asking to select one
 
