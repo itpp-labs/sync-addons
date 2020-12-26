@@ -12,8 +12,6 @@
     "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/13.0/base_api/",
     "license": "LGPL-3",
-    "price": 10.00,
-    "currency": "EUR",
     "depends": [],
     "external_dependencies": {"python": [], "bin": []},
     "data": [],
