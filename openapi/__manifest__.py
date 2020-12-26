@@ -13,8 +13,6 @@
     "support": "sync@it-projects.info",
     "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
     "license": "LGPL-3",
-    "price": 180.00,
-    "currency": "EUR",
     "depends": ["web_tour", "web_settings_dashboard", "report"],
     "external_dependencies": {
         "python": ["bravado_core", "swagger_spec_validator"],
