@@ -12,8 +12,6 @@
     "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/13.0/openapi/",
     "license": "LGPL-3",
-    "price": 170.00,
-    "currency": "EUR",
     "depends": ["base_api", "mail"],
     "external_dependencies": {
         "python": ["bravado_core", "swagger_spec_validator"],

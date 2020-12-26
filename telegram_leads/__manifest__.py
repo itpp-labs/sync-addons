@@ -12,8 +12,6 @@
     "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/12.0/telegram_leads/",
     "license": "Other OSI approved licence",  # MIT
-    "price": 50.00,
-    "currency": "EUR",
     "depends": ["openapi", "crm"],
     "external_dependencies": {"python": [], "bin": []},
     "data": ["data/utm_data.xml", "security/openapi.xml"],
