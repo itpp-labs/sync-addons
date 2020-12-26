@@ -81,8 +81,9 @@ class SyncProjectDemo(models.Model):
         * telegram.setWebhook
         * telegram.parse_data
         """
-        from odoo.tools import html2plaintext
         from lxml.html.clean import Cleaner
+
+        from odoo.tools import html2plaintext
 
         log_transmission = eval_context["log_transmission"]
 
@@ -151,7 +152,8 @@ class SyncProjectDemo(models.Model):
             from trello.exceptions import ResourceUnavailable
 
             client = TrelloClient(
-                api_key=secrets.TRELLO_KEY, api_secret=secrets.TRELLO_TOKEN,
+                api_key=secrets.TRELLO_KEY,
+                api_secret=secrets.TRELLO_TOKEN,
             )
             board = client.get_board(secrets.TRELLO_BOARD_ID)
 
