@@ -1,7 +1,7 @@
 [![help@itpp.dev](https://itpp.dev/images/infinity-readme.png)](mailto:help@itpp.dev)
 # [8.0] Odoo Integration Addons
 
-<br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/8.0/openapi/)
+:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/8.0/openapi/)
 
 Other Addons
 ============
