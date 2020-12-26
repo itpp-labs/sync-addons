@@ -2,10 +2,11 @@
 <!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-    <data noupdate="0">
+    <data>
         <record model="ir.module.category" id="module_category_sync">
             <field name="name">Sync Studio</field>
-            <field name="description">User: read-only access;
+            <field name="description">
+                User: read-only access;
             Developer: restricted write access;
             Manager: same as Developer, but access to secure staff.
             </field>
