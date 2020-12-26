@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
@@ -38,7 +38,7 @@
                             <field
                                 name="active"
                                 widget="boolean_button"
-                                options='{"terminology": "archive"}'
+                                options="{&quot;terminology&quot;: &quot;archive&quot;}"
                             />
                         </button>
                         <button
@@ -268,13 +268,12 @@
         action="sync_project_action"
         sequence="10"
     />
-    <act_window
-        id="sync_make_module_action"
-        name="Export to XML"
-        binding_model="sync.project"
-        res_model="sync.make.module"
-        view_mode="form"
-        target="new"
-        context="{'default_project_id': active_id}"
-    />
+    <record id="sync_make_module_action" model="ir.actions.act_window">
+        <field name="name">Export to XML</field>
+        <field name="binding_model">sync.project</field>
+        <field name="res_model">sync.make.module</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_project_id': active_id}</field>
+    </record>
 </odoo>
