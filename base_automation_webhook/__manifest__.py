@@ -12,8 +12,6 @@
     "support": "apps@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/11.0/base_automation_webhook/",
     "license": "Other OSI approved licence",  # MIT
-    "price": 60.00,
-    "currency": "EUR",
     "depends": ["base_automation"],
     "external_dependencies": {"python": [], "bin": []},
     "data": [],
