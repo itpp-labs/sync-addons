@@ -4,6 +4,7 @@
 
 import base64
 import datetime
+import dateutil
 import json
 import logging
 import time
@@ -16,7 +17,6 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict
 from odoo.tools.safe_eval import safe_eval, test_python_expr
 from odoo.tools.translate import _
 
-from odoo.addons.base.models.ir_actions import dateutil
 from odoo.addons.queue_job.exception import RetryableJobError
 
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
