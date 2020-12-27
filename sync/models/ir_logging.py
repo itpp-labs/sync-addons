@@ -22,7 +22,10 @@ class IrLogging(models.Model):
         "sync.project", related="sync_job_id.task_id.project_id"
     )
     message_short = fields.Text(string="Message...", compute="_compute_message_short")
-    type = fields.Selection(selection_add=[("data_out", "Data Transmission")])
+    type = fields.Selection(
+        selection_add=[("data_out", "Data Transmission")],
+        ondelete={"data_out": lambda records: records.write({"type": "server"})},
+    )
 
     def _compute_message_short(self):
         for r in self:

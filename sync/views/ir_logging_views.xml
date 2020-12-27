@@ -49,6 +49,7 @@
         <field name="model">ir.logging</field>
         <field name="arch" type="xml">
             <search>
+                <field name="message" />
                 <filter
                     string="Non-debug"
                     name="non_debug"

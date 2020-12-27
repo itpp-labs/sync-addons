@@ -29,6 +29,7 @@
         "views/sync_project_views.xml",
         "views/sync_link_views.xml",
         "wizard/sync_make_module_views.xml",
+        "data/queue_job_function_data.xml",
     ],
     "demo": [
         "data/sync_project_telegram_demo.xml",

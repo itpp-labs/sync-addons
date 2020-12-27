@@ -37,7 +37,7 @@
                         options="{'model': 'model_name', 'in_dialog': True}"
                     />
                     <field
-                        name="on_change_fields"
+                        name="on_change_field_ids"
                         attrs="{'invisible': [('trigger', '!=', 'on_change')], 'required': [('trigger', '=', 'on_change')]}"
                     />
                     <field
