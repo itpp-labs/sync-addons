@@ -22,19 +22,6 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <!-- Delete in Odoo 13 -->
-                        <button
-                            name="toggle_active"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-archive"
-                        >
-                            <field
-                                name="active"
-                                widget="boolean_button"
-                                options='{"terminology": "archive"}'
-                            />
-                        </button>
                         <button
                             type="action"
                             name="%(sync.sync_job_action_from_task)d"
@@ -52,10 +39,13 @@
                             <field string="Logs" name="log_count" widget="statinfo" />
                         </button>
                     </div>
-                    <!-- Uncomment in Odoo 13
-                    <widget name="web_ribbon" text="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget
+                        name="web_ribbon"
+                        text="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
                     <field name="active" invisible="1" />
-                    -->
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="E.g. Sync Products" />
