@@ -270,7 +270,7 @@
     />
     <record id="sync_make_module_action" model="ir.actions.act_window">
         <field name="name">Export to XML</field>
-        <field name="binding_model">sync.project</field>
+        <field name="binding_model_id" ref="sync.model_sync_project" />
         <field name="res_model">sync.make.module</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
