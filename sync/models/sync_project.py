@@ -3,18 +3,21 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
-import datetime
-import dateutil
-import json
 import logging
-import time
 
 from pytz import timezone
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict
-from odoo.tools.safe_eval import safe_eval, test_python_expr
+from odoo.tools.safe_eval import (
+    datetime,
+    dateutil,
+    json,
+    safe_eval,
+    test_python_expr,
+    time,
+)
 from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
