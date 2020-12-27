@@ -10,8 +10,6 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval, test_python_expr
 
-from odoo.addons.queue_job.job import job
-
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG
 
 _logger = logging.getLogger(__name__)
@@ -116,7 +114,6 @@ class SyncTask(models.Model):
         else:
             return job, queue_job_or_result
 
-    @job(retry_pattern={1: 5 * 60, 2: 15 * 60, 3: 60 * 60, 4: 3 * 60 * 60})
     def run(self, job, function, args=None, kwargs=None, raise_on_error=True):
         log = self.project_id._get_log_function(job, function)
         try:
