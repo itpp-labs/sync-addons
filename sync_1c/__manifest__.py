@@ -5,7 +5,7 @@
     "name": """1c Integration""",
     "summary": """1c.ru integration powered by Sync Studio""",
     "category": "Localization",
-    "images": [],
+    "images": ["images/sync_1c.jpg"],
     "version": "12.0.1.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
