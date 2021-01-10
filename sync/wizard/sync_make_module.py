@@ -165,8 +165,9 @@ class SyncMakeModule(models.TransientModel):
             else:
                 return existing.complete_name
 
-        xmlid = "{}_{}".format(
-            slugify(record.display_name), slugify(record._description)
+        xmlid = "{}--{}".format(
+            slugify(getattr(record, "trigger_name", "") or record.display_name),
+            slugify(record._description),
         )
 
         self.env["ir.model.data"].create(
