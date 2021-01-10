@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="woo_sync-project" model="sync.project">
+        <field name="name">WooCommerce</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">woo</field>
+        <field
+            name="common_code"
+        ><![CDATA[PRODUCT_REL="woo_product"
+
+def product_x2odoo(data):
+    # TODO: images
+    # TODO: price
+    return {
+      "name": data['name'],
+      "description": data['permalink'],
+    }
+def product_odoo2x(odoo):
+    # TODO: images
+    # TODO: price
+    return  {
+      "name": odoo.name
+    }
+
+def x_product2ref(data):
+    return data["id"]
+def x_product_get_all():
+    return wcapi_request("get", "products")
+def x_product_create(odoo):
+    data = product_odoo2x(odoo)
+    res = wcapi_request("post", "products", data)
+    return res['id']
+def x_product_update(ref, odoo):
+    data = product_odoo2x(odoo)
+    res = wcapi_request("put", "products/%s" % ref, data)
+    return ref
+
+def odoo_product_get_all(to_create=False, to_update=False):
+    all_records = env["product.product"].search([])
+    if to_create and to_update:
+        return all_records
+    linked = all_records.search_links(PRODUCT_REL).mapped(lambda link: link.odoo)
+    if to_create:
+        return all_records - linked
+    if to_update:
+        return linked
+def odoo_product_create(data):
+    vals = product_x2odoo(data)
+    log("env[\"product.product\"].create(%s)" % vals, LOG_DEBUG)
+    return env["product.product"].create(vals)
+def odoo_product_update(odoo, data):
+    vals = product_x2odoo(data)
+    log("%s.write(%s)" % (odoo, vals), LOG_DEBUG)
+    return odoo.write(vals)
+
+PRODUCT_SYNC = {
+  "relation": PRODUCT_REL,
+  "x": {
+    "get_ref": x_product2ref,
+    "create": x_product_create,
+    "update": x_product_update,
+  },
+  "odoo": {
+    "create": odoo_product_create,
+    "update": odoo_product_update,
+  }
+}]]></field>
+    </record>
+    <record id="api-key--project-secret-parameter" model="sync.project.secret">
+        <field name="key">API_KEY</field>
+        <field name="description">Credentials wth Read/Write access</field>
+        <field name="url">
+            http://woocommerce.github.io/woocommerce-rest-api-docs/#rest-api-keys
+        </field>
+        <field name="project_id" ref="woo_sync-project" />
+    </record>
+    <record id="api-secret--project-secret-parameter" model="sync.project.secret">
+        <field name="key">API_SECRET</field>
+        <field name="description">See API_KEY</field>
+        <field name="url" />
+        <field name="project_id" ref="woo_sync-project" />
+    </record>
+    <record id="api-url--project-parameter" model="sync.project.param">
+        <field name="key">API_URL</field>
+        <field name="value">https://woo_ssl</field>
+        <field name="description">
+            URL to WooCommerce. Must be a secured connection (http is not supported)
+        </field>
+        <field name="url" />
+        <field name="project_id" ref="woo_sync-project" />
+    </record>
+    <record id="api-version--project-parameter" model="sync.project.param">
+        <field name="key">API_VERSION</field>
+        <field name="value">wc/v3</field>
+        <field name="description">Depends on WooCommerce version</field>
+        <field name="url">
+            http://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
+        </field>
+        <field name="project_id" ref="woo_sync-project" />
+    </record>
+    <record id="api-verify-ssl--project-parameter" model="sync.project.param">
+        <field name="key">API_VERIFY_SSL</field>
+        <field name="value">0</field>
+        <field name="description">
+            Set 0 when need to test with self-signed certificates
+        </field>
+        <field name="url" />
+        <field name="project_id" ref="woo_sync-project" />
+    </record>
+    <record id="sync-woo-products-to-odoo_sync-task" model="sync.task">
+        <field name="name">Sync WooCommerce products to Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="woo_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_x2odoo(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_PRODUCTS_WOO2ODOO":
+        _sync_x2odoo(update=True)
+    elif trigger == "CREATE_PRODUCTS_WOO2ODOO":
+        _sync_x2odoo(create=True)
+    elif trigger == "SETUP_WOO_WEBHOOKS":
+        setup_woo_webhooks()
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+
+def _sync_x2odoo(create=False, update=False):
+    return sync_x2odoo(x_product_get_all(), PRODUCT_SYNC, create=create, update=update)
+
+def setup_woo_webhooks():
+    for topic, webhook in (
+      ("product.created", webhooks.WOO_PRODUCT_CREATED),
+      ("product.updated", webhooks.WOO_PRODUCT_UPDATED),
+      ("product.deleted", webhooks.WOO_PRODUCT_DELETED)
+      ):
+        data = {
+          "name": topic,
+          "topic": topic,
+          "delivery_url": webhook
+        }
+
+        wcapi_request("post", "webhooks", data)
+
+def handle_webhook(httprequest):
+    data = json.loads(httprequest.data.decode())
+    log("Woo payload:\n{}".format(json.dumps(data, indent=4, sort_keys=True)))
+    if trigger == "WOO_PRODUCT_CREATED":
+        sync_x2odoo([data], PRODUCT_SYNC, create=True)
+    elif trigger == "WOO_PRODUCT_UPDATED":
+        sync_x2odoo([data], PRODUCT_SYNC, update=True)
+    elif trigger == "WOO_PRODUCT_DELETED":
+        # TODO
+        pass
+
+]]></field>
+    </record>
+    <record id="CREATE_PRODUCTS_WOO2ODOO_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">CREATE_PRODUCTS_WOO2ODOO</field>
+        <field name="name">
+            Fetch all records from woo and create new ones in Odoo
+        </field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="UPDATE_PRODUCTS_WOO2ODOO_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">UPDATE_PRODUCTS_WOO2ODOO</field>
+        <field name="name">
+            Fetch all records from woo  records and update corresponding records in Odoo
+        </field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="setup-woo-webhooks--manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_WOO_WEBHOOKS</field>
+        <field name="name">
+            Configure WooCommerce to notify Odoo on updates in WooCommerce
+        </field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="CRON_PRODUCTS_WOO2ODOO_cron-trigger" model="sync.trigger.cron">
+        <field name="trigger_name">CRON_PRODUCTS_WOO2ODOO</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="woo-products-updates--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">WOO_PRODUCT_CREATED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="woo-product-updated--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">WOO_PRODUCT_UPDATED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="woo-product-deleted--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">WOO_PRODUCT_DELETED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-woo-products-to-odoo_sync-task" />
+    </record>
+    <record id="sync-odoo-products-to-woo_sync-task" model="sync.task">
+        <field name="name">Sync Odoo products to WooCommerce</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="woo_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_odoo2x(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_PRODUCTS_ODOO2WOO":
+        _sync_odoo2x(update=True)
+    elif trigger == "CREATE_PRODUCTS_ODOO2WOO":
+        _sync_odoo2x(create=True)
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+def handle_db(records):
+    if trigger == "ODOO_PRODUCTS_CREATE":
+        return sync_odoo2x(records, PRODUCT_SYNC, create=True)
+    elif trigger == "ODOO_PRODUCTS_UPDATE":
+        return sync_odoo2x(records, PRODUCT_SYNC, update=True)
+
+
+def _sync_odoo2x(create=False, update=False):
+    return sync_odoo2x(odoo_product_get_all(to_create=create, to_update=update), PRODUCT_SYNC, create=create, update=update)
+
+
+        ]]></field>
+    </record>
+    <record id="CREATE_PRODUCTS_ODOO2WOO_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">CREATE_PRODUCTS_ODOO2WOO</field>
+        <field name="name">Push new (unlinked) odoo records to woo</field>
+        <field name="sync_task_id" ref="sync-odoo-products-to-woo_sync-task" />
+    </record>
+    <record id="UPDATE_PRODUCTS_ODOO2WOO_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">UPDATE_PRODUCTS_ODOO2WOO</field>
+        <field name="name">Push updates of linked records to woo</field>
+        <field name="sync_task_id" ref="sync-odoo-products-to-woo_sync-task" />
+    </record>
+    <record id="CRON_PRODUCTS_ODOO2WOO_cron-trigger" model="sync.trigger.cron">
+        <field name="trigger_name">CRON_PRODUCTS_ODOO2WOO</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-woo_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="ODOO_PRODUCTS_UPDATE_db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ODOO_PRODUCTS_UPDATE</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-woo_sync-task" />
+        <field name="model_id" ref="account.model_product_product" />
+        <field name="trigger">on_write</field>
+    </record>
+    <record id="odoo-products-create--db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ODOO_PRODUCTS_CREATE</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-woo_sync-task" />
+        <field name="model_id" ref="account.model_product_product" />
+        <field name="trigger">on_create</field>
+    </record>
+</odoo>
