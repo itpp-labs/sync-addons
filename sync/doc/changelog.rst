@@ -1,3 +1,5 @@
+- **Improvement:** generate cleaner xmlid on generating XML data file
+
 `3.0.0`
 -------
 
