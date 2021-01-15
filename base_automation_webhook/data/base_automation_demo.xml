@@ -5,11 +5,11 @@
     <record id="test_rule_on_create" model="base.automation">
         <field name="name">Base Automation: test rule on create</field>
         <field name="state">code</field>
-        <field name="code">
-            log("code is executed")
+        <field name="code"><![CDATA[
+log("code is executed")
 # don't make actual request, but just check the package is available
 make_request
-        </field>
+        ]]></field>
         <field name="trigger">on_create</field>
         <field name="model_id" ref="base.model_res_partner" />
     </record>
