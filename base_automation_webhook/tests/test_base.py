@@ -6,7 +6,6 @@ from odoo.tests.common import TransactionCase, tagged
 
 
 class TestAutomation(TransactionCase):
-
     @tagged("at_install", "post_install")
     def test_requests(self):
         """Check that requests package is available"""

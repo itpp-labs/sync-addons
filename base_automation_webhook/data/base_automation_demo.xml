@@ -5,7 +5,9 @@
     <record id="test_rule_on_create" model="base.automation">
         <field name="name">Base Automation: test rule on create</field>
         <field name="state">code</field>
-        <field name="code"><![CDATA[
+        <field
+            name="code"
+        ><![CDATA[
 log("code is executed")
 # don't make actual request, but just check the package is available
 make_request
