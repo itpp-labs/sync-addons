@@ -19,24 +19,21 @@ Configuration
 
   * **Action Name**: *Test*
   * **Model**: *Contact*
-  * **Trigger Condition**: *On Creation*
-  * **Before Update Domain**: Optional. You can specify a condition that must be
+  * **Trigger**: *On Creation*
+  * **Apply on**: Optional. You can specify a condition that must be
     satisfied before record is updated. The field may not be available
     depending on **Trigger Condition** value.
-  * **Server actions to run**:
 
-    * **Action Name**: *Test Action*
-    * **Action To Do**: *Execute Python Code*
-    * **Condition**: Optional. You can specify a condition that must be satisfied before executing the Action.
-    * **Python Code**:
-      ::
+  * **Action To Do**: *Execute Python Code*
+  * **Python Code**:
+    ::
 
-          WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
-          data = {
-              "partner_id": record.id,
-              "partner_name": record.name,
-          }
-          make_request("POST", WEBHOOK, data=data)
+        WEBHOOK="https://PASTE-YOUR-WEBHOOK-URL"
+        data = {
+            "partner_id": record.id,
+            "partner_name": record.name,
+        }
+        make_request("POST", WEBHOOK, data=data)
 
   * Save everything
 
@@ -52,7 +49,6 @@ Handling field changing
 
 If you need to call a webhook on updating specific field, do as following:
 
-* set **Before Update Domain** to a domain like ``[['FIELD', '!=', TARGET_VALUE]]``
 * set **Apply On** to a domain like  ``[['FIELD', '=', TARGET_VALUE]]``
 
 RESULT: webhook will be sent only when field value is changed to *TARGET_VALUE*.
