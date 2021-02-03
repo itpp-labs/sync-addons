@@ -25,9 +25,9 @@ Contributors
 Further information
 ===================
 
-Odoo Apps Store: https://apps.odoo.com/apps/modules/13.0/base_automation_webhook/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/base_automation_webhook/
 
 
-Notifications on updates: `via Atom <https://github.com/it-projects-llc/misc-addons/commits/13.0/base_automation_webhook.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/misc-addons/commits/13.0/base_automation_webhook.atom>`_
+Notifications on updates: `via Atom <https://github.com/it-projects-llc/misc-addons/commits/14.0/base_automation_webhook.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/base_automation_webhook.atom>`_
 
-Tested on `Odoo 13.0 <https://github.com/odoo/odoo/commit/d3f043345c04674bba81762d0afd88dab52aab36>`_
+Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/120366491f58a802deef68a17ebb26199ef829a2>`_
