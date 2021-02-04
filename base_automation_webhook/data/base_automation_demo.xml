@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="test_rule_on_create" model="base.automation">
+        <field name="name">Base Automation: test rule on create</field>
+        <field name="state">code</field>
+        <field
+            name="code"
+        ><![CDATA[
+log("code is executed")
+# don't make actual request, but just check the package is available
+make_request
+        ]]></field>
+        <field name="trigger">on_create</field>
+        <field name="model_id" ref="base.model_res_partner" />
+    </record>
+</odoo>
