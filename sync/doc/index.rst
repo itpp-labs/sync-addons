@@ -450,7 +450,7 @@ Odoo Messages prefixed with ``/telegram`` are sent back to telegram.
 
 To try it, you need to install this module in demo mode. Also, your odoo
 instance must be accessible over internet to receive telegram webhooks. Due to
-telegram requirements, your web server must use http**s** connection.
+telegram requirements, your web server must use `https` connection.
 
 How it works
 ------------
