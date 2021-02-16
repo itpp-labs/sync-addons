@@ -3,11 +3,9 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import json
+import logging
 import xmlrpc.client as _client
 from math import sqrt
-
-# https://github.com/python-telegram-bot/python-telegram-bot
-from telegram import Bot, Update
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -17,6 +15,14 @@ from odoo.addons.queue_job.exception import RetryableJobError
 
 from .ir_logging import LOG_WARNING
 from .sync_project import AttrDict
+
+_logger = logging.getLogger(__name__)
+
+try:
+    # https://github.com/python-telegram-bot/python-telegram-bot
+    from telegram import Bot, Update  # pylint: disable=missing-manifest-dependency
+except (ImportError, IOError) as err:
+    _logger.debug(err)
 
 
 class SyncProjectDemo(models.Model):
