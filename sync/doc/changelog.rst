@@ -1,4 +1,5 @@
 - **Fix:** Export XML: add missed fields webhook_type
+- **Improvement:** add tokens for incoming webhooks
 
 `2.3.1`
 -------
