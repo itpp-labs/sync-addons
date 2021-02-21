@@ -123,7 +123,16 @@ class SyncMakeModule(models.TransientModel):
 
             for trigger in task.webhook_ids:
                 records.append(
-                    (trigger, ("trigger_name", "active", "name", "sync_task_id"))
+                    (
+                        trigger,
+                        (
+                            "trigger_name",
+                            "active",
+                            "name",
+                            "sync_task_id",
+                            "webhook_type",
+                        ),
+                    )
                 )
 
         for r, field_names in records:
