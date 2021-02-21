@@ -1,3 +1,5 @@
+- **Fix:** Export XML: add missed fields webhook_type
+
 `2.3.1`
 -------
 
