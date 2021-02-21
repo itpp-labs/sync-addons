@@ -1,3 +1,4 @@
+- **Fix:** error on opening "Project for Unittests"
 - **Fix:** Export XML: add missed fields webhook_type
 
 `2.0.1`
