@@ -1,3 +1,4 @@
+- **Improvement:** show icon in app switcher in Odoo EE
 - **Fix:** error on opening "Project for Unittests"
 - **Fix:** Export XML: add missed fields webhook_type
 
