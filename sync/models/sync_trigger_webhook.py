@@ -52,6 +52,7 @@ class SyncTriggerWebhook(models.Model):
     def default_get(self, fields):
         vals = super(SyncTriggerWebhook, self).default_get(fields)
         vals["website_published"] = True
+        vals["groups_id"] = [(4, self.env.ref("base.group_public").id, 0)]
         return vals
 
     def start(self):

@@ -122,6 +122,7 @@
                                     <field name="active" />
                                     <field name="webhook_type" />
                                     <field name="website_url" />
+                                    <field name="groups_id" widget="many2many_tags" />
                                     <field name="action_server_id" invisible="1" />
                                 </tree>
                             </field>
