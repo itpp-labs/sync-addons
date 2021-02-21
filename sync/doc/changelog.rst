@@ -1,6 +1,7 @@
 `2.1.0`
 -------
 
+- **Improvement:** add tokens for incoming webhooks
 - **Improvement:** add helpers for one2one synchronization
 - **Improvement:** show icon in app switcher in Odoo EE
 - **Fix:** error on opening "Project for Unittests"
