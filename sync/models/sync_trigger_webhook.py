@@ -1,5 +1,7 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
+
+import uuid
 
 from odoo import api, fields, models
 from odoo.http import Response, request
@@ -28,7 +30,7 @@ class SyncTriggerWebhook(models.Model):
         string="Webhook Type",
         default="json",
     )
-    website_url = fields.Char("Website URL", compute="_compute_website_url")
+    website_url = fields.Char("Webhook URL", compute="_compute_website_url")
 
     @api.depends(
         "webhook_type",
@@ -53,7 +55,12 @@ class SyncTriggerWebhook(models.Model):
         vals = super(SyncTriggerWebhook, self).default_get(fields)
         vals["website_published"] = True
         vals["groups_id"] = [(4, self.env.ref("base.group_public").id, 0)]
+        vals["website_path"] = uuid.uuid4()
         return vals
+
+    def action_website_path(self):
+        for r in self:
+            r.website_path = uuid.uuid4()
 
     def start(self):
         record = self.sudo()
