@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="trello-github_project" model="sync.project">
@@ -113,9 +114,10 @@ def color2trello(hex):
         <field name="description">
             Token with access to read issues and create webhooks, i.e. "repo" scope
         </field>
-        <field name="url">
-            https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token
-        </field>
+        <field
+            name="url"
+            eval="'https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token'"
+        />
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
     <record id="trello-github_project_secret_github_repo" model="sync.project.secret">
@@ -131,15 +133,16 @@ def color2trello(hex):
             API Key in https://trello.com/app-key page, you will see a link to generate
             token. Click one and you'll get the token
         </field>
-        <field name="url">
-            https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction/
-        </field>
+        <field
+            name="url"
+            eval="'https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction'"
+        />
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
     <record id="trello-key_project-secret-parameter" model="sync.project.secret">
         <field name="key">TRELLO_KEY</field>
         <field name="description" />
-        <field name="url">https://trello.com/app-key</field>
+        <field name="url" eval="'https://trello.com/app-key'" />
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
     <record id="trello-board-id_project-secret-parameter" model="sync.project.secret">
@@ -148,9 +151,10 @@ def color2trello(hex):
             You can get one from the board url:
             https://trello.com/b/TRELLO_BOARD_ID/BOARD-NAME
         </field>
-        <field name="url">
-            https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525
-        </field>
+        <field
+            name="url"
+            eval="'https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525'"
+        />
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
     <record id="trello-github_project_param_prefix_name" model="sync.project.param">
