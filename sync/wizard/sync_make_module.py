@@ -1,4 +1,5 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 import base64
 
@@ -23,7 +24,7 @@ class SyncMakeModule(models.TransientModel):
     data = fields.Binary("File", readonly=True, attachment=False)
     data2 = fields.Binary("File Txt", related="data")
     module = fields.Char("Module Technical Name", required=True)
-    copyright_years = fields.Char("Copyright Year", default="2020", required=True)
+    copyright_years = fields.Char("Copyright Year", default="2021", required=True)
     author_name = fields.Char("Author Name", help="e.g. Ivan Yelizariev", required=True)
     author_url = fields.Char("Author URL", help="e.g. https://twitter.com/yelizariev")
     license_line = fields.Char(
@@ -180,14 +181,17 @@ class SyncMakeModule(models.TransientModel):
         field = record._fields[fname]
         value = getattr(record, fname)
         xml = etree.Element("field", name=fname)
-        if field.type in ["char", "selection", "integer"]:
-            xml.text = str(value) if value else ""
+        if field.type == "char" and field.name == "url":
+            # we need it to avoid extra spaces
+            xml.set("eval", "'" + str(value) + "'" or "")
+        elif field.type == "boolean":
+            xml.set("eval", str(value) or "")
         elif field.type == "text":
             xml.text = etree.CDATA(value or "")
         elif field.type == "many2one":
             xml.set("ref", self.module + "." + self._record2id(value))
-        elif field.type == "boolean":
-            xml.set("eval", str(value))
+        else:
+            xml.text = str(value) if value else ""
         return xml
 
     def _record2xml(self, record, fields):
