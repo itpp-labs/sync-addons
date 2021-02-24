@@ -26,12 +26,12 @@ Contributors
 Further information
 ===================
 
-Odoo Apps Store: https://apps.odoo.com/apps/modules/13.0/base_api/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/base_api/
 
 
 Notifications on updates: `via Atom
-<https://github.com/it-projects-llc/sync-addons/commits/13.0/base_api.atom>`__,
+<https://github.com/itpp-labs/sync-addons/commits/14.0/base_api.atom>`__,
 `by Email
-<https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/13.0/base_api.atom>`__
+<https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/base_api.atom>`__
 
-Tested on `Odoo 13.0 <https://github.com/odoo/odoo/commit/eed3171f2f057223c3fbedd95ce6bcde2124f46c>`_
+Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/120366491f58a802deef68a17ebb26199ef829a2>`_
