@@ -6,7 +6,7 @@
     "summary": """Basic function and methods of API for openapi or XML-RPC""",
     "category": "Hidden",
     # "live_test_url": "http://apps.it-projects.info/shop/product/DEMO-URL?version=13.0",
-    "version": "13.0.1.0.1",
+    "version": "14.0.1.0.1",
     "application": False,
     "author": "IT-Projects LLC, Anvar Kildebekov",
     "support": "apps@itpp.dev",
