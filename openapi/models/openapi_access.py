@@ -30,7 +30,7 @@ class Access(models.Model):
 
     active = fields.Boolean("Active", default=True)
     namespace_id = fields.Many2one("openapi.namespace", "Integration", required=True)
-    model_id = fields.Many2one("ir.model", "Model", required=True)
+    model_id = fields.Many2one("ir.model", "Model", required=True, ondelete="cascade")
     model = fields.Char("Model Name", related="model_id.model")
     api_create = fields.Boolean("Create via API", default=False)
     api_read = fields.Boolean("Read via API", default=False)
@@ -440,7 +440,7 @@ class AccessCreateContext(models.Model):
 
     name = fields.Char("Name", required=True)
     description = fields.Char("Description")
-    model_id = fields.Many2one("ir.model", "Model", required=True)
+    model_id = fields.Many2one("ir.model", "Model", required=True, ondelete="cascade")
     context = fields.Text("Context", required=True)
 
     _sql_constraints = [
