@@ -1,6 +1,7 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import logging
 
@@ -8,7 +9,8 @@ import requests
 
 from odoo import api
 from odoo.tests import tagged
-from odoo.tests.common import PORT, HttpCase, get_db_name
+from odoo.tests.common import HttpCase, get_db_name
+from odoo.tools import config
 
 from ..controllers import pinguin
 
@@ -24,7 +26,7 @@ MESSAGE = "message is posted from API"
 # * /res.partner/{record_id}
 
 
-@tagged("post_install", "at_install")
+@tagged("post_install", "-at_install")
 class TestAPI(HttpCase):
     def setUp(self):
         super(TestAPI, self).setUp()
@@ -37,9 +39,10 @@ class TestAPI(HttpCase):
     def request(self, method, url, auth=None, **kwargs):
         kwargs.setdefault("model", self.model_name)
         kwargs.setdefault("namespace", "demo")
-        url = ("http://localhost:%d/api/v1/{namespace}" % PORT + url).format(**kwargs)
+        url = (
+            "http://localhost:%d/api/v1/{namespace}" % config["http_port"] + url
+        ).format(**kwargs)
         self.opener = requests.Session()
-        self.opener.cookies["session_id"] = self.session_id
         return self.opener.request(
             method, url, timeout=30, auth=auth, json=kwargs.get("data_json")
         )
@@ -261,7 +264,7 @@ class TestAPI(HttpCase):
         super_user.write({"namespace_ids": [(4, namespace.id)]})
 
         url = "http://localhost:%d/api/v1/demo/report/html/%s/%s" % (
-            PORT,
+            config["http_port"],
             report_external_id,
             docids,
         )
