@@ -1,4 +1,5 @@
 - **Improvement:** generate cleaner xmlid on generating XML data file
+- **Improvement:** dynamically check python code for syntax errors
 
 `3.0.0`
 -------
