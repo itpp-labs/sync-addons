@@ -6,7 +6,7 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY""",
     "category": "Extra Tools",
     "images": ["images/sync-studio.jpg"],
-    "version": "12.0.2.1.1",
+    "version": "12.0.2.2.0",
     "application": True,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "help@itpp.dev",

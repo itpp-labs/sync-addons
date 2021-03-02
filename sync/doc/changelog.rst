@@ -1,3 +1,8 @@
+`2.2.0`
+-------
+
+- **Improvement:** dynamically check python code for syntax errors
+
 `2.1.1`
 -------
 
