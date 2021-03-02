@@ -24,6 +24,7 @@ class SyncTask(models.Model):
     project_id = fields.Many2one("sync.project", ondelete="cascade")
     name = fields.Char("Name", help="e.g. Sync Products", required=True)
     code = fields.Text("Code")
+    code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
     cron_ids = fields.One2many("sync.trigger.cron", "sync_task_id", copy=True)
     automation_ids = fields.One2many(
@@ -78,6 +79,14 @@ class SyncTask(models.Model):
             msg = test_python_expr(expr=r.code, mode="exec")
             if msg:
                 raise ValidationError(msg)
+
+    @api.onchange("code")
+    def onchange_code(self):
+        for r in self:
+            if not r.code:
+                continue
+            msg = test_python_expr(expr=r.code, mode="exec")
+            r.code_check = msg
 
     @api.depends(
         "cron_ids.active",
