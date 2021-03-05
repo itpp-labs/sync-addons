@@ -8,7 +8,7 @@
 Installation
 ============
 
-* Make configuration required for `queue_job <https://apps.odoo.com/apps/modules/13.0/queue_job/#id12>`__ module. In particular:
+* Make configuration required for `queue_job <https://github.com/OCA/queue/tree/14.0/queue_job#id4>`__ module. In particular:
 
   * add ``queue_job`` to `server wide modules <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
@@ -669,9 +669,10 @@ Configuration
     * Open *CONFLICT_RESOLVING* Cron
     * Change **Next Execution Date** in webhook to the night time
     * Set **Number of Calls**, a negative value means no limit (e.g. `-1`)
-    * Make it active on the upper right corner
-  * Click ``[Save]``
-* Make integration Active on the upper right corner
+    * Make it active by checking the box in front of the corresponding field
+    * Click ``[Save]``
+* Save all the changes you made in the integration
+* Make integration Active by clicking ``Action >> Unarchive``
 * In project's *Manual Triggers* tab:
 
   * Click ``[Run Now]`` buttons in trigger *SETUP_GITHUB*
