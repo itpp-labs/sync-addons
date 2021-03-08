@@ -18,7 +18,7 @@
   * Задайте логин и пароль
 * Нажмите кнопку ``Сохранить``
 
-OData must be accessible via internet. For 1cfresh instances ODATA_URL should be something like this: https://1cfresh.com/a/ea_demo/123456/odata/standard.odata/
+OData must be accessible via internet. For 1cfresh instances ODATA_URL should be something like this: https://1cfresh.com/a/sbm/123456/odata/standard.odata/
 
 To work with employee syncing:
 
