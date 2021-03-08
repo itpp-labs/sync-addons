@@ -1,0 +1,602 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="trello-github_project" model="sync.project">
+        <field name="name">Demo Trello-Github Integration</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">trello_github</field>
+        <field
+            name="common_code"
+        ><![CDATA[
+
+ISSUES_REL="TRELLO_GITHUB_ISSUES_REL"
+LABELS_REL="TRELLO_GITHUB_LABELS_REL"
+
+def get_related_label(from_id, name, color, from_system, to_system):
+    elink = get_link(LABELS_REL, {from_system: from_id, to_system: None})
+
+    if elink:
+        return elink.get(to_system)[0]
+    else:
+        to_id = github.label_create(name, color) if to_system == GITHUB else trello.label_create(name, color)
+        elink = set_link(LABELS_REL, {from_system: from_id, to_system: to_id})
+        return to_id
+
+def github2trello_labels(labels):
+    tlabel_ids = []
+    for lb in labels:
+        label_id = lb["id"]
+        label_name = lb["name"]
+        label_color = color2trello(lb["color"])
+        tlabel_id = get_related_label(label_id, label_name, label_color, from_system=GITHUB, to_system=TRELLO)
+        tlabel_ids.append(tlabel_id)
+    return tlabel_ids
+
+def trello2github_labels(labels):
+    id2color = trello.get_labels_colors()
+    glabel_ids = []
+    for lb in labels:
+        label_id = lb["id"]
+        label_name = lb["name"]
+        color = id2color[lb["id"]]
+        label_color = color2github(color)
+        glabel_id = get_related_label(label_id, label_name, label_color, from_system=TRELLO, to_system=GITHUB)
+        glabel_ids.append(glabel_id)
+    return glabel_ids
+
+# colors list is taken from here: https://developer.atlassian.com/cloud/trello/rest/api-group-labels/#api-labels-post
+TRELLO_COLORS = {
+    (255, 255, 0): "yellow",
+    (128, 0, 128): "purple",
+    (0, 0, 255): "blue",
+    (255, 0, 0): "red",
+    (0, 128, 0): "green",
+    (255, 159, 26): "orange",
+    (0, 0, 0): "black",
+    (0, 194, 224): "sky",
+    (255, 120, 203): "pink",
+    (0, 255, 0): "lime",
+}
+
+def hex2rgb(hex):
+    int(hex[0:2], 16), int(hex[2:4], 16), int(hex[4:6], 16)
+
+def rgb2hex(rgb):
+    r, g, b = rgb
+    return "{0:02x}{1:02x}{2:02x}".format(r, g, b)
+
+
+def color2trello(hex):
+    # based on https://stackoverflow.com/a/54242348/222675
+    r, g, b = hex2rgb(hex)
+    color_diffs = []
+    for color in TRELLO_COLORS.keys():
+        cr, cg, cb = color
+        color_diff = sqrt(abs(r - cr)**2 + abs(g - cg)**2 + abs(b - cb)**2)
+        color_diffs.append((color_diff, color))
+    best_color = min(color_diffs)[1]
+    return TRELLO_COLORS[best_color]
+
+def color2github(color_name):
+    GITHUB_COLORS = {name: rgb2hex(rgb) for rgb, name in TRELLO_COLORS.items()}
+    return GITHUB_COLORS[color_name]
+
+def color2trello(hex):
+    # colors list is taken from here: https://developer.atlassian.com/cloud/trello/rest/api-group-labels/#api-labels-post
+    TRELLO_COLORS = {
+      (255, 255, 0): "yellow",
+      (128, 0, 128): "purple",
+      (0, 0, 255): "blue",
+      (255, 0, 0): "red",
+      (0, 128, 0): "green",
+      (255, 159, 26): "orange",
+      (0, 0, 0): "black",
+      (0, 194, 224): "sky",
+      (255, 120, 203): "pink",
+      (0, 255, 0): "lime",
+    }
+    # based on https://stackoverflow.com/a/54242348/222675
+    r, g, b = int(hex[0:2], 16), int(hex[2:4], 16), int(hex[4:6], 16)
+    color_diffs = []
+    for color in TRELLO_COLORS.keys():
+        cr, cg, cb = color
+        color_diff = sqrt(abs(r - cr)**2 + abs(g - cg)**2 + abs(b - cb)**2)
+        color_diffs.append((color_diff, color))
+    best_color = min(color_diffs)[1]
+    return TRELLO_COLORS[best_color]
+
+]]></field>
+    </record>
+    <record id="trello-github_project_secret_github_token" model="sync.project.secret">
+        <field name="key">GITHUB_TOKEN</field>
+        <field name="description">
+            Token with access to read issues and create webhooks, i.e. "repo" scope
+        </field>
+        <field
+            name="url"
+            eval="'https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token'"
+        />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-github_project_secret_github_repo" model="sync.project.secret">
+        <field name="key">GITHUB_REPO</field>
+        <field name="description">owner/repo_name</field>
+        <field name="url" />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-token_project-secret-parameter" model="sync.project.secret">
+        <field name="key">TRELLO_TOKEN</field>
+        <field name="description">
+            Trello token to make API calls. Don't confuse it with API Key. Once you get
+            API Key in https://trello.com/app-key page, you will see a link to generate
+            token. Click one and you'll get the token
+        </field>
+        <field
+            name="url"
+            eval="'https://developer.atlassian.com/cloud/trello/guides/rest-api/api-introduction'"
+        />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-key_project-secret-parameter" model="sync.project.secret">
+        <field name="key">TRELLO_KEY</field>
+        <field name="description" />
+        <field name="url" eval="'https://trello.com/app-key'" />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-board-id_project-secret-parameter" model="sync.project.secret">
+        <field name="key">TRELLO_BOARD_ID</field>
+        <field name="description">
+            You can get one from the board url:
+            https://trello.com/b/TRELLO_BOARD_ID/BOARD-NAME
+        </field>
+        <field
+            name="url"
+            eval="'https://community.atlassian.com/t5/Trello-questions/How-to-get-Trello-Board-ID/qaq-p/1347525'"
+        />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-github_project_param_prefix_name" model="sync.project.param">
+        <field name="key">ISSUE_FROM_GITHUB_PREFIX</field>
+        <field name="value">GITHUB:</field>
+        <field name="description" />
+        <field name="url" />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-github_project_param_prefix_message" model="sync.project.param">
+        <field name="key">MESSAGE_PREFIX</field>
+        <field name="value">A Message posted on GitHub:</field>
+        <field name="description" />
+        <field name="url" />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record
+        id="trello-github_project_param_labels_merge_strategy"
+        model="sync.project.param"
+    >
+        <field name="key">LABELS_MERGE_STRATEGY</field>
+        <field name="value">UNION</field>
+        <field name="description">
+            Possible values:
+USE_TRELLO, USE_GITHUB: use version from one side and override values from another
+UNION: add missed labels to each side
+INTERSECTION: remove labes that are not attached on another side
+        </field>
+        <field name="url" />
+        <field name="project_id" ref="sync.trello-github_project" />
+    </record>
+    <record id="trello-github_task_setup" model="sync.task">
+        <field name="name">Setup</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="sync.trello-github_project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_button():
+    if trigger == "SETUP_GITHUB":
+        github.set_webhook(webhooks.GITHUB_ISSUE_UPDATES, ["issues"])
+        github.set_webhook(webhooks.GITHUB_ISSUE_COMMENT, ["issue_comment"])
+        github.set_webhook(webhooks.GITHUB_LABEL_UPDATES, ["label"])
+    elif trigger == "SETUP_TRELLO":
+        trello.set_webhook(webhooks.TRELLO_CARD_UPDATES)
+        trello.set_webhook(webhooks.TRELLO_LABEL_UPDATES)
+    elif trigger == "DELETE_TRELLO_WEBHOOKS":
+        trello.delete_webhooks()
+    else:
+        raise Exception("Unknown button event: %s" % trigger)
+]]></field>
+    </record>
+    <record
+        id="trello-github_task_setup_trigger_button_github"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">SETUP_GITHUB</field>
+        <field
+            name="name"
+        >Setup Github Webhook. To delete webhooks, open github repostory, navigate to Settings &gt;&gt; Webhooks</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_setup" />
+    </record>
+    <record
+        id="trello-github_task_setup_trigger_button_trello"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">SETUP_TRELLO</field>
+        <field name="name">Setup Trello Webhook.</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_setup" />
+    </record>
+    <record id="delete-trello-webhooks_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">DELETE_TRELLO_WEBHOOKS</field>
+        <field name="name" />
+        <field name="sync_task_id" ref="sync.trello-github_task_setup" />
+    </record>
+    <record id="debug_manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">DEBUG</field>
+        <field name="name" />
+        <field name="sync_task_id" ref="sync.trello-github_task_setup" />
+    </record>
+    <record id="trello-github_task_issues" model="sync.task">
+        <field name="name">Sync Github Issues to Trello (name, messages, labels)</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="sync.trello-github_project" />
+        <field
+            name="code"
+        ><![CDATA[
+
+def handle_webhook(httprequest):
+    data = json.loads(httprequest.data.decode())
+    log("Github payload:\n{}".format(json.dumps(data, indent=4, sort_keys=True)))
+    if data.get("zen"):
+        # github sent dummy request to check webhook
+        return "It Works!"
+    if trigger == "GITHUB_ISSUE_COMMENT":
+        return handle_webhook_issue_comment(data)
+    elif trigger == "GITHUB_ISSUE_UPDATES":
+        return handle_webhook_issues_update(data)
+    else:
+        raise Exception("Unknown trigger {}".format(trigger))
+
+def handle_webhook_issue_comment(data):
+    # https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#issue_comment
+    if data["action"] not in ["created"]:
+        # In this demo project we don't process other events
+        return "thank you!"
+    issue = data["issue"]
+    issue_id = issue["number"]
+    card_id = issue_id2card_id(issue_id)
+    issue_message = data["comment"]["body"]
+    message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+    trello.card_add_message(card_id, message)
+
+def handle_webhook_issues_update(data):
+    # https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#issues
+    if data["action"] not in ["opened", "labeled", "unlabeled"]:
+        # In this demo project we don't process other events
+        return "thank you!"
+    issue = data["issue"]
+    issue_id = issue["number"]
+    issue_name = issue["title"]
+    card_id = issue_id2card_id(issue_id)
+    if not card_id:
+        card_id = trello.card_create(params.ISSUE_FROM_GITHUB_PREFIX + issue_name, issue_id)
+        set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
+
+    if data["action"] == "opened":
+        issue_message = issue["body"]
+        if issue_message:
+            message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+            trello.card_add_message(card_id, message)
+
+    # attached labels:
+    labels = []
+    if data["action"] == "opened":
+        labels = issue["labels"]
+    if data["action"] == "labeled":
+        labels = [data["label"]]
+    if labels:
+        tlabel_ids = github2trello_labels(labels)
+
+        if tlabel_ids:
+            trello.card_add_labels(card_id, tlabel_ids)
+
+    # detached labels:
+    if data["action"] == "unlabeled":
+        if not data.get("label"):
+            log("Label is deleted from repository. It's handled in another task")
+            return "ok"
+        labels = [data["label"]]
+        tlabel_ids = github2trello_labels(labels)
+
+        if tlabel_ids:
+            trello.card_remove_labels(card_id, tlabel_ids)
+
+def issue_id2card_id(issue_id):
+    elink = get_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: None})
+    if elink:
+        return elink.get(TRELLO)[0]
+
+def handle_button():
+    # Sync all existing open github issues to trello
+    fetch_github_issues()
+
+def fetch_github_issues(page=0):
+    CHUNK_SIZE=10
+    # fetch page
+    issues = github.get_all_issues(page)
+    if not issues:
+        log("No more issues. Page={}".format(page))
+        return
+    # split issues into chunks
+    for x in range(0, len(issues), CHUNK_SIZE):
+        add_job("process_github_issues")(issues[x:x+CHUNK_SIZE])
+    # fetch next page
+    add_job("fetch_github_issues")(page+1)
+
+def process_github_issues(issues):
+    # TODO: can we combine it with handle_webhook_issues_update ?
+    for data in issues:
+        issue_id = data["id"]
+        if issue_id2card_id(issue_id):
+            log("Issue is already pushed: %s" % data["id"])
+            continue
+        issue_name = params.ISSUE_FROM_GITHUB_PREFIX + data["name"]
+        card_id = trello.card_create(issue_name, issue_id)
+        set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
+
+        issue_message = data["body"]
+        if issue_message:
+            message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+            trello.card_add_message(card_id, message)
+
+        labels = data["labels"]
+        tlabel_ids = github2trello_labels(labels)
+
+        if tlabel_ids:
+            trello.card_add_labels(card_id, tlabel_ids)
+]]></field>
+    </record>
+    <record
+        id="push-all-issues-initial-syncing-of-github-issues-it-pushes-only-issues-without-linked-trello-cards-it-doesn-t-sync-further-updates_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">PUSH_ALL_ISSUES</field>
+        <field name="name">
+            Initial syncing of github issues. It pushes only  issues without linked
+            trello cards. It doesn't sync further updates
+        </field>
+        <field name="sync_task_id" ref="sync.trello-github_task_issues" />
+    </record>
+    <record
+        id="trello-github_task_issues_trigger_webhook_github"
+        model="sync.trigger.webhook"
+    >
+        <field name="trigger_name">GITHUB_ISSUE_UPDATES</field>
+        <field name="active" eval="True" />
+        <field name="name">Github Issue updates</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_issues" />
+    </record>
+    <record id="github-issue-comment_webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">GITHUB_ISSUE_COMMENT</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_issues" />
+    </record>
+    <record id="trello-github_task_cards" model="sync.task">
+        <field name="name">Sync Trello Cards to Github (labels)</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="sync.trello-github_project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_webhook(httprequest):
+    if httprequest.method == "HEAD":
+        # trello is checking webhook before setting it up
+        return "it works!"
+    data = json.loads(httprequest.data.decode())
+    log("Trello payload: {}".format(json.dumps(data, indent=4, sort_keys=True)), LOG_DEBUG)
+    action_type = data["action"]["type"]
+    if action_type not in ["addLabelToCard", "removeLabelFromCard"]:
+        # other label events are handled in "Sync labels" task
+        return "thank you"
+    card = data["action"]["data"]["card"]
+    elink = get_link(ISSUES_REL, {GITHUB: None, TRELLO: card["id"]})
+    if not elink:
+        log("Card is not linked to github issue: %s" % card)
+    issue_id = elink.get(GITHUB)[0]
+    labels = [data["action"]["data"]["label"]]
+    glabel_ids = trello2github_labels(labels)
+    if action_type == "addLabelToCard":
+        github.issue_add_labels(issue_id, glabel_ids)
+    elif action_type == "removeLabelFromCard":
+        github.issue_remove_labels(issue_id, glabel_ids)
+
+
+]]></field>
+    </record>
+    <record
+        id="trello-github_task_issues_trigger_webhook_trello"
+        model="sync.trigger.webhook"
+    >
+        <field name="trigger_name">TRELLO_CARD_UPDATES</field>
+        <field name="active" eval="True" />
+        <field name="name">Trello Card updates</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_cards" />
+    </record>
+    <record id="trello-github_task_labels" model="sync.task">
+        <field name="name">Sync labels Updating/Deleting</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="sync.trello-github_project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_webhook(httprequest):
+    data = None
+    is_updated = None
+    is_deleted = None
+    if trigger == "TRELLO_LABEL_UPDATES":
+        if httprequest.method == "HEAD":
+            # trello is checking webhook before setting it up
+            return "It works!"
+        data = json.loads(httprequest.data.decode())
+        log("Trello payload: {}".format(json.dumps(data, indent=4, sort_keys=True)), LOG_DEBUG)
+        action_type = data["action"]["type"]
+        if action_type == "deleteLabel":
+            is_deleted = True
+        elif action_type == "updateLabel":
+            is_updated = True
+        else:
+            # other label events are handled in "Sync Trello Cards to Github" task
+            return "Thank you!"
+    elif trigger == "GITHUB_LABEL_UPDATES":
+        data = json.loads(httprequest.data.decode())
+        log("Github payload:\n{}".format(json.dumps(data, indent=4, sort_keys=True)))
+        if data.get("zen"):
+            # github sent dummy request to check webhook
+            return "It Works!"
+        is_updated = data["action"] == "edited"
+        is_deleted = data["action"] == "deleted"
+    else:
+       raise Exception("Unknown Event")
+
+    glabel_id = None
+    tlabel_id = None
+    new_color = None
+    new_name = None
+    if trigger == "TRELLO_LABEL_UPDATES":
+        label = data["action"]["data"]["label"]
+        tlabel_id = label["id"]
+        new_name = label.get("name")
+        if label.get("color"):
+            new_color = color2github(label["color"])
+    elif trigger == "GITHUB_LABEL_UPDATES":
+        label = data["label"]
+        glabel_id = label["id"]
+        new_name = label["name"]
+        color = color2trello(label["color"])
+
+    elinks = search_links(LABELS_REL, {GITHUB: glabel_id, TRELLO: tlabel_id})
+    if not elinks:
+        log("Label is not linked")
+        return
+    glabel_id = elinks.get(GITHUB)[0]
+    tlabel_id = elinks.get(TRELLO)[0]
+    if is_updated:
+        if trigger == "TRELLO_LABEL_UPDATES":
+            github.label_update(glabel_id, new_name, new_color)
+        elif trigger == "GITHUB_LABEL_UPDATES":
+            trello.label_update(tlabel_id, new_name, new_color)
+
+    if is_deleted:
+        elinks.unlink()
+        if trigger == "TRELLO_LABEL_UPDATES":
+            github.label_delete(glabel_id)
+        elif trigger == "GITHUB_LABEL_UPDATES":
+            trello.label_delete(tlabel_id)
+
+]]></field>
+    </record>
+    <record
+        id="trello-github_task_labels_trigger_webhook_trello"
+        model="sync.trigger.webhook"
+    >
+        <field name="trigger_name">TRELLO_LABEL_UPDATES</field>
+        <field name="active" eval="True" />
+        <field name="name">Trello Label updates</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_labels" />
+    </record>
+    <record
+        id="trello-github_task_labels_trigger_webhook_github"
+        model="sync.trigger.webhook"
+    >
+        <field name="trigger_name">GITHUB_LABEL_UPDATES</field>
+        <field name="active" eval="True" />
+        <field name="name">Github Label updates</field>
+        <field name="sync_task_id" ref="sync.trello-github_task_labels" />
+    </record>
+    <record id="trello-github_task_conflicts_resolving" model="sync.task">
+        <field name="name">Labels Conflict Resolving</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="sync.trello-github_project" />
+        <field
+            name="code"
+        ><![CDATA[
+
+def handle_cron():
+    elinks = search_links(ISSUES_REL, {GITHUB: None, TRELLO: None})
+    issue_ids = elinks.get(GITHUB)
+    # https://docs.github.com/en/rest/reference/issues#list-repository-issues
+    # issue is {id: int, labels: [{id: int, name: str, ...}]}
+    issues = github.get_all_issues()
+    # issue_id -> issue
+    issues_index = {}
+    for issue in issues:
+        if str(issue["id"]) in issue_ids:
+            issues_index[int(issue["id"])] = issue
+    log("GITHUB issues: %s" % ([issue_ids, issues, issues_index]))
+
+    card_ids = elinks.get(TRELLO)
+    # https://developer.atlassian.com/cloud/trello/rest/api-group-boards/#api-boards-id-cards-get
+    # https://developer.atlassian.com/cloud/trello/rest/api-group-cards/#api-cards-id-get
+    # card is dict {id: int, idLabels: [int], ...}
+    cards = trello.get_all_cards()
+    # card_id -> card
+    cards_index = {}
+    for card in cards:
+        if str(card["id"]) in card_ids:
+            cards_index[card["id"]] = card
+
+    for el in elinks:
+        card_id = el.get(TRELLO)[0]
+        issue_id = int(el.get(GITHUB)[0])
+        card = cards_index.get(card_id)
+        issue = issues_index.get(issue_id)
+        if not (card and issue):
+            log("Linked card or issue is missed: %s" % ([card, issue]), level=LOG_WARNING)
+            continue
+        # compare labels
+        tlabel_ids = card["idLabels"]
+        glabel_ids = [lbl["id"] for lbl in issue["labels"]]
+        tlinks = search_links(LABELS_REL, {GITHUB: None, TRELLO: tlabel_ids})
+        glinks = search_links(LABELS_REL, {GITHUB: glabel_ids, TRELLO: None})
+        if tlinks == glinks:
+            # all fine
+            log("card {} and issue {} are already synced".format(card_id, issue_id), LOG_DEBUG)
+            continue
+        log("Found labels mismatch: issue=%s, card=%s" % (issue["id"], card["id"]), LOG_DEBUG)
+
+        tlinks_add = None
+        tlinks_remove = None
+        glinks_add = None
+        glinks_remove = None
+        if params.LABELS_MERGE_STRATEGY == "USE_TRELLO":
+            glinks_add = tlinks - glinks
+            glinks_remove = glinks - tlinks
+        elif params.LABELS_MERGE_STRATEGY == "USE_GITHUB":
+            tlinks_add = glinks - tlinks
+            tlinks_remove = tlinks - glinks
+        elif params.LABELS_MERGE_STRATEGY == "UNION":
+            tlinks_add = glinks - tlinks
+            glinks_add = tlinks - glinks
+        elif params.LABELS_MERGE_STRATEGY == "INTERSECTION":
+            tlinks_remove = tlinks - glinks
+            glinks_remove = glinks - tlinks
+        else:
+            raise Exception("Unknown LABELS_MERGE_STRATEGY: %s" % LABELS_MERGE_STRATEGY, level=LOG_ERROR)
+
+        if tlinks_add:
+            trello.card_add_labels(card_id, tlinks_add.get(TRELLO))
+        if glinks_add:
+            github.issue_add_labels(issue_id, glinks_add.get(GITHUB))
+        if tlinks_remove:
+            trello.card_remove_labels(card_id, tlinks_remove.get(TRELLO))
+        if glinks_remove:
+            github.issue_remove_labels(issue_id, glinks_remove.get(GITHUB))
+
+        ]]></field>
+    </record>
+    <record id="trello-github_task_conflicts_resolving_cron" model="sync.trigger.cron">
+        <field name="trigger_name">CONFLICT_RESOLVING</field>
+        <field name="active" eval="True" />
+        <field name="sync_task_id" ref="sync.trello-github_task_conflicts_resolving" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

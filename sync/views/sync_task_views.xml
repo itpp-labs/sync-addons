@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_task_view_tree" model="ir.ui.view">
+        <field name="name">sync.task.tree</field>
+        <field name="model">sync.task</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_task_view_form" model="ir.ui.view">
+        <field name="name">sync.task.form</field>
+        <field name="model">sync.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            type="action"
+                            name="%(sync.sync_job_action_from_task)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                        >
+                            <field string="Jobs" name="job_count" widget="statinfo" />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.ir_logging_action_from_task)d"
+                            class="oe_stat_button"
+                            icon="fa-book"
+                        >
+                            <field string="Logs" name="log_count" widget="statinfo" />
+                        </button>
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        text="Archived"
+                        bg_color="bg-danger"
+                        attrs="{'invisible': [('active', '=', True)]}"
+                    />
+                    <field name="active" invisible="1" />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="E.g. Sync Products" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="code" string="Code">
+                            <p>
+                                <em>
+                                    # The code may use functions and variables from
+                                    Project's Shared Code
+                                </em>
+                                <em class="oe_edit_only">
+                                    <br />
+                                    # Hint: if you miss some code editor features, just
+                                    copy the code to your lovely editor, update there
+                                    and paste here
+                                </em>
+                            </p>
+                            <field
+                                name="code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                        </page>
+                        <page name="triggers" string="Available Triggers">
+                            <separator string="Cron" />
+                            <p>
+                                <em>
+                                    <code>handle_cron()</code>
+                                </em>
+                            </p>
+                            <field name="cron_ids" context="{'active_test': False}">
+                                <tree decoration-muted="not active">
+                                    <field name="trigger_name" />
+                                    <field name="active" />
+                                    <field name="interval_number" />
+                                    <field name="interval_type" />
+                                    <field name="nextcall" />
+                                    <field name="numbercall" />
+                                </tree>
+                            </field>
+                            <separator string="DB Triggers" />
+                            <p>
+                                <em>
+                                    <code>handle_db(records)</code>
+                                </em>
+                            </p>
+                            <field
+                                name="automation_ids"
+                                context="{'active_test': False}"
+                            >
+                                <tree decoration-muted="not active">
+                                    <field name="trigger_name" />
+                                    <field name="active" />
+                                    <field name="model_id" />
+                                    <field name="trigger" />
+                                </tree>
+                            </field>
+                            <separator string="Webhooks" />
+                            <p>
+                                <em>
+                                    <code>handle_webhook(httprequest)</code>
+                                </em>
+                            </p>
+                            <field name="webhook_ids" context="{'active_test': False}">
+                                <tree editable="bottom" decoration-muted="not active">
+                                    <field name="trigger_name" />
+                                    <field name="active" />
+                                    <field name="webhook_type" />
+                                    <field name="website_url" />
+                                    <field
+                                        name="website_path"
+                                        string="Webhook Token"
+                                        groups="base.group_no_one"
+                                    />
+                                    <button
+                                        name="action_website_path"
+                                        type="object"
+                                        string="Generate Token"
+                                        help="Updates token in Webhook URL"
+                                    />
+                                    <field name="groups_id" widget="many2many_tags" />
+                                    <field name="action_server_id" invisible="1" />
+                                </tree>
+                            </field>
+                            <separator
+                                string="Manual Triggers"
+                                context="{'active_test': False}"
+                            />
+                            <p>
+                                <em>
+                                    <code>handle_button()</code>
+                                </em>
+                            </p>
+                            <field name="button_ids">
+                                <tree editable="bottom" decoration-muted="not active">
+                                    <field name="trigger_name" />
+                                    <field name="active" invisible="1" />
+                                    <button
+                                        name="start_button"
+                                        string="Run Now"
+                                        class="oe_highlight"
+                                        type="object"
+                                    />
+                                    <field name="name" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_task_view_form_full" model="ir.ui.view">
+        <field name="name">sync.task.form full</field>
+        <field name="model">sync.task</field>
+        <field name="inherit_id" ref="sync_task_view_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="invisible" />
+                <attribute name="required" eval="1" />
+            </xpath>
+        </field>
+    </record>
+    <record id="sync_task_action_from_project" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">sync.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="context">
+            {'default_project_id': active_id, 'active_test': False}
+        </field>
+    </record>
+</odoo>

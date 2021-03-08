@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_trigger_automation_view_tree" model="ir.ui.view">
+        <field name="name">sync.trigger.automation.tree</field>
+        <field name="model">sync.trigger.automation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="trigger_name" />
+                <field name="model_id" />
+                <field name="trigger" />
+                <field name="sync_project_id" />
+                <field name="sync_task_id" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_trigger_automation_view_form" model="ir.ui.view">
+        <field name="name">sync.trigger.automation.form</field>
+        <field name="model">sync.trigger.automation</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="trigger_name" />
+                    <field name="model_id" />
+                    <field name="model_name" invisible="1" />
+                    <field name="trigger" />
+                    <field
+                        name="filter_pre_domain"
+                        widget="domain"
+                        options="{'model': 'model_name', 'in_dialog': True}"
+                        attrs="{'invisible': [('trigger', 'not in', ['on_write','on_create_or_write'])]}"
+                    />
+                    <field
+                        name="filter_domain"
+                        widget="domain"
+                        options="{'model': 'model_name', 'in_dialog': True}"
+                    />
+                    <field
+                        name="on_change_field_ids"
+                        attrs="{'invisible': [('trigger', '!=', 'on_change')], 'required': [('trigger', '=', 'on_change')]}"
+                    />
+                    <field
+                        name="trg_date_id"
+                        attrs="{'invisible': [('trigger', '!=', 'on_time')], 'required': [('trigger', '=', 'on_time')]}"
+                    />
+                    <label
+                        for="trg_date_range"
+                        attrs="{'invisible': [('trigger', '!=', 'on_time')]}"
+                    />
+                    <div
+                        class="o_row"
+                        attrs="{'invisible': [('trigger', '!=', 'on_time')]}"
+                    >
+                        <field
+                            name="trg_date_range"
+                            attrs="{'required': [('trigger','=','on_time')]}"
+                        />
+                        <field
+                            name="trg_date_range_type"
+                            attrs="{'required': [('trigger','=','on_time')]}"
+                        />
+                    </div>
+                    <field
+                        name="trg_date_calendar_id"
+                        attrs="{'invisible': ['|', ('trg_date_id','=',False), ('trg_date_range_type', '!=', 'day')]}"
+                    />
+                    <field name="sync_task_id" invisible="1" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="sync_trigger_automation_view_form_full" model="ir.ui.view">
+        <field name="name">sync.trigger.automation.form full</field>
+        <field name="model">sync.trigger.automation</field>
+        <field name="inherit_id" ref="sync_trigger_automation_view_form" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sync_task_id']" position="attributes">
+                <attribute name="invisible" />
+                <attribute name="required" eval="1" />
+            </xpath>
+        </field>
+    </record>
+    <record
+        id="sync_trigger_automation_action_from_project"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Automation Triggers</field>
+        <field name="res_model">sync.trigger.automation</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_project_id', '=', active_id)]</field>
+        <field
+            name="view_ids"
+            eval="[(5, 0, 0),
+                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('sync_trigger_automation_view_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('sync_trigger_automation_view_form_full')})]"
+        />
+    </record>
+</odoo>
