@@ -1,3 +1,8 @@
+`2.3.0`
+-------
+
+- **Fix:** support POST methods in http webhooks
+
 `2.2.0`
 -------
 
