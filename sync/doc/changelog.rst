@@ -1,5 +1,6 @@
 - **Improvement:** generate cleaner xmlid on generating XML data file
 - **Improvement:** dynamically check python code for syntax errors
+- **Fix:** support POST methods in http webhooks
 
 `3.0.0`
 -------

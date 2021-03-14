@@ -43,11 +43,11 @@ class SyncTriggerWebhook(models.Model):
     def _compute_website_url(self):
         for r in self:
             website_url = r.action_server_id.website_url
-            if website_url and r.webhook_type == "json":
-                website_url = website_url.replace(
-                    "/website/action/", "/website/action-json/"
-                )
-
+            if not website_url:
+                continue
+            website_url = website_url.replace(
+                "/website/action/", "/website/action-%s/" % r.webhook_type
+            )
             r.website_url = website_url
 
     @api.model
