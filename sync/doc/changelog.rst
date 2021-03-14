@@ -1,3 +1,8 @@
+`2.3.1`
+-------
+
+- **Fix:** allow change field "active" for DB Triggers
+
 `2.3.0`
 -------
 
