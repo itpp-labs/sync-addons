@@ -11,7 +11,7 @@
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "apps@it-projects.info",
-    "website": "https://it-projects.info/team/yelizariev",
+    "website": "https://twitter.com/OdooFree",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["payment", "website_sale", "website_portal_sale"],
     "external_dependencies": {"python": ["urlparse", "zeep"], "bin": []},
