@@ -183,9 +183,9 @@ class SyncMakeModule(models.TransientModel):
         xml = etree.Element("field", name=fname)
         if field.type == "char" and field.name == "url":
             # we need it to avoid extra spaces
-            xml.set("eval", "'" + str(value) + "'" or "")
+            xml.set("eval", "'" + value + "'" if value else "")
         elif field.type == "boolean":
-            xml.set("eval", str(value) or "")
+            xml.set("eval", str(value))
         elif field.type == "text":
             xml.text = etree.CDATA(value or "")
         elif field.type == "many2one":
