@@ -2,6 +2,7 @@
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
 # Copyright 2020 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import collections
 import urllib.parse as urlparse
@@ -220,8 +221,10 @@ class Namespace(models.Model):
 
     @api.depends("name", "token")
     def _compute_spec_url(self):
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         for record in self:
-            record.spec_url = "/api/v1/{}/swagger.json?token={}&db={}".format(
+            record.spec_url = "{}/api/v1/{}/swagger.json?token={}&db={}".format(
+                base_url,
                 record.name,
                 record.token,
                 self._cr.dbname,
