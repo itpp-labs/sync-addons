@@ -71,9 +71,9 @@ Contributors
 
 ===================
 
-Odoo Apps Store: https://apps.odoo.com/apps/modules/13.0/openapi/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/openapi/
 
 
-Notifications on updates: `via Atom <https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/it-projects-llc/sync-addons/commits/13.0/openapi.atom>`_
+Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/14.0/openapi.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/openapi.atom>`_
 
-Tested on `Odoo 13.0 <https://github.com/odoo/odoo/commit/eed3171f2f057223c3fbedd95ce6bcde2124f46c>`_
+Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/829ae7b7e2941b6bb7af73a6d3d78b4ef1abf453>`_
