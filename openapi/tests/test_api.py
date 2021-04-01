@@ -279,7 +279,7 @@ class TestAPI(HttpCase):
     def test_response_has_no_error(self):
         method_name = "search_read"
         method_params = {
-            "args": [[["id", "=", "1"]]],
+            "args": [[["id", "=", "1"]], ["id", "name"]],
         }
         resp = self.request_from_user(
             self.demo_user,
