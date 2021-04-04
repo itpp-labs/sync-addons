@@ -1,3 +1,8 @@
+`1.1.11`
+--------
+
+- **Fix:** stopped using the internal mechanism of work with CORS because it caused conflicts
+
 `1.1.10`
 --------
 
