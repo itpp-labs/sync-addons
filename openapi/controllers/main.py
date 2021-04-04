@@ -1,5 +1,6 @@
 # Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import json
 import logging
@@ -20,7 +21,6 @@ class OAS(http.Controller):
         type="http",
         auth="none",
         csrf=False,
-        cors="*",
     )
     def OAS_json_spec_download(self, namespace_name, **kwargs):
         ensure_db()
