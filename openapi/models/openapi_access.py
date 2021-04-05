@@ -1,5 +1,6 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import collections
 import inspect
@@ -254,6 +255,7 @@ class Access(models.Model):
                 "summary": "Update %s by ID" % model_name,
                 "description": "",
                 "operationId": "update%sById" % capitalized_model_name,
+                "consumes": ["application/json"],
                 "parameters": [
                     PARAM_ID,
                     {
