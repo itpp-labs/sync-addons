@@ -2,6 +2,7 @@
 -------
 
 - **Fix:** stopped using the internal mechanism of work with CORS because it caused conflicts
+- **Fix:** added consumes field to PUT method because there were problems when working with a Swagger
 
 `1.2.3`
 -------
