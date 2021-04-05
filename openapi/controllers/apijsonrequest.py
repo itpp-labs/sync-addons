@@ -1,3 +1,5 @@
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import functools
 import json
 import logging
@@ -5,6 +7,7 @@ import os
 import pprint
 import time
 
+import psycopg2
 import werkzeug.wrappers
 
 import odoo
@@ -118,13 +121,14 @@ class ApiJsonRequest(WebRequest):
             ):
                 _logger.exception("Exception during JSON request handling.")
             error = {
-                "code": exception.response.status_code,
+                "code": 500,
                 "message": "Odoo Server Error",
                 "data": serialize_exception(exception),
-                "openapi_message": json.loads(exception.response.response[0]),
+                "openapi_message": exception.args[0],
             }
+            if isinstance(exception, psycopg2.InternalError):
+                error["message"] = "500: Internal Server Error"
             if isinstance(exception, werkzeug.exceptions.NotFound):
-                error["http_status"] = 404
                 error["code"] = 404
                 error["message"] = "404: Not Found"
             if isinstance(exception, AuthenticationError):
