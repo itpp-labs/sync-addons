@@ -2,6 +2,7 @@
 # Copyright 2018-2019 Rafis Bikbov <https://it-projects.info/team/bikbov>
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pylint: disable=redefined-builtin
 
@@ -337,7 +338,7 @@ def _create_log_record(
 
 # Patched http route
 def route(*args, **kwargs):
-    """Set up the environment for rout handlers.
+    """Set up the environment for route handlers.
 
     Patches the framework and additionally authenticates
     the API token and infers database through a different mechanism.
@@ -895,6 +896,8 @@ def get_OAS_definitions_part(
             if meta["type"] == "integer":
                 field_property.update(type="integer")
             elif meta["type"] == "float":
+                field_property.update(type="number", format="float")
+            elif meta["type"] == "monetary":
                 field_property.update(type="number", format="float")
             elif meta["type"] == "char":
                 field_property.update(type="string")
