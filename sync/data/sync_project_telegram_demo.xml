@@ -5,7 +5,7 @@
     <record id="telegram_project" model="sync.project">
         <field name="name">Demo Telegram Integration</field>
         <field name="active" eval="False" />
-        <field name="eval_context">telegram</field>
+        <field name="eval_context">telegram_demo</field>
         <field name="common_code">
 <![CDATA[
 def user2name(user):

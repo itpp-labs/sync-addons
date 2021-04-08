@@ -31,7 +31,7 @@ class SyncProjectDemo(models.Model):
     eval_context = fields.Selection(
         selection_add=[
             ("odoo2odoo", "Odoo2odoo"),
-            ("telegram", "Telegram"),
+            ("telegram_demo", "Telegram (Demo)"),
             ("trello_github", "Trello & Github"),
         ]
     )
@@ -80,7 +80,7 @@ class SyncProjectDemo(models.Model):
         }
 
     @api.model
-    def _eval_context_telegram(self, secrets, eval_context):
+    def _eval_context_telegram_demo(self, secrets, eval_context):
         """Adds telegram object:
 
         * telegram.sendMessage
