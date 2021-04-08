@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 ilya ilchenko
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="telegram_task_odoo2tele" model="sync.task">
+        <field name="name">Send response via Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="telegram_project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_db(records):
+    # records are instances of mail.message with model = mail.channel
+    for r in records:
+        log("MESSAGE data: channel_id %s - author_id %s - message_text: %s " % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
+
+        if not html2plaintext(r.body or ""):
+            continue
+
+        channel = env["mail.channel"].browse(r.res_id)
+        telegram_user_ref = channel.search_links(CHANNEL_REL).external
+
+        if r.author_id.id in operators_partner_list:
+          telegram_message_html = "%s\n\n%s" % (html_sanitize_telegram(r.body), r.author_id.name.split()[0])
+          telegram.sendMessage(telegram_user_ref, telegram_message_html)
+
+        ]]></field>
+    </record>
+    <record id="telegram_trigger_automation" model="sync.trigger.automation">
+        <field name="trigger_name">ON_MESSAGE_POSTED</field>
+        <field name="active" eval="True" />
+        <field name="sync_task_id" ref="telegram_task_odoo2tele" />
+        <field name="model_id" ref="mail.model_mail_message" />
+        <field name="trigger">on_create</field>
+        <field name="filter_domain">[["model","=","mail.channel"]]</field>
+    </record>
+</odoo>
