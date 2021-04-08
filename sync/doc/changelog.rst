@@ -1,6 +1,7 @@
 `4.0.0`
 -------
 
+- **Fix:** resolving name conflicts with the demo project (backported from 14.0.2.1.1)
 
 `3.0.2`
 -------
