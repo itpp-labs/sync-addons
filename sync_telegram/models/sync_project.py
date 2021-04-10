@@ -2,7 +2,7 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import json
-
+import logging
 import requests
 
 from odoo import _, api, fields, models
