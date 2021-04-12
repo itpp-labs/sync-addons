@@ -4,7 +4,7 @@
 <odoo>
     <record id="telegram_project" model="sync.project">
         <field name="name">Telegram Integration module</field>
-        <field name="active" eval="False" />
+        <field name="active" eval="True" />
         <field name="eval_context">telegram</field>
         <field name="common_code">
 <![CDATA[
@@ -33,7 +33,7 @@ def html_sanitize_telegram(html):
         <field name="description">
             Message that is sent to a user on first bot usage
         </field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
     </record>
     <record id="telegram_project_param_message_sent" model="sync.project.param">
         <field name="key">TELEGRAM_MESSAGE_SENT</field>
@@ -41,13 +41,13 @@ def html_sanitize_telegram(html):
         <field name="description">
             When Odoo Bot reports on successfully sent telegram message
         </field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
     </record>
     <record id="telegram_project_param_prefix" model="sync.project.param">
         <field name="key">PARTNER_NAME_PREFIX</field>
         <field name="value">Telegram:</field>
         <field name="description">Prefix for new partner name</field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
     </record>
     <record id="telegram_project_secret" model="sync.project.secret">
         <field name="key">TELEGRAM_BOT_TOKEN</field>
@@ -55,12 +55,12 @@ def html_sanitize_telegram(html):
             name="description"
             eval="'Authentication token provided by https://t.me/BotFather'"
         />
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
     </record>
     <!-- telegram: task setup -->
     <record id="telegram_task_setup" model="sync.task">
         <field name="name">Setup</field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
         <field name="code">
 <![CDATA[
 def handle_button():
@@ -69,12 +69,12 @@ def handle_button():
         </field>
     </record>
     <record id="telegram_trigger_button" model="sync.trigger.button">
-        <field name="sync_task_id" ref="sync.telegram_task_setup" />
+        <field name="sync_task_id" ref="sync_telegram.telegram_task_setup" />
         <field name="trigger_name">SETUP_TELEGRAM</field>
     </record>
     <record id="telegram_task_tele2odoo" model="sync.task">
         <field name="name">Process Telegram Messages</field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
         <field name="code">
 <![CDATA[
 def handle_webhook(httprequest):
@@ -105,12 +105,12 @@ def handle_webhook(httprequest):
     </record>
     <record id="telegram_trigger_webhook" model="sync.trigger.webhook">
         <field name="name">Telegram updates</field>
-        <field name="sync_task_id" ref="sync.telegram_task_tele2odoo" />
+        <field name="sync_task_id" ref="sync_telegram.telegram_task_tele2odoo" />
         <field name="trigger_name">TELEGRAM</field>
     </record>
     <record id="telegram_task_odoo2tele" model="sync.task">
         <field name="name">Send response via Odoo</field>
-        <field name="project_id" ref="sync.telegram_project" />
+        <field name="project_id" ref="sync_telegram.telegram_project" />
         <field name="code">
 <![CDATA[
 def handle_db(records):
@@ -134,7 +134,7 @@ def handle_db(records):
     </record>
     <record id="telegram_trigger_automation" model="sync.trigger.automation">
         <field name="trigger_name">ON_MESSAGE_POSTED</field>
-        <field name="sync_task_id" ref="sync.telegram_task_odoo2tele" />
+        <field name="sync_task_id" ref="sync_telegram.telegram_task_odoo2tele" />
         <field name="model_id" ref="mail.model_mail_message" />
         <field name="trigger">on_create</field>
         <field name="filter_domain">

@@ -13,17 +13,11 @@ from odoo.addons.sync.models.sync_project import AttrDict
 
 _logger = logging.getLogger(__name__)
 
-try:
-    # https://github.com/python-telegram-bot/python-telegram-bot
-    from telegram import Bot, Update  # pylint: disable=missing-manifest-dependency
-except (ImportError, IOError) as err:
-    _logger.debug(err)
-
-
 class SyncProjectTelegram(models.Model):
 
     _inherit = "sync.project"
-    eval_context = fields.Selection(selection_add=[("telegram", "Telegram"),])
+    eval_context = fields.Selection(selection_add=[("telegram", "Telegram"),], 
+                    ondelete={'telegram': 'cascade'})
 
     @api.model
     def _eval_context_telegram(self, secrets, eval_context):
@@ -35,6 +29,13 @@ class SyncProjectTelegram(models.Model):
         from lxml.html.clean import Cleaner
 
         from odoo.tools import html2plaintext
+
+        try:
+            # https://github.com/python-telegram-bot/python-telegram-bot
+            from telegram import Bot, Update  # pylint: disable=missing-manifest-dependency
+        except (ImportError, IOError) as err:
+            _logger.debug(err)
+
 
         log_transmission = eval_context["log_transmission"]
 
@@ -69,56 +70,3 @@ class SyncProjectTelegram(models.Model):
             "html2plaintext": html2plaintext,
             "Cleaner": Cleaner,
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # @api.model
-    # def _eval_context_1c(self, secrets, eval_context):
-    #     """Adds tools 1c API:
-    #     * odata_request(method, name, url_data=None, body_data=None)
-    #     """
-    #     log_transmission = eval_context["log_transmission"]
-    #     log = eval_context["log"]
-    #     params = eval_context["params"]
-    #     if not all([params.ODATA_URL, secrets.ODATA_USERNAME, secrets.ODATA_PASSWORD]):
-    #         raise UserError(_("1c Credentials are not set"))
-
-    #     def odata_request(method, name, url_data=None, body_data=None):
-    #         if not url_data:
-    #             url_data = {}
-    #         url_data.setdefault("$format", "json")
-    #         if body_data:
-    #             body_data = json.dumps(body_data)
-    #         url = params.ODATA_URL + name
-    #         auth = (secrets.ODATA_USERNAME, secrets.ODATA_PASSWORD)
-    #         log_transmission(
-    #             "1C Server", "{} {}\n{}\n\n{}".format(method, url, url_data, body_data)
-    #         )
-    #         r = requests.request(
-    #             method, url, params=url_data, data=body_data, auth=auth
-    #         )
-    #         log("RESPONSE: {}\n{}".format(r.status_code, r.text))
-    #         return r.json()
-
-    #     return {"odata_request": odata_request}

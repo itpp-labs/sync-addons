@@ -12,7 +12,7 @@
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
-    "depends": ["sync"],
+    "depends": ["sync", "crm"],
     "external_dependencies": {"python": [], "bin": []},
     "data": ["data/sync_project_data.xml"],
     "demo": [],
