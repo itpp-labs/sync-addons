@@ -37,7 +37,7 @@ Configuration
   * CREATE_PRODUCTS_ODOO2WOO
 
 * Open a task *Sync Odoo to WooCommerce*, configure and activate DB Triggers
-* If you for any reason you cannot use instant syncronization (i.e. via DB Triggers and Webhooks), you can schedule periodic syncronization by activating Cron trigers in corresponding tasks
+* If for any reason you cannot use instant synchronization (i.e. via DB Triggers and Webhooks), you can schedule periodic syncronization by activating Cron trigers in corresponding tasks
 
 Usage
 =====

@@ -41,6 +41,7 @@ To install local WooCommerce add following specification to your docker-compose.
           WORDPRESS_DB_HOST: woo_db:3306
           WORDPRESS_DB_USER: woo
           WORDPRESS_DB_PASSWORD: woo
+          WORDPRESS_DB_NAME: woo
         volumes:
           - woo:/var/www/html/wp-content
 
@@ -61,13 +62,16 @@ Navigate to ``Plugins >> Add New >> search for "woocommerce"``,  click `[Install
 
 Add some products.
 
-In Odoo set:
+In Odoo go to `[Sync Studio] >> Sync Projects` then go inside the `WooCommerce` project.
+
+Go to parameters tab and set:
+
 * ``API_URL`` to ``https://woo_ssl``.
 * ``API_VERIFY_SSL`` to ``0``
 
 To setup webhooks from WooCommerce to Odoo:
 
-* Odoo must be available under valid SSL ceritificate! See `Sync Studio's README <../sync/README.rst>`__ for instruction how to make in 
+* Odoo must be available under valid SSL ceritificate! See `Sync Studio's README <../sync/README.rst>`__ for instruction how to make it 
 * set System Parameters:
 
   * ``web.base.url`` -> ``https://YOUR_ADDRESS``
@@ -79,7 +83,7 @@ To setup webhooks from WooCommerce to Odoo:
 * In wordpress, in menu ``Settings > General Settings`` check that ``WordPress Address (URL)`` and ``Site Address (URL)`` have address ``http://localhost:80``
 * Be sure that cron in WordPress is working. You can install plugin https://wordpress.org/plugins/wp-crontrol/ to get more information about cron
 * To get webhook logs in Wordpress: open menu ``WooCommerce >> Status >> Logs``, select log file and click `[View]`
-* Remember what webhooks in Wordpress works via cron, so you many need to wait up to 1 minute before webhook is fired
+* Remember that webhooks in Wordpress works via cron, so you may need to wait up to 1 minute before webhook is fired
 
 Questions?
 ==========
