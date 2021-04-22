@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 import base64
 
@@ -23,7 +23,7 @@ class SyncMakeModule(models.TransientModel):
     data = fields.Binary("File", readonly=True, attachment=False)
     data2 = fields.Binary("File Txt", related="data")
     module = fields.Char("Module Technical Name", required=True)
-    copyright_years = fields.Char("Copyright Year", default="2020", required=True)
+    copyright_years = fields.Char("Copyright Year", default="2021", required=True)
     author_name = fields.Char("Author Name", help="e.g. Ivan Yelizariev", required=True)
     author_url = fields.Char("Author URL", help="e.g. https://twitter.com/yelizariev")
     license_line = fields.Char(
@@ -69,11 +69,13 @@ class SyncMakeModule(models.TransientModel):
             self.env["ir.config_parameter"].set_param(PARAM_URL, self.author_url)
 
         url = " <{}>".format(self.author_url) if self.author_url else ""
-        copyright_str = "<!-- Copyright {years} {name}{url}\n     {license_line}. -->".format(
-            years=self.copyright_years,
-            name=self.author_name,
-            url=url,
-            license_line=self.license_line,
+        copyright_str = (
+            "<!-- Copyright {years} {name}{url}\n     {license_line}. -->".format(
+                years=self.copyright_years,
+                name=self.author_name,
+                url=url,
+                license_line=self.license_line,
+            )
         )
         root = etree.Element("odoo")
         project = self.project_id.with_context(active_test=False)
@@ -151,8 +153,9 @@ class SyncMakeModule(models.TransientModel):
             else:
                 return existing.complete_name
 
-        xmlid = "{}_{}".format(
-            slugify(record.display_name), slugify(record._description)
+        xmlid = "{}--{}".format(
+            slugify(getattr(record, "trigger_name", "") or record.display_name),
+            slugify(record._description),
         )
 
         self.env["ir.model.data"].create(

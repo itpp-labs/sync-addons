@@ -1,3 +1,23 @@
+`2.3.1`
+-------
+
+- **Fix:** allow change field "active" for DB Triggers
+
+`2.3.0`
+-------
+
+- **Fix:** support POST methods in http webhooks
+
+`2.2.0`
+-------
+
+- **Improvement:** dynamically check python code for syntax errors
+
+`2.1.1`
+-------
+
+- **Improvement:** generate cleaner xmlid on generating XML data file
+
 `2.1.0`
 -------
 
