@@ -5,6 +5,7 @@
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/12.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/12.0/sync/)
 <br/>:heavy_check_mark: [sync_1c](https://apps.odoo.com/apps/modules/12.0/sync_1c/)
+<br/>:heavy_check_mark: [sync_woo](https://apps.odoo.com/apps/modules/12.0/sync_woo/)
 <br/>:heavy_check_mark: [telegram_leads](https://apps.odoo.com/apps/modules/12.0/telegram_leads/)
 
 Other Addons
