@@ -3,7 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
     "name": """REST API/OpenAPI/Swagger""",
-    "summary": """API to integrate Odoo with whatever system you need""",
+    "summary": """RESTful API to integrate Odoo with whatever system you need""",
     "category": "",
     "images": ["images/openapi-swagger.png"],
     "version": "14.0.1.2.4",
