@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
      License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html). -->
-<odoo noupdate="1">
+<openerp><data noupdate="1">
     <record id="namespace_demo" model="openapi.namespace">
         <field name="name">demo</field>
         <field name="log_request">debug</field>
@@ -62,4 +62,4 @@
             eval="[(4, ref('context_res_partner_demo'))]"
         />
     </record>
-</odoo>
+</data></openerp>

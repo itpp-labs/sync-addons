@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<odoo>
+<openerp><data>
     <record model="ir.ui.view" id="ir_exports_form_view">
         <field name="name">ir.exports.form</field>
         <field name="model">ir.exports</field>
@@ -53,24 +53,11 @@
         <field name="arch" type="xml">
             <form string="Access">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button
-                            name="toggle_active"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-archive"
-                        >
-                            <field
-                                name="active"
-                                widget="boolean_button"
-                                options='{"terminology": "archive"}'
-                            />
-                        </button>
-                    </div>
                     <div class="oe_title">
                         <group>
                             <field name="id" invisible="1" />
                             <field name="model" invisible="1" />
+                            <field name="active" />
                             <field name="model_id" options="{'no_create': True}" />
                             <field name="api_create" />
                             <field name="api_read" />
@@ -158,23 +145,11 @@
                     />
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button
-                            name="toggle_active"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-archive"
-                        >
-                            <field
-                                name="active"
-                                widget="boolean_button"
-                                options='{"terminology": "archive"}'
-                            />
-                        </button>
+                    <div class="oe_right oe_button_box" name="buttons" groups="base.group_user">
                         <button
                             name="action_show_logs"
                             type="object"
-                            class="oe_stat_button"
+                            class="oe_inline oe_stat_button"
                             icon="fa-list-ul"
                         >
                             <field string="Logs" name="log_count" widget="statinfo" />
@@ -191,6 +166,7 @@
                         </h3>
                         <field name="id" invisible="1" />
                         <group>
+                            <field name="active" />
                             <field name="create_uid" readonly="1" />
                             <field name="log_request" />
                             <field name="log_response" />
@@ -258,7 +234,7 @@
         <field name="domain">[('model_id', '=', active_id)]</field>
         <field name="context">{'default_model_id': active_id}</field>
     </record>
-    <menuitem id="main_openapi_menu" name="OpenAPI" />
+    <menuitem id="main_openapi_menu" name="OpenAPI" sequence="45"/>
     <menuitem id="openapi_menu" name="OpenAPI" parent="main_openapi_menu" />
     <menuitem
         id="namespaces_menu"
@@ -266,4 +242,4 @@
         parent="openapi_menu"
         action="namespace_list_action"
     />
-</odoo>
+</data></openerp>

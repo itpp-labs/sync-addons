@@ -6,4 +6,5 @@ from . import ir_model
 from . import openapi_access
 from . import res_users
 from . import ir_exports
-from . import base
+# TODO: Odoo 8.0 doesn't allow make _inhert = "base"
+# from . import base

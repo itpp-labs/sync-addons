@@ -4,13 +4,20 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 import uuid
 
-from odoo import api, fields, models
+import openerp
+from openerp import SUPERUSER_ID, api, fields, models
 
 
 class ResUsers(models.Model):
     _inherit = "res.users"
 
-    namespace_ids = fields.Many2many("openapi.namespace", string="Allowed Integrations")
+    namespace_ids = fields.Many2many(
+        "openapi.namespace",
+        "user_user_namespace_rel",
+        column1="user_id",
+        column2="namespace_id",
+        string="Allowed Integrations",
+    )
     openapi_token = fields.Char(
         "OpenAPI Token",
         default=lambda self: self._get_unique_openapi_token(),
@@ -33,3 +40,13 @@ class ResUsers(models.Model):
     @api.model
     def reset_all_openapi_tokens(self):
         self.search([]).reset_openapi_token()
+
+    def check_credentials(self, cr, uid, password):
+        try:
+            return super(ResUsers, self).check_credentials(cr, uid, password)
+        except openerp.exceptions.AccessDenied:
+            res = self.search(
+                cr, SUPERUSER_ID, [("id", "=", uid), ("openapi_token", "=", password)]
+            )
+            if not res:
+                raise

@@ -7,7 +7,7 @@ import inspect
 import json
 import urllib  # python2
 
-from odoo import _, api, exceptions, fields, models
+from openerp import _, api, exceptions, fields, models
 
 from ..controllers import pinguin
 
@@ -73,6 +73,8 @@ class Access(models.Model):
     )
     create_context_ids = fields.Many2many(
         "openapi.access.create.context",
+        "openapi_access_context_rel",
+        column1="access_id", column2="context_id",
         string="Creation Context Presets",
         help="Can be used to pass default values or custom context",
         domain="[('model_id', '=', model_id)]",

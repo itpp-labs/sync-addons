@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
-<odoo>
+<openerp><data>
     <record id="res_users_view_form" model="ir.ui.view">
         <field name="name">res.users.form.view</field>
         <field name="model">res.users</field>
         <field name="inherit_id" ref="base.view_users_form" />
         <field name="priority">120</field>
         <field name="arch" type="xml">
-            <header position="inside">
+            <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
                 <button
                     name="reset_openapi_token"
                     string="Reset OpenAPI Token"
@@ -14,7 +14,7 @@
                     type="object"
                     attrs="{'invisible': [('id', '=', False)]}"
                 />
-            </header>
+            </xpath>
             <field name="partner_id" position="after">
                 <field
                     name="openapi_token"
@@ -28,4 +28,4 @@
             </notebook>
         </field>
     </record>
-</odoo>
+</data></openerp>
