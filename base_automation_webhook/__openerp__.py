@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2019-2020 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 {
     "name": """Outgoing Webhooks""",
@@ -7,11 +7,11 @@
     "category": "Extra Tools",
     # "live_test_url": "http://apps.it-projects.info/shop/product/DEMO-URL?version=10.0",
     "images": ["images/base_automation_webhook.png"],
-    "version": "10.0.1.0.0",
+    "version": "8.0.2.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/10.0/base_automation_webhook/",
+    "support": "apps@itpp.dev",
+    "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["base_action_rule"],
     "external_dependencies": {"python": [], "bin": []},
@@ -23,15 +23,5 @@
     "post_init_hook": None,
     "uninstall_hook": None,
     "auto_install": False,
-    "installable": False,
-    # "demo_title": "Outgoing Webhooks",
-    # "demo_addons": [
-    # ],
-    # "demo_addons_hidden": [
-    # ],
-    # "demo_url": "DEMO-URL",
-    # "demo_summary": "{SHORT_DESCRIPTION_OF_THE_MODULE}",
-    # "demo_images": [
-    #    "images/MAIN_IMAGE",
-    # ]
+    "installable": True,
 }
