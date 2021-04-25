@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2019-2020 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
-from odoo.tests.common import TransactionCase
+from openerp.tests.common import TransactionCase
 
 
 class TestAutomation(TransactionCase):
