@@ -7,7 +7,7 @@ import json
 from bravado_core.spec import Spec
 from swagger_spec_validator import SwaggerValidationError
 
-from odoo.tests.common import PORT, HttpCase
+from openerp.tests.common import PORT, HttpCase
 
 
 class TestJsonSpec(HttpCase):

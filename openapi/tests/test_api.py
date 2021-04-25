@@ -6,8 +6,8 @@ import logging
 
 import requests
 
-from odoo import api
-from odoo.tests.common import PORT, HttpCase, get_db_name
+from openerp import api
+from openerp.tests.common import PORT, HttpCase, get_db_name
 
 from ..controllers import pinguin
 
@@ -167,7 +167,8 @@ class TestAPI(HttpCase):
         # TODO check that message is created
 
     def test_call_allowed_method_on_recordset(self):
-        partners = self.phantom_env[self.model_name].search([], limit=5)
+        partners = self.phantom_env[self.model_name].search([('user_ids', '=', False)], limit=5)
+        self.assertTrue(partners, "No partners found")
         method_name = "write"
         method_params = {
             "args": [{"name": "changed from write method called from api"}],

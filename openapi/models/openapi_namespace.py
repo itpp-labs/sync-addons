@@ -11,7 +11,7 @@ import uuid
 # python2
 import urlparse
 
-from odoo import api, fields, models
+from openerp import api, fields, models
 
 from ..controllers import pinguin
 
@@ -55,7 +55,11 @@ class Namespace(models.Model):
         context={"active_test": False},
     )
     user_ids = fields.Many2many(
-        "res.users", string="Allowed Users", default=lambda self: self.env.user
+        "res.users",
+        "user_user_namespace_rel",
+        column1="namespace_id",
+        column2="user_id",
+        string="Allowed Users", default=lambda self: self.env.user
     )
 
     token = fields.Char(
@@ -245,6 +249,7 @@ class Namespace(models.Model):
                 token = str(uuid.uuid4())
             record.write({"token": token})
 
+    @api.multi
     def action_show_logs(self):
         return {
             "name": "Logs",

@@ -7,45 +7,12 @@ import logging
 
 import werkzeug
 
-from odoo import http
+from openerp import http
+from openerp.addons.web.controllers.main import ensure_db
+from openerp.addons.web.controllers.main import content_disposition
 
-from odoo.addons.web.controllers.main import ensure_db
-from odoo.addons.web_settings_dashboard.controllers.main import WebSettingsDashboard
 
 _logger = logging.getLogger(__name__)
-
-
-class OpenapiWebSettingsDashboard(WebSettingsDashboard):
-    @http.route("/web_settings_dashboard/data", type="json", auth="user")
-    def web_settings_dashboard_data(self, **kw):
-        result = super(OpenapiWebSettingsDashboard, self).web_settings_dashboard_data(
-            **kw
-        )
-        env = http.request.env
-
-        if not env.user.has_group("openapi.group_user"):
-            result.update({"openapi_not_allowed": True})
-            return result
-
-        namespaces = env["openapi.namespace"].search([])
-        # TODO: replace dummy data
-        namespace_list = [
-            {
-                "id": n.id,
-                "name": n.name,
-                "models_count": n.access_ids.search_count([]),
-                "create_count": 10,
-                "read_count": 123,
-                "update_count": 55,
-                "delete_count": 0,
-                "last_connection": n.last_log_date,
-            }
-            for n in namespaces
-        ]
-
-        result.update({"openapi": {"namespace_list": namespace_list}})
-
-        return result
 
 
 class OAS(http.Controller):
@@ -73,7 +40,7 @@ class OAS(http.Controller):
             response_params = {
                 "headers": [
                     ("Content-Type", "application/octet-stream; charset=binary"),
-                    ("Content-Disposition", http.content_disposition("swagger.json")),
+                    ("Content-Disposition", content_disposition("swagger.json")),
                 ],
                 "direct_passthrough": True,
             }

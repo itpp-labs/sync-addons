@@ -9,8 +9,8 @@ import time
 
 import werkzeug.wrappers
 
-import odoo
-from odoo.http import (
+import openerp
+from openerp.http import (
     AuthenticationError,
     Response,
     Root,
@@ -21,10 +21,10 @@ from odoo.http import (
     rpc_response,
     serialize_exception,
 )
-from odoo.service.server import memory_info
+from openerp.service.server import memory_info
 
-# PY3 and odoo 11+:
-# from odoo.tools import pycompat, date_utils
+# PY3 and openerp 11+:
+# from openerp.tools import pycompat, date_utils
 # text_type=pycompat.text_type
 
 
@@ -36,7 +36,7 @@ except ImportError:
 
 _logger = logging.getLogger(__name__)
 
-# PY2 and odoo 10:
+# PY2 and openerp 10:
 text_type = unicode  # pylint: disable=undefined-variable
 
 
@@ -96,9 +96,9 @@ class ApiJsonRequest(WebRequest):
             response["error"] = error
 
         mime = "application/json"
-        # odoo 11+ version:
+        # openerp 11+ version:
         # body = json.dumps(response, default=date_utils.json_default)
-        # odoo 10 only:
+        # openerp 10 only:
         status = error and error.pop("code") or result.status_code
         body = response and json.dumps(response) or result.data
 
@@ -118,16 +118,16 @@ class ApiJsonRequest(WebRequest):
             if not isinstance(
                 exception,
                 (
-                    odoo.exceptions.Warning,
+                    openerp.exceptions.Warning,
                     SessionExpiredException,
-                    odoo.exceptions.except_orm,
+                    openerp.exceptions.except_orm,
                     werkzeug.exceptions.NotFound,
                 ),
             ):
                 _logger.exception("Exception during JSON request handling.")
             error = {
                 "code": 200,
-                "message": "Odoo Server Error",
+                "message": "Openerp Server Error",
                 "data": serialize_exception(exception),
             }
             if isinstance(exception, werkzeug.exceptions.NotFound):
@@ -136,10 +136,10 @@ class ApiJsonRequest(WebRequest):
                 error["message"] = "404: Not Found"
             if isinstance(exception, AuthenticationError):
                 error["code"] = 100
-                error["message"] = "Odoo Session Invalid"
+                error["message"] = "Openerp Session Invalid"
             if isinstance(exception, SessionExpiredException):
                 error["code"] = 100
-                error["message"] = "Odoo Session Expired"
+                error["message"] = "Openerp Session Expired"
             return self._json_response(error=error)
 
     def dispatch(self):

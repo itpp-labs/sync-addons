@@ -6,7 +6,7 @@
 # pylint: disable=redefined-builtin
 import logging
 
-from odoo import http
+from openerp import http
 
 from . import pinguin
 

@@ -25,15 +25,12 @@ import collections
 import functools
 import traceback
 
+import openerp
 import six
 import werkzeug.wrappers
+from openerp.addons.report.controllers.main import ReportController
+from openerp.http import request
 from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
-
-import odoo
-from odoo.http import request
-from odoo.service import security
-
-from odoo.addons.report.controllers.main import ReportController
 
 from .apijsonrequest import api_route
 
@@ -151,21 +148,28 @@ def authenticate_token_for_user(token):
     :param str token: The raw access token.
 
     :returns: User if token is authorized for the requested user.
-    :rtype odoo.models.Model
+    :rtype openerp.models.Model
 
     :raise: werkzeug.exceptions.HTTPException if user not found.
     """
     user = request.env["res.users"].sudo().search([("openapi_token", "=", token)])
     if user.exists():
-        # copy-pasted from odoo.http.py:OpenERPSession.authenticate()
-        request.session.uid = user.id
+        # copy-pasted from openerp.http.py:OpenERPSession.authenticate()
+
+        db = request.session._db
+        uid = user.id
+        password = token
+        # request.session.authenticate(db, user.login, password)
+
+        # security.check(db, uid, password)
+        request.session.uid = uid
         request.session.login = user.login
-        request.session.session_token = user.id and security.compute_session_token(
-            request.session, request.env
-        )
-        request.uid = user.id
+        request.session.password = password
+        request.uid = uid
         request.disable_db = False
         request.session.get_context()
+        # recompute lazy property
+        delattr(request,  'env')
 
         return user
     raise werkzeug.exceptions.HTTPException(
@@ -224,7 +228,7 @@ def get_data_from_auth_header(header):
         err_descrip = (
             'Basic auth header payload must be of the form "<%s>" (encoded to base64)'
             % "user_token"
-            if odoo.tools.config["dbfilter"]
+            if openerp.tools.config["dbfilter"]
             else "db_name:user_token"
         )
         raise werkzeug.exceptions.HTTPException(
@@ -245,7 +249,7 @@ def setup_db(httprequest, db_name):
     """
     if httprequest.session.db:
         return
-    if db_name not in odoo.service.db.list_dbs(force=True):
+    if db_name not in openerp.service.db.exp_list():
         raise werkzeug.exceptions.HTTPException(
             response=error_response(*CODE__db_not_found)
         )
@@ -274,7 +278,7 @@ def get_namespace_by_name_from_users_namespaces(
     :raise: werkzeug.exceptions.HTTPException if the namespace is not contained
                                               in allowed user namespaces.
     """
-    namespace = request.env["openapi.namespace"].search([("name", "=", namespace_name)])
+    namespace = request.env["openapi.namespace"].sudo().search([("name", "=", namespace_name)])
 
     if not namespace.exists() and raise_exception:
         raise werkzeug.exceptions.HTTPException(
@@ -296,9 +300,9 @@ def create_log_record(**kwargs):
     # request (we cannot use second cursor and we cannot use aborted
     # transaction)
     if not test_mode:
-        with odoo.registry(request.session.db).cursor() as cr:
+        with openerp.registry(request.session.db).cursor() as cr:
             # use new to save data even in case of an error in the old cursor
-            env = odoo.api.Environment(cr, request.session.uid, {})
+            env = openerp.api.Environment(cr, request.session.uid, {})
             _create_log_record(env, **kwargs)
 
 
@@ -481,7 +485,7 @@ def get_model_openapi_access(namespace, model):
         A dictionary containing the model API configuration for this namespace.
             The layout of the dict is as follows:
             ```python
-            {'context':                 (Dict)      odoo context (default values through context),
+            {'context':                 (Dict)      openerp context (default values through context),
             'out_fields_read_multi':    (Tuple)     field spec,
             'out_fields_read_one':      (Tuple)     field spec,
             'out_fields_create_one':    (Tuple)     field spec,
@@ -702,7 +706,7 @@ def transform_dictfields_to_list_of_tuples(record, dct):
     the result will be
     ['name', 'email', ('bank_ids', ['bank_name', ('bank_id', ('id',))])]
 
-    :param odoo.models.Model record: The model object.
+    :param openerp.models.Model record: The model object.
     :param dict dct: The dictionary.
 
     :returns: The list of transformed fields.
@@ -748,7 +752,7 @@ def wrap__resource__create_one(modelname, context, data, success_code, out_field
         if not test_mode:
             # Somehow don't making a commit here may lead to error
             # "Record does not exist or has been deleted"
-            # Probably, Odoo (10.0 at least) uses different cursors
+            # Probably, Openerp (10.0 at least) uses different cursors
             # to create and to read fields from database
             request.env.cr.commit()
     except Exception as e:
@@ -986,14 +990,14 @@ def get_model_for_read(model):
     :param str model: The model to retrieve from the environment.
 
     :returns: the framework model if exist, otherwise raises.
-    :rtype: odoo.models.Model
+    :rtype: openerp.models.Model
     :raise: werkzeug.exceptions.HTTPException if the model not found in env.
     """
     cr, uid = request.cr, request.session.uid
     test_mode = request.registry.test_cr
     if not test_mode:
         # Permit parallel query execution on read
-        # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Odoo Standard
+        # Contrary to ISOLATION_LEVEL_SERIALIZABLE as per Openerp Standard
         cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     try:
         return request.env(cr, uid)[model]
@@ -1013,7 +1017,7 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields):
     Going down to the record level, as the framework does not support nested
     data queries natively as they are typical for a REST API.
 
-    :param odoo.models.Model record: The singleton record to load.
+    :param openerp.models.Model record: The singleton record to load.
     :param tuple spec: The field spec to load.
     :param tuple include_fields: The extra fields.
     :param tuple exclude_fields: The excluded fields.
@@ -1046,8 +1050,8 @@ def get_dict_from_record(record, spec, include_fields, exclude_fields):
         # Normal field, or unspecified relational
         elif isinstance(field, six.string_types):
             if not hasattr(record, field):
-                raise odoo.exceptions.ValidationError(
-                    odoo._('The model "%s" has no such field: "%s".')
+                raise openerp.exceptions.ValidationError(
+                    openerp._('The model "%s" has no such field: "%s".')
                     % (record._name, field)
                 )
 
@@ -1142,7 +1146,7 @@ def get_OAS_definitions_part(
 ):
     """Recursively gets definition parts of the OAS for model by export fields.
 
-    :param odoo.models.Model model_obj: The model object.
+    :param openerp.models.Model model_obj: The model object.
     :param dict export_fields_dict: The dictionary with export fields.
             Example of the dict is as follows:
             ```python
@@ -1229,10 +1233,10 @@ def get_OAS_definitions_part(
                 field_property.update({"type": "array", "items": {"type": "integer"}})
 
             # We cannot have both required and readOnly flags in field openapi
-            # definition, for that reason we cannot blindly use odoo's
+            # definition, for that reason we cannot blindly use openerp's
             # attributed readonly and required.
             #
-            # 1) For odoo-required, but NOT odoo-related field, we do NOT use
+            # 1) For openerp-required, but NOT openerp-related field, we do NOT use
             # openapi-readonly
             #
             # Example of such field can be found in sale module:
@@ -1240,7 +1244,7 @@ def get_OAS_definitions_part(
             #     states={'draft': [('readonly', False)], 'sent': [('readonly',
             #     False)]}, required=True, ...)
             #
-            # 2) For odoo-required and odoo-related field, we DO use
+            # 2) For openerp-required and openerp-related field, we DO use
             # openapi-readonly, but we don't use openapi-required
             if meta["readonly"] and (not meta["required"] or meta.get("related")):
                 field_property.update(readOnly=True)

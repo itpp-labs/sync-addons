@@ -7,13 +7,14 @@
     "category": "",
     # "live_test_url": "",
     "images": ["images/openapi-swagger.png"],
-    "version": "10.0.1.1.8",
+    "version": "8.0.1.1.8",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
+    "support": "apps@itpp.dev",
+    "website": "https://apps.odoo.com/apps/modules/8.0/openapi/",
     "license": "LGPL-3",
-    "depends": ["web_tour", "web_settings_dashboard", "report"],
+    # mail is added only for tests, cause 8.0 is buggy
+    "depends": ["report", "mail"],
     "external_dependencies": {
         "python": ["bravado_core", "swagger_spec_validator"],
         "bin": [],
@@ -21,20 +22,13 @@
     "data": [
         "security/openapi_security.xml",
         "security/ir.model.access.csv",
-        "views/assets.xml",
         "security/res_users_token.xml",
         "views/openapi_view.xml",
         "views/res_users_view.xml",
         "views/ir_model_view.xml",
     ],
-    "demo": [
-        "views/assets_demo.xml",
-        "views/tour_views.xml",
-        "demo/openapi_demo.xml",
-        "demo/openapi_security_demo.xml",
-    ],
+    "demo": ["demo/openapi_security_demo.xml", "demo/openapi_demo.xml",],
     "qweb": [
-        "static/src/xml/dashboard.xml",
         # Сommented until we discuss it
         # "static/src/xml/configure_api_button.xml"
     ],
@@ -43,5 +37,5 @@
     "post_init_hook": None,
     "uninstall_hook": None,
     "auto_install": False,
-    "installable": False,
+    "installable": True,
 }
