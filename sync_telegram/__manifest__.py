@@ -14,7 +14,7 @@
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "crm"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["data/sync_project_data.xml"],
+    "data": ["data/sync_telegram_data.xml"],
     "demo": [],
     "qweb": [],
     "post_load": None,
