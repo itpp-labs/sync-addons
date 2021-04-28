@@ -150,5 +150,8 @@ def handle_db(records):
     <field name="sync_task_id" ref="telegram_task_odoo2tele"/>
     <field name="model_id" ref="mail.model_mail_message"/>
     <field name="trigger">on_create</field>
+    <field name="filter_domain">
+            [["model","=","crm.lead"],["body","ilike","/telegram"]]
+    </field>
   </record>
 </odoo>
