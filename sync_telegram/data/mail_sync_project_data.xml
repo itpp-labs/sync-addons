@@ -22,26 +22,28 @@ def handle_webhook(httprequest):
     partner = env["res.partner"].search([("ref", "=", user_ref)])
     name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
     
+
+    odoo_message_text = "From Telegram:"
+  
+    if message.text == "/start":
+        telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
+        log("User started a bot: %s" , LOG_INFO)
+    elif is_edit:
+        odoo_message_text = "Contact has edited the message:"
+  
+    odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
+      
+
+    
     if not partner:
       partner = env["res.partner"].create({"name": name, "ref": user_ref})
 
-    if MODEL is not "res.partner":
+    if MODEL != "res.partner":
       current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
-
-  
-      odoo_message_text = "From Telegram:"
-  
-      if message.text == "/start":
-          telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
-          log("User started a bot: %s" , LOG_INFO)
-      elif is_edit:
-          odoo_message_text = "Contact has edited the message:"
-  
-      odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
-  
-      current_model.message_post(body=odoo_message_text)
-  
-
+      current_model.message_post(body=odoo_message_text, author_id=partner.id)
+      
+    elif MODEL == "res.partner":
+      partner.message_post(body=odoo_message_text, author_id=partner.id)
         ]]></field>
   </record>
 
