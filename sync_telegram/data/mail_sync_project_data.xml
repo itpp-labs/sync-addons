@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Copyright 2021 ilya ilchenko
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+
+  <record id="telegram_task_tele2odoo" model="sync.task">
+    <field name="name">Process Telegram Messages</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="telegram_project"/>
+    <field name="code"><![CDATA[
+
+def handle_webhook(httprequest):
+    data = json.loads(httprequest.data.decode("utf-8"))
+    log("Raw data: %s" % data, LOG_DEBUG)
+
+    MODEL = params.MODEL
+    
+    update = telegram.parse_data(data)
+    message = update.message or update.edited_message
+    is_edit = bool(update.edited_message)
+    user_ref = "%s@telegram" % message.from_user.id
+    partner = env["res.partner"].search([("ref", "=", user_ref)])
+    name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
+    
+    if not partner:
+      partner = env["res.partner"].create({"name": name, "ref": user_ref})
+
+    if MODEL is not "res.partner":
+      current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
+
+  
+      odoo_message_text = "From Telegram:"
+  
+      if message.text == "/start":
+          telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
+          log("User started a bot: %s" , LOG_INFO)
+      elif is_edit:
+          odoo_message_text = "Contact has edited the message:"
+  
+      odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
+  
+      current_model.message_post(body=odoo_message_text)
+  
+
+        ]]></field>
+  </record>
+
+  <record id="telegram_task_odoo2tele" model="sync.task">
+    <field name="name">Send response via Odoo</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="telegram_project"/>
+    <field name="code"><![CDATA[
+
+def handle_db(records):
+    # records are instances of mail.message
+    for r in records:
+      
+        if not html2plaintext(r.body or "").startswith("/telegram"):
+            continue
+        lead = env["crm.lead"].browse(r.res_id)
+ 
+        contact_name = lead.contact_name or ""
+        if not contact_name.endswith("@telegram"):
+            continue
+        telegram_user_id = contact_name.split("@telegram")[0]
+        telegram_message_html = html_sanitize_telegram(r.body)
+        telegram_message_html = telegram_message_html.replace("/telegram", "")
+        telegram.sendMessage(telegram_user_id, telegram_message_html)
+
+        odoo_message_text = "%s:\n\n%s" % (params.TELEGRAM_MESSAGE_SENT, telegram_message_html)
+        lead.message_post(body=odoo_message_text)
+
+        ]]></field>
+  </record>
+
+
+
+</odoo>
