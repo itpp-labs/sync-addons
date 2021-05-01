@@ -20,6 +20,7 @@ def handle_webhook(httprequest):
     is_edit = bool(update.edited_message)
     user_ref = "%s@telegram" % message.from_user.id
     partner = env["res.partner"].search([("ref", "=", user_ref)])
+    
     name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
     
 
@@ -33,17 +34,27 @@ def handle_webhook(httprequest):
   
     odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
       
+    channel = partner.env["mail.channel"].with_user(2).channel_get(partners_to=[partner.id], pin=True)
+    log("Channel id created: %s" % channel['id'], LOG_INFO)
+    
 
     
     if not partner:
       partner = env["res.partner"].create({"name": name, "ref": user_ref})
 
     if MODEL != "res.partner":
-      current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
-      current_model.message_post(body=odoo_message_text, author_id=partner.id)
+      current_model =  env[MODEL].search([("name", "=", name)])
+      if not current_model:
+        current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
+
+      current_model.message_post(body=odoo_message_text, author_id=partner.id, channel_ids=[channel['id']],
+      message_type="comment", subtype_xmlid="mail.mt_comment")
       
+        
     elif MODEL == "res.partner":
-      partner.message_post(body=odoo_message_text, author_id=partner.id)
+      partner.message_post(body=odoo_message_text, author_id=partner.id,  channel_ids=[channel['id']],
+      message_type="comment", subtype_xmlid="mail.mt_comment")
+
         ]]></field>
   </record>
 
