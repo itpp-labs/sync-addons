@@ -3,89 +3,40 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
 
-  <record id="telegram_task_tele2odoo" model="sync.task">
-    <field name="name">Process Telegram Messages</field>
-    <field name="active" eval="True"/>
-    <field name="project_id" ref="telegram_project"/>
-    <field name="code"><![CDATA[
-
-def handle_webhook(httprequest):
-    data = json.loads(httprequest.data.decode("utf-8"))
-    log("Raw data: %s" % data, LOG_DEBUG)
-
-    MODEL = params.MODEL
-    
-    update = telegram.parse_data(data)
-    message = update.message or update.edited_message
-    is_edit = bool(update.edited_message)
-    user_ref = "%s@telegram" % message.from_user.id
-    partner = env["res.partner"].search([("ref", "=", user_ref)])
-    
-    name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
-    
-
-    odoo_message_text = "From Telegram:"
-  
-    if message.text == "/start":
-        telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
-        log("User started a bot: %s" , LOG_INFO)
-    elif is_edit:
-        odoo_message_text = "Contact has edited the message:"
-  
-    odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
-      
-    channel = partner.env["mail.channel"].with_user(2).channel_get(partners_to=[partner.id], pin=True)
-    log("Channel id created: %s" % channel['id'], LOG_INFO)
-    
-
-    
-    if not partner:
-      partner = env["res.partner"].create({"name": name, "ref": user_ref})
-
-    if MODEL != "res.partner":
-      current_model =  env[MODEL].search([("name", "=", name)])
-      if not current_model:
-        current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
-
-      current_model.message_post(body=odoo_message_text, author_id=partner.id, channel_ids=[channel['id']],
-      message_type="comment", subtype_xmlid="mail.mt_comment")
-      
-        
-    elif MODEL == "res.partner":
-      partner.message_post(body=odoo_message_text, author_id=partner.id,  channel_ids=[channel['id']],
-      message_type="comment", subtype_xmlid="mail.mt_comment")
-
-        ]]></field>
-  </record>
-
   <record id="telegram_task_odoo2tele" model="sync.task">
     <field name="name">Send response via Odoo</field>
     <field name="active" eval="True"/>
     <field name="project_id" ref="telegram_project"/>
     <field name="code"><![CDATA[
-
 def handle_db(records):
     # records are instances of mail.message
     for r in records:
+        log("MESSAGE data: %s - %s - %s" % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
       
-        if not html2plaintext(r.body or "").startswith("/telegram"):
+        if not html2plaintext(r.body or ""):
             continue
-        lead = env["crm.lead"].browse(r.res_id)
- 
-        contact_name = lead.contact_name or ""
-        if not contact_name.endswith("@telegram"):
-            continue
-        telegram_user_id = contact_name.split("@telegram")[0]
-        telegram_message_html = html_sanitize_telegram(r.body)
-        telegram_message_html = telegram_message_html.replace("/telegram", "")
-        telegram.sendMessage(telegram_user_id, telegram_message_html)
 
-        odoo_message_text = "%s:\n\n%s" % (params.TELEGRAM_MESSAGE_SENT, telegram_message_html)
-        lead.message_post(body=odoo_message_text)
+        channel = env["mail.channel"].browse(r.res_id)
 
+        for partner in channel.channel_partner_ids:
+          if partner.ref:
+            contact_name = [partner.id, partner.ref]
+            log("MESSAGE partner.id, partner.ref: %s " % (contact_name), LOG_INFO)
+          
+        if  r.author_id.id != contact_name[0] and  r.author_id.id != 1:
+          telegram_user_id = contact_name[1].split("@telegram")[0]
+          telegram_message_html = html_sanitize_telegram(r.body)
+          telegram.sendMessage(telegram_user_id, telegram_message_html)
         ]]></field>
   </record>
-
-
-
+  <record id="telegram_trigger_automation" model="sync.trigger.automation">
+    <field name="trigger_name">ON_MESSAGE_POSTED</field>
+    <field name="active" eval="True"/>
+    <field name="sync_task_id" ref="telegram_task_odoo2tele"/>
+    <field name="model_id" ref="mail.model_mail_message"/>
+    <field name="trigger">on_create</field>
+    <field name="filter_domain">
+            [["model","=","mail.channel"]]
+    </field>
+  </record>
 </odoo>

@@ -14,7 +14,6 @@ def user2name(user):
         name += ' %s' % user.last_name
     if user.username:
         name += ' (@%s)' % user.username
-
     return name
 
 def html_sanitize_telegram(html):
@@ -61,14 +60,18 @@ def html_sanitize_telegram(html):
     <field name="key">MODEL</field>
     <field name="value">crm.lead</field>
     <field name="description">
-            What model are creating by telegram user. (e.g. crm.lead, default = res.partner)
+            What model are creating by telegram user. (e.g. crm.lead, res.partner, etc)
         </field>
     <field name="url" eval=""/>
     <field name="project_id" ref="telegram_project"/>
   </record>
-
-
-
+  <record id="telegram_project_param_mail_chat" model="sync.project.param">
+    <field name="key">MAIL_CHAT</field>
+    <field name="value">1</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="telegram_project"/>
+  </record>
 
   <record id="telegram_task_setup" model="sync.task">
     <field name="name">Setup</field>
@@ -81,6 +84,64 @@ def handle_button():
 
         ]]></field>
   </record>
+
+    <record id="telegram_task_tele2odoo" model="sync.task">
+    <field name="name">Process Telegram Messages</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="telegram_project"/>
+    <field name="code"><![CDATA[
+def handle_webhook(httprequest):
+  data = json.loads(httprequest.data.decode("utf-8"))
+  log("Raw data: %s" % data, LOG_DEBUG)
+
+  MODEL = params.MODEL
+
+  update = telegram.parse_data(data)
+  message = update.message or update.edited_message
+  is_edit = bool(update.edited_message)
+  name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
+  odoo_message_text = ""                                                       #From Telegram:
+  odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
+  
+  user_ref = "%s@telegram" % message.from_user.id
+  partner = env["res.partner"].search([("ref", "=", user_ref)])
+  
+
+  if not partner:
+    partner = env["res.partner"].create({"name": name, "ref": user_ref})
+    
+
+  if params.MAIL_CHAT == "1":
+    if message.text == "/start":
+        telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
+        log("User started a bot!" , LOG_INFO)
+        
+    elif is_edit:
+        odoo_message_text = "Contact has edited the message:"
+  
+      
+    channel = env["mail.channel"].with_user(2).channel_get(partners_to=[partner.id], pin=True)
+    log("Channel info is: %s" % channel, LOG_INFO)
+    
+    channel =  env['mail.channel'].browse(channel['id'])
+    log("Channel ID is: %s" % channel, LOG_INFO)
+
+    if MODEL is not "res.partner":
+      if not env[MODEL].search([("name", "=", name)]):
+        current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
+        channel.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model.id, MODEL), author_id=1,
+        message_type="comment", subtype_xmlid="mail.mt_comment")
+        
+        
+    channel.message_post(body=odoo_message_text, author_id=partner.id,  #channel_ids=channel['id'],
+    message_type="comment", subtype_xmlid="mail.mt_comment")
+
+
+        ]]></field>
+  </record>
+
+
+
   <record id="telegram_trigger_button" model="sync.trigger.button">
     <field name="trigger_name">SETUP_TELEGRAM</field>
     <field name="name"></field>
@@ -95,14 +156,4 @@ def handle_button():
     <field name="webhook_type">json</field>
   </record>
 
-  <record id="telegram_trigger_automation" model="sync.trigger.automation">
-    <field name="trigger_name">ON_MESSAGE_POSTED</field>
-    <field name="active" eval="True"/>
-    <field name="sync_task_id" ref="telegram_task_odoo2tele"/>
-    <field name="model_id" ref="mail.model_mail_message"/>
-    <field name="trigger">on_create</field>
-    <field name="filter_domain">
-            [["model","=","crm.lead"],["body","ilike","/telegram"]]
-    </field>
-  </record>
 </odoo>

@@ -18,16 +18,11 @@ To get an assistance on this module contact us by email :arrow_right: help@itpp.
 
 Contributors
 ============
-* `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__:
-
-      * :one::two: init version of the module
-
+* `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
+  
 Further information
 ===================
 
-Apps store: https://apps.odoo.com/apps/modules/12.0/sync_1c/
+Apps store: https://apps.odoo.com/....
 
-
-Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/12.0/sync_1c.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/12.0/sync_1c.atom>`_
-
-Tested on `Odoo 12.0 <https://github.com/odoo/odoo/commit/84d554f436ab4c2e7fa05c3f4653244a50fcc495>`_
+Tested on `Odoo 14.0 <https://github.com/odoo/odoo/....>`_

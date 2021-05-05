@@ -4,7 +4,7 @@
 {
     "name": """Telegram Integration""",
     "summary": """Telegram integration powered by Sync Studio""",
-    "category": "Services",
+    "category": "Discuss",
     "images": ["images/sync_telegram.png"],
     "version": "14.0.1.0.0",
     "application": False,
@@ -15,7 +15,7 @@
     "depends": ["sync"],
     "external_dependencies": {"python": [], "bin": []},
     "data": [
-        "data/sync_telegram_data.xml",
+        "data/sync_project_data.xml",
         "data/mail_sync_project_data.xml"
 
         ],
