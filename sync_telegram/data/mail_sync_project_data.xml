@@ -20,11 +20,13 @@ def handle_db(records):
 
         for partner in channel.channel_partner_ids:
           if partner.ref:
-            contact_name = [partner.id, partner.ref]
-            log("MESSAGE partner.id, partner.ref: %s " % (contact_name), LOG_INFO)
+            contact_name = partner.ref
+          else:
+            admin_id = partner.id
+            
           
-        if  r.author_id.id != contact_name[0] and  r.author_id.id != 1:
-          telegram_user_id = contact_name[1].split("@telegram")[0]
+        if r.author_id.id == admin_id:
+          telegram_user_id = contact_name.split("@telegram")[0]
           telegram_message_html = html_sanitize_telegram(r.body)
           telegram.sendMessage(telegram_user_id, telegram_message_html)
         ]]></field>

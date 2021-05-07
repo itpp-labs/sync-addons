@@ -106,6 +106,8 @@ def handle_webhook(httprequest):
   user_ref = "%s@telegram" % message.from_user.id
   partner = env["res.partner"].search([("ref", "=", user_ref)])
   
+  odoobot_id = env.user.browse(1).partner_id.id
+  
 
   if not partner:
     partner = env["res.partner"].create({"name": name, "ref": user_ref})
@@ -120,23 +122,20 @@ def handle_webhook(httprequest):
         odoo_message_text = "Contact has edited the message:"
   
       
-    channel = env["mail.channel"].with_user(2).channel_get(partners_to=[partner.id], pin=True)
+    channel = env["mail.channel"].with_user(odoobot_id).channel_get(partners_to=[partner.id], pin=True)
     log("Channel info is: %s" % channel, LOG_INFO)
-    
     channel =  env['mail.channel'].browse(channel['id'])
-    log("Channel ID is: %s" % channel, LOG_INFO)
 
     if MODEL is not "res.partner":
       if not env[MODEL].search([("name", "=", name)]):
         current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
-        channel.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model.id, MODEL), author_id=1,
-        message_type="comment", subtype_xmlid="mail.mt_comment")
+        
+        channel.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model.id, MODEL), 
+        author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
         
         
-    channel.message_post(body=odoo_message_text, author_id=partner.id,  #channel_ids=channel['id'],
+    channel.message_post(body=odoo_message_text, author_id=partner.id, 
     message_type="comment", subtype_xmlid="mail.mt_comment")
-
-
         ]]></field>
   </record>
 
