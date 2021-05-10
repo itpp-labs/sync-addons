@@ -6,9 +6,16 @@
    :target: https://opensource.org/licenses/MIT
    :alt: License: MIT
 
-================
+======================
  Telegram Integration
-================
+======================
+
+С помошью этого модуля, можно создать Телеграм бота, который может осуществлять следующие функции: 
+
+переписка 
+заполнение анкеты 
+покупка товаров 
+бронирование звонка\встречи и т.п.
 
 
 Questions?
@@ -19,10 +26,11 @@ To get an assistance on this module contact us by email :arrow_right: help@itpp.
 Contributors
 ============
 * `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
-  
+* `Ilya Ilchenko <https://github.com/mentalko>`__
+
 Further information
 ===================
 
 Apps store: https://apps.odoo.com/....
 
-Tested on `Odoo 14.0 <https://github.com/odoo/odoo/....>`_
+Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/6916981f56783de7008cd04d4e37e80166150ff7>`_

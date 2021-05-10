@@ -7,6 +7,9 @@
     <field name="active" eval="True"/>
     <field name="eval_context">telegram</field>
     <field name="common_code"><![CDATA[
+TG_PARTNER_REL = "TG_PARTNER_REL"
+TG_MODEL_REL = "TG_MODEL_REL"
+CHANNEL_REL = "CHANNEL_REL"
 
 def user2name(user):
     name = user.first_name
@@ -98,44 +101,47 @@ def handle_webhook(httprequest):
 
   update = telegram.parse_data(data)
   message = update.message or update.edited_message
-  is_edit = bool(update.edited_message)
+  odoo_message_text = message.text
   name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
-  odoo_message_text = ""                                                       #From Telegram:
-  odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
   
-  user_ref = "%s@telegram" % message.from_user.id
-  partner = env["res.partner"].search([("ref", "=", user_ref)])
-  
+  user_ref =  message.from_user.id
+  partner_ref = get_link(TG_PARTNER_REL, user_ref)
   odoobot_id = env.user.browse(1).partner_id.id
-  
 
-  if not partner:
-    partner = env["res.partner"].create({"name": name, "ref": user_ref})
+  if partner_ref == None: 
+    partner_ref = env["res.partner"].create({"name": name})
+    partner_ref.set_link(TG_PARTNER_REL, user_ref, sync_date=None, allow_many2many=False)
+    partner_ref = get_link(TG_PARTNER_REL, user_ref)
+    log("Partner created with the link: %s" % partner_ref, LOG_INFO)
+  else: 
+    log("Partner already exist with the link: %s" % partner_ref, LOG_INFO)
     
 
   if params.MAIL_CHAT == "1":
     if message.text == "/start":
         telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
-        log("User started a bot!" , LOG_INFO)
-        
-    elif is_edit:
+    elif bool(update.edited_message):
         odoo_message_text = "Contact has edited the message:"
   
-      
-    channel = env["mail.channel"].with_user(odoobot_id).channel_get(partners_to=[partner.id], pin=True)
-    log("Channel info is: %s" % channel, LOG_INFO)
-    channel =  env['mail.channel'].browse(channel['id'])
 
-    if MODEL is not "res.partner":
-      if not env[MODEL].search([("name", "=", name)]):
-        current_model = env[MODEL].create({"name": name, 'partner_id': partner.id})
+    channel_ref = env["mail.channel"].with_user(odoobot_id).channel_get(partners_to=[partner_ref.id], pin=True)
+    log("Channel info is: %s" % channel_ref, LOG_INFO)
+    channel_ref = env['mail.channel'].browse(channel_ref)
+    channel_ref.set_link(CHANNEL_REL, user_ref, sync_date=None, allow_many2many=False)
+    channel_ref = get_link(CHANNEL_REL, user_ref)
+    
+    if MODEL != "res.partner":
+      current_model_ref = get_link(TG_MODEL_REL, user_ref)
+      
+      if current_model_ref == None:
+        current_model_ref = env[MODEL].create({"name": name})
+        current_model_ref.set_link(TG_MODEL_REL, user_ref, sync_date=None, allow_many2many=False)
         
-        channel.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model.id, MODEL), 
+        channel_ref.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model_ref, MODEL), 
         author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
         
-        
-    channel.message_post(body=odoo_message_text, author_id=partner.id, 
-    message_type="comment", subtype_xmlid="mail.mt_comment")
+    channel_ref.message_post(body=odoo_message_text, author_id=partner_ref, message_type="comment", subtype_xmlid="mail.mt_comment")
+
         ]]></field>
   </record>
 

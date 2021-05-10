@@ -1,29 +1,34 @@
-=====================
+======================
  Telegram Integration
-=====================
+======================
 
 Installation
 ============
 
-* Install this module in according to `Sync Studio <https://apps.odoo.com/apps/modules/12.0/sync/>`__ Documentation
+* Install this module in according to `Sync Studio <https://apps.odoo.com/apps/modules/14.0/sync/>`__ Documentation
 
 
 Telegram configuration
 ======================
-* send message /new to @BotFather and follow further instructions to create bot and get the bot token
+send message /new to @BotFather and follow further instructions to create bot and get the bot token
 
-Configuration
+Odoo Configuration
 =============
+В первую очередь нужно задать токен бота "TELEGRAM_BOT_TOKEN"
+Sync Studio -> Sync Projects -> Telegram Integration module -> Parameters
 
-написать как переключитсья с партнера на crm.lead
+Вы можете изменить модель (карточку) которая будет создана после запуска пользователем бота,
+изменив значение параметра 'MODEL' на crm.lead или подобную
 
 Usage
 =====
 
-In Telegram:
-send some message to the created bot. Бот создает карточку в зависимости от выбраной модели.
+In Telegram, send "/start" message to the created bot. 
+Теперь в Odoo у появился диалог через который вы можете общаться с пользователем от имени бота
 
 
-Ссылка на карточку отправляется в переписку.
-Пользователь оду общается от имени бота  
+
++Ссылка на карточку отправляется в переписку.
+
+
 

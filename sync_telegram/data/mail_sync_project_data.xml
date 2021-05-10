@@ -16,17 +16,11 @@ def handle_db(records):
         if not html2plaintext(r.body or ""):
             continue
 
-        channel = env["mail.channel"].browse(r.res_id)
-
-        for partner in channel.channel_partner_ids:
-          if partner.ref:
-            contact_name = partner.ref
-          else:
-            admin_id = partner.id
-            
+        user_ref = get_link(CHANNEL_REL, r.res_id)
+        partner_ref = get_link(TG_PARTNER_REL, user_ref)
           
-        if r.author_id.id == admin_id:
-          telegram_user_id = contact_name.split("@telegram")[0]
+        if r.author_id.id == partner_ref:
+          telegram_user_id = user_ref
           telegram_message_html = html_sanitize_telegram(r.body)
           telegram.sendMessage(telegram_user_id, telegram_message_html)
         ]]></field>
