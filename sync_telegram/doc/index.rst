@@ -10,15 +10,17 @@ Installation
 
 Telegram configuration
 ======================
-send message /new to @BotFather and follow further instructions to create bot and get the bot token
+Send message /new to @BotFather and follow further instructions to create bot and get the bot token
 
 Odoo Configuration
 =============
 В первую очередь нужно задать токен бота "TELEGRAM_BOT_TOKEN"
-Sync Studio -> Sync Projects -> Telegram Integration module -> Parameters
+Sync Studio -> Sync Projects -> Telegram Integration -> Parameters
 
-Вы можете изменить модель (карточку) которая будет создана после запуска пользователем бота,
+Вы можете изменить модель (карточку) которая будет создана после первичного запуска пользователем бота,
 изменив значение параметра 'MODEL' на crm.lead или подобную
+
+**Какой пользователь запускает бота и что значит "запустить"?)**
 
 Usage
 =====

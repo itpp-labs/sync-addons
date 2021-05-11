@@ -3,13 +3,14 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
   <record id="telegram_project" model="sync.project">
-    <field name="name">Telegram Integration module</field>
+    <field name="name">Telegram Integration</field>
     <field name="active" eval="True"/>
     <field name="eval_context">telegram</field>
     <field name="common_code"><![CDATA[
 TG_PARTNER_REL = "TG_PARTNER_REL"
 TG_MODEL_REL = "TG_MODEL_REL"
 CHANNEL_REL = "CHANNEL_REL"
+OPERATOR_REL = "OPERATOR_REL"
 
 def user2name(user):
     name = user.first_name
@@ -70,7 +71,14 @@ def html_sanitize_telegram(html):
   </record>
   <record id="telegram_project_param_mail_chat" model="sync.project.param">
     <field name="key">MAIL_CHAT</field>
-    <field name="value">1</field>
+    <field name="value">True</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="telegram_project"/>
+  </record>
+  <record id="telegram_project_param_operator_id" model="sync.project.param">
+    <field name="key">OPERATOR_ID</field>
+    <field name="value">3</field>
     <field name="description"></field>
     <field name="url" eval=""/>
     <field name="project_id" ref="telegram_project"/>
@@ -97,51 +105,52 @@ def handle_webhook(httprequest):
   data = json.loads(httprequest.data.decode("utf-8"))
   log("Raw data: %s" % data, LOG_DEBUG)
 
-  MODEL = params.MODEL
-
   update = telegram.parse_data(data)
   message = update.message or update.edited_message
   odoo_message_text = message.text
   name = "%s%s" % (params.PARTNER_NAME_PREFIX, user2name(message.from_user))
   
-  user_ref =  message.from_user.id
-  partner_ref = get_link(TG_PARTNER_REL, user_ref)
+  telegram_user_ref =  message.from_user.id
+  partner_link= get_link(TG_PARTNER_REL, telegram_user_ref)
+  
   odoobot_id = env.user.browse(1).partner_id.id
+  operator_id = int(params.OPERATOR_ID)
+  operator = env["res.partner"].browse(operator_id)
+  operator.set_link(OPERATOR_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
 
-  if partner_ref == None: 
-    partner_ref = env["res.partner"].create({"name": name})
-    partner_ref.set_link(TG_PARTNER_REL, user_ref, sync_date=None, allow_many2many=False)
-    partner_ref = get_link(TG_PARTNER_REL, user_ref)
-    log("Partner created with the link: %s" % partner_ref, LOG_INFO)
+  if not partner_link: 
+    partner = env["res.partner"].create({"name": name})
+    partner.set_link(TG_PARTNER_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
+    partner_link = get_link(TG_PARTNER_REL, telegram_user_ref)
+    log("Partner has created with the link: %s and partner_id: %s" % (partner_link, partner_link.odoo.id), LOG_INFO)
   else: 
-    log("Partner already exist with the link: %s" % partner_ref, LOG_INFO)
+    log("Partner already exist with the link: %s" % partner_link, LOG_INFO)
     
-
-  if params.MAIL_CHAT == "1":
+  if bool(params.MAIL_CHAT):
     if message.text == "/start":
-        telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
+      telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
     elif bool(update.edited_message):
-        odoo_message_text = "Contact has edited the message:"
+      odoo_message_text = "Contact has edited the message:"
   
 
-    channel_ref = env["mail.channel"].with_user(odoobot_id).channel_get(partners_to=[partner_ref.id], pin=True)
-    log("Channel info is: %s" % channel_ref, LOG_INFO)
-    channel_ref = env['mail.channel'].browse(channel_ref)
-    channel_ref.set_link(CHANNEL_REL, user_ref, sync_date=None, allow_many2many=False)
-    channel_ref = get_link(CHANNEL_REL, user_ref)
+    channel = env["mail.channel"].with_user(odoobot_id).channel_get(partners_to=[partner_link.odoo.id, operator_id], pin=True)
+    log("Channel info is: %s" % channel, LOG_INFO)
+    channel = env['mail.channel'].browse(channel["id"])
+    channel.set_link(CHANNEL_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
     
-    if MODEL != "res.partner":
-      current_model_ref = get_link(TG_MODEL_REL, user_ref)
-      
-      if current_model_ref == None:
-        current_model_ref = env[MODEL].create({"name": name})
-        current_model_ref.set_link(TG_MODEL_REL, user_ref, sync_date=None, allow_many2many=False)
-        
-        channel_ref.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % (current_model_ref, MODEL), 
-        author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
-        
-    channel_ref.message_post(body=odoo_message_text, author_id=partner_ref, message_type="comment", subtype_xmlid="mail.mt_comment")
+    
+    if params.MODEL != "res.partner":
+      current_model_link = get_link(TG_MODEL_REL, telegram_user_ref)
 
+      if not current_model_link:
+        current_model = env[params.MODEL].create({"name": name})
+        current_model.set_link(TG_MODEL_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
+        current_model_link = get_link(TG_MODEL_REL, telegram_user_ref)
+      
+        channel.message_post(body="""<b> <a href="/web#id=%s&model=%s">User card is created. </a></b>""" % 
+        (current_model_link.odoo.id, current_model_link.odoo._name), author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+
+    channel.message_post(body=odoo_message_text, author_id=partner_link.odoo.id, message_type="comment", subtype_xmlid="mail.mt_comment")
         ]]></field>
   </record>
 

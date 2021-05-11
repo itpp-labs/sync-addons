@@ -9,20 +9,20 @@
     <field name="project_id" ref="telegram_project"/>
     <field name="code"><![CDATA[
 def handle_db(records):
-    # records are instances of mail.message
+    # records are instances of mail.message with model = mail.channel
     for r in records:
-        log("MESSAGE data: %s - %s - %s" % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
+        log("MESSAGE data: channel_id %s - author_id %s - message_text: %s" % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
       
         if not html2plaintext(r.body or ""):
             continue
-
-        user_ref = get_link(CHANNEL_REL, r.res_id)
-        partner_ref = get_link(TG_PARTNER_REL, user_ref)
           
-        if r.author_id.id == partner_ref:
-          telegram_user_id = user_ref
+        channel = env["mail.channel"].browse(r.res_id)
+        telegram_user_ref = channel.search_links(CHANNEL_REL).external
+        operator_ref = get_link(OPERATOR_REL, telegram_user_ref)
+
+        if r.author_id.id == operator_ref.odoo.id:
           telegram_message_html = html_sanitize_telegram(r.body)
-          telegram.sendMessage(telegram_user_id, telegram_message_html)
+          telegram.sendMessage(telegram_user_ref, telegram_message_html)
         ]]></field>
   </record>
   <record id="telegram_trigger_automation" model="sync.trigger.automation">
