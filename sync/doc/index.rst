@@ -168,7 +168,7 @@ Links
     ``record`` and ``relation_name`` or if there is a link for ``relation_name``
     and ``external``;
 
-* ``<records>.search_links(relation_name, refs=[external_ref1, external_ref2, ...]) -> links``
+* ``<records>.search_links(relation_name) -> links``
 * ``get_link(relation_name, external_ref) -> link``
 
 Odoo Link usage:
