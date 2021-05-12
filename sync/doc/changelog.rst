@@ -1,3 +1,8 @@
+`2.1.2`
+-------
+
+- **Fix:** error on adding new webhook
+
 `2.1.1`
 -------
 
