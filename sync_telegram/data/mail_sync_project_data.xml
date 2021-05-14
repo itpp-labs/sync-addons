@@ -11,18 +11,18 @@
 def handle_db(records):
     # records are instances of mail.message with model = mail.channel
     for r in records:
-        log("MESSAGE data: channel_id %s - author_id %s - message_text: %s" % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
+        log("MESSAGE data: channel_id %s - author_id %s - message_text: %s " % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
       
         if not html2plaintext(r.body or ""):
             continue
           
         channel = env["mail.channel"].browse(r.res_id)
         telegram_user_ref = channel.search_links(CHANNEL_REL).external
-        operator_ref = get_link(OPERATOR_REL, telegram_user_ref)
 
-        if r.author_id.id == operator_ref.odoo.id:
-          telegram_message_html = html_sanitize_telegram(r.body)
+        if r.author_id.id in operators_partner_list:
+          telegram_message_html = "%s\n\n%s" % (html_sanitize_telegram(r.body), r.author_id.name.split()[0])
           telegram.sendMessage(telegram_user_ref, telegram_message_html)
+        
         ]]></field>
   </record>
   <record id="telegram_trigger_automation" model="sync.trigger.automation">

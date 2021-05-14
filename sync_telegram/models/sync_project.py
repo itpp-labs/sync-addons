@@ -70,3 +70,4 @@ class SyncProjectTelegram(models.Model):
             "html2plaintext": html2plaintext,
             "Cleaner": Cleaner,
         }
+        
