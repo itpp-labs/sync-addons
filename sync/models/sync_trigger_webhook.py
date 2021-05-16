@@ -1,4 +1,5 @@
 # Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import uuid
@@ -42,12 +43,11 @@ class SyncTriggerWebhook(models.Model):
     def _compute_website_url(self):
         for r in self:
             website_url = r.action_server_id.website_url
-            if not website_url:
-                continue
-            if r.webhook_type == "json":
+            if website_url and r.webhook_type == "json":
                 website_url = website_url.replace(
                     "/website/action/", "/website/action-json/"
                 )
+            
             r.website_url = website_url
 
     @api.model
