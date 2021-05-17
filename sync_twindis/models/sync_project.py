@@ -19,14 +19,10 @@ class SyncProjectTwindis(models.Model):
     def _eval_context_twindis(self, secrets, eval_context):
         import base64
         import csv
-        import logging
         from io import BytesIO, TextIOWrapper
 
         import requests
 
-        _logger = logging.getLogger(__name__)
-
-        # log_transmission = eval_context["log_transmission"]
         log = eval_context["log"]
         params = eval_context["params"]
         if not all(
@@ -63,7 +59,7 @@ class SyncProjectTwindis(models.Model):
                 data = base64.b64encode(requests.get(url.strip()).content).replace(
                     b"\n", b""
                 )
-            except Exception as e:
+            except Exception:
                 log(
                     "There was a problem requesting the image from URL {}".format(url),
                     level="debug",
