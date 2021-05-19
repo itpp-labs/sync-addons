@@ -1,88 +1,151 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!-- Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-    <record id="twindis-integration_sync-project" model="sync.project">
-        <field name="name">Twindis Integration</field>
-        <field name="active" eval="False" />
-        <field name="eval_context">twindis</field>
-        <field name="common_code"><![CDATA[]]></field>
-    </record>
-    <record id="login_project-secret-parameter" model="sync.project.secret">
-        <field name="key">LOGIN</field>
-        <field name="description" />
-        <field name="url" eval="" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-    </record>
-    <record id="password_project-secret-parameter" model="sync.project.secret">
-        <field name="key">PASSWORD</field>
-        <field name="description" />
-        <field name="url" eval="" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-    </record>
-    <record id="products-url_project-parameter" model="sync.project.param">
-        <field name="key">PRODUCTS_URL</field>
-        <field name="value">https://api.twindis.com/api/v1/file/product-nl.csv</field>
-        <field name="description" />
-        <field name="url" eval="" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-    </record>
-    <record id="prices-url_project-parameter" model="sync.project.param">
-        <field name="key">PRICES_URL</field>
-        <field name="value">https://api.twindis.com/api/v1/file/prices.csv</field>
-        <field name="description" />
-        <field name="url" eval="" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-    </record>
-    <record id="product-group_project-parameter" model="sync.project.param">
-        <field name="key">PRODUCT_GROUP</field>
-        <field name="value">Verbruiksartikelen</field>
-        <field name="description" />
-        <field name="url" eval="" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-    </record>
-    <record id="test-attachement_sync-task" model="sync.task">
-        <field name="name">Get products</field>
-        <field name="active" eval="True" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-        <field
-            name="code"
-        ><![CDATA[
-def handle_button():
-  PRODUCTS_REF = env.ref("sync_twindis.products")
-  if not PRODUCTS_REF.datas:
-    PRODUCTS_REF = get_file(params.PRODUCTS_URL, PRODUCTS_REF)
+  <record id="twindis-integration_sync-project" model="sync.project">
+    <field name="name">Twindis Integration</field>
+    <field name="active" eval="True"/>
+    <field name="eval_context">twindis</field>
+    <field name="common_code"><![CDATA[PRODUCT_REL = "twindis2odoo_product"
+PRODUCTS_FILE_REF = env.ref("sync_twindis.products")
 
-  products = read_csv_attachment(PRODUCTS_REF)
-  create_products(products, params.PRODUCT_GROUP)
+def is_product_suitable(product, domain, fields):
+  for key, value in domain.items():
+    # TODO: make case insensitivity and show log message that searching field is not represented in the table
+    if product[fields.index(key)] not in value:
+      return False
+  return True
+
+def filter_products(table_fields, data, domain, limit=None):
+  # existing_fields = list(set(domain.keys()) & set(table_fields))
+  if limit:
+    qty = limit
+  else:
+    qty = len(data)
+  suitable_products = []
+  for product in range(qty):
+      if is_product_suitable(data[product], domain, table_fields):
+        suitable_products.append(data[product])
+
+  return suitable_products
+
+def product2vals(product):
+  prepared_product = {
+    "productid": product[0],
+    "retail_price": product[1],
+    "channel": product[2],
+    "productgroup": product[3],
+    "brandname": product[4],
+    "image_thumb": product[5],
+    "image_small": product[6],
+    "image_medium": product[7],
+    "image_large": product[8],
+    "url": product[9],
+    "productcategory": product[10],
+    "product_name": product[11],
+    "ean": product[12],
+    "description": product[13],
+    "oem": product[14],
+  }
+  return prepared_product
+    
+def get_current_file(ref, url):
+    if not ref.datas:
+      ref = get_file(url, ref)
+
+def create_products(products):
+  for product in products:
+    twindis_product = product2vals(product)
+    product_link = get_link(PRODUCT_REL, twindis_product["productid"])
+    if not product_link:
+      odoo_product = env["product.template"].create(
+        [
+          {
+            "name": twindis_product["product_name"],
+            "default_code": twindis_product["productid"],
+            "image_1920": fetch_image_from_url(twindis_product["image_large"]),
+            "list_price": float(twindis_product["retail_price"]),
+            "barcode": twindis_product["ean"],
+          }
+        ]
+      )
+      sync_date = odoo_product["create_date"]
+      odoo_product.set_link(PRODUCT_REL, twindis_product["productid"], sync_date)
+    
+def get_current_file(url, ref):
+    if not ref.datas:
+      ref = get_file(url, ref)
+    return ref]]></field>
+  </record>
+  <record id="login_project-secret-parameter" model="sync.project.secret">
+    <field name="key">LOGIN</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="password_project-secret-parameter" model="sync.project.secret">
+    <field name="key">PASSWORD</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="products-url_project-parameter" model="sync.project.param">
+    <field name="key">PRODUCTS_URL</field>
+    <field name="value">https://api.twindis.com/api/v1/file/product-nl.csv</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="prices-url_project-parameter" model="sync.project.param">
+    <field name="key">PRICES_URL</field>
+    <field name="value">https://api.twindis.com/api/v1/file/prices.csv</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="limit-products_project-parameter" model="sync.project.param">
+    <field name="key">LIMIT_PRODUCTS</field>
+    <field name="value">100</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="product-domain_project-parameter" model="sync.project.param">
+    <field name="key">PRODUCT_DOMAIN</field>
+    <field name="value">{"channel": ["Laptop", "Drucker", "Handy"], "brandname": ["Dell", "HP"]}</field>
+    <field name="description"></field>
+    <field name="url" eval=""/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+  </record>
+  <record id="test-attachement_sync-task" model="sync.task">
+    <field name="name">Sync Products File</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+    <field name="code"><![CDATA[
+def handle_button():
+  get_file(params.PRODUCTS_URL, PRODUCTS_FILE_REF, update=True)
 
 def handle_cron():
-  PRODUCTS_REF = env.ref("sync_twindis.products")
-  get_file(params.PRODUCTS_URL, PRODUCTS_REF)
+  get_file(params.PRODUCTS_URL, PRODUCTS_FILE_REF, update=True)
 ]]></field>
-    </record>
-    <record id="test_manual-trigger" model="sync.trigger.button">
-        <field name="trigger_name">Debug Products get</field>
-        <field name="name" />
-        <field name="sync_task_id" ref="test-attachement_sync-task" />
-    </record>
-    <record
-        id="update-products-table-every-1-days_cron-trigger"
-        model="sync.trigger.cron"
-    >
-        <field name="trigger_name">UPDATE_PRODUCTS_TABLE</field>
-        <field name="active" eval="False" />
-        <field name="sync_task_id" ref="test-attachement_sync-task" />
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-    </record>
-    <record id="prices_sync-task" model="sync.task">
-        <field name="name">Get prices</field>
-        <field name="active" eval="True" />
-        <field name="project_id" ref="twindis-integration_sync-project" />
-        <field
-            name="code"
-        ><![CDATA[
+  </record>
+  <record id="test_manual-trigger" model="sync.trigger.button">
+    <field name="trigger_name">Debug Products get</field>
+    <field name="name"></field>
+    <field name="sync_task_id" ref="test-attachement_sync-task"/>
+  </record>
+  <record id="update-products-table-every-1-days_cron-trigger" model="sync.trigger.cron">
+    <field name="trigger_name">UPDATE_PRODUCTS_TABLE</field>
+    <field name="active" eval="False"/>
+    <field name="sync_task_id" ref="test-attachement_sync-task"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+  </record>
+  <record id="prices_sync-task" model="sync.task">
+    <field name="name">Get prices</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+    <field name="code"><![CDATA[
 def handle_button():
   PRICES_REF = env.ref("sync_twindis.prices")
   if not PRICES_REF.datas:
@@ -95,20 +158,38 @@ def handle_cron():
   PRICES_REF = env.ref("sync_twindis.prices")
   get_file(params.PRICES_URL, PRICES_REF)
 ]]></field>
-    </record>
-    <record id="test_manual-trigger-prices" model="sync.trigger.button">
-        <field name="trigger_name">Debug Prices get</field>
-        <field name="name" />
-        <field name="sync_task_id" ref="prices_sync-task" />
-    </record>
-    <record
-        id="update-prices-table-every-1-days_cron-trigger"
-        model="sync.trigger.cron"
-    >
-        <field name="trigger_name">UPDATE_PRICES_TABLE</field>
-        <field name="active" eval="False" />
-        <field name="sync_task_id" ref="prices_sync-task" />
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-    </record>
+  </record>
+  <record id="test_manual-trigger-prices" model="sync.trigger.button">
+    <field name="trigger_name">Debug Prices get</field>
+    <field name="name"></field>
+    <field name="sync_task_id" ref="prices_sync-task"/>
+  </record>
+  <record id="update-prices-table-every-1-days_cron-trigger" model="sync.trigger.cron">
+    <field name="trigger_name">UPDATE_PRICES_TABLE</field>
+    <field name="active" eval="False"/>
+    <field name="sync_task_id" ref="prices_sync-task"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+  </record>
+  <record id="sync-twindis-products-to-odoo_sync-task" model="sync.task">
+    <field name="name">Sync Twindis Products To Odoo</field>
+    <field name="active" eval="True"/>
+    <field name="project_id" ref="twindis-integration_sync-project"/>
+    <field name="code"><![CDATA[def handle_button():
+  PRODUCTS_FILE_REF = env.ref("sync_twindis.products")
+  if not PRODUCTS_FILE_REF.datas:
+    PRODUCTS_FILE_REF = get_file(params.PRODUCTS_URL, PRODUCTS_FILE_REF)
+  fields, data = read_csv_attachment(PRODUCTS_FILE_REF)
+  
+  product_domain = json.loads(params.PRODUCT_DOMAIN)
+  log(type2str(product_domain), LOG_DEBUG)
+  products = filter_products(fields, data, product_domain, limit=60)
+  create_products(products)
+]]></field>
+  </record>
+  <record id="filter-products_manual-trigger" model="sync.trigger.button">
+    <field name="trigger_name">FILTER_PRODUCTS</field>
+    <field name="name"></field>
+    <field name="sync_task_id" ref="sync-twindis-products-to-odoo_sync-task"/>
+  </record>
 </odoo>
