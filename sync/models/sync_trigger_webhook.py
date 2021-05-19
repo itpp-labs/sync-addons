@@ -47,7 +47,7 @@ class SyncTriggerWebhook(models.Model):
                 website_url = website_url.replace(
                     "/website/action/", "/website/action-json/"
                 )
-            
+
             r.website_url = website_url
 
     @api.model

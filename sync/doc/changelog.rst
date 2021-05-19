@@ -1,3 +1,8 @@
+`2.1.3`
+-------
+
+- **Fix:** Export Xml: add missed field `filter_domain`, `filter_pre_domain`
+
 `2.1.2`
 -------
 
