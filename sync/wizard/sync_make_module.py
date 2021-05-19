@@ -117,6 +117,8 @@ class SyncMakeModule(models.TransientModel):
                             "sync_task_id",
                             "model_id",
                             "trigger",
+                            "filter_pre_domain",
+                            "filter_domain",
                         ),
                     )
                 )
