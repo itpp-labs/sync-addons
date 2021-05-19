@@ -16,8 +16,7 @@ Roadmap
 =======
 
 * Docs: cover all functionality in ``doc/index.rst``
-* Make a new type of channel - Telegram (example: <https://github.com/odoo/odoo/blob/add187862f627c4340ef7ca49d8a75e149cb12f5/addons/im_livechat/models/mail_channel.py#L35>)
-* Through the button ``followers`` make it possible to add a channel of the "Telegram" type
+* Telegram channels are always visible, which may become a problem on growing number of channels
 
 Questions?
 ==========
@@ -27,7 +26,7 @@ To get an assistance on this module contact us by email :arrow_right: help@itpp.
 Contributors
 ============
 
-* `Ivan Yelizariev <https://it-projects.info/team/yelizariev>`__
+* `Ivan Yelizariev <https://twitter.com/yelizariev>`__
 * `Ilya Ilchenko <https://github.com/mentalko>`__
 
 Further information
