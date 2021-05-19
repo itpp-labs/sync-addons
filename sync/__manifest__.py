@@ -6,7 +6,7 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY. ETL/ESB tool similar to OCA/connector, but more flexible""",
     "category": "Extra Tools",
     "images": ["images/sync-studio.jpg"],
-    "version": "12.0.2.3.1",
+    "version": "12.0.2.4.0",
     "application": True,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",

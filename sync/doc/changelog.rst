@@ -1,4 +1,8 @@
+`2.4.0`
+-------
+
 - **Fix:** Export XML: add missed fields webhook_type
+- **Fix:** Export Xml: add missed field `filter_domain`, `filter_pre_domain`
 - **Improvement:** add tokens for incoming webhooks
 
 `2.3.1`
