@@ -1,3 +1,9 @@
+`2.0.0`
+-------
+
+- **New:** New folder "Telegram" in Discuss
+- **New:** Allow sending messages to telegram chat via record chatter by adding
+  Telegram channels to subscribers
 - Use PARTNER_NAME_TEMPLATE instead fo PARTNER_NAME_PREFIX, CHAT_RECORD_PREFIX
   instead of CHAT_RECORD_TEMPLATE
 - Use italic style in message signature

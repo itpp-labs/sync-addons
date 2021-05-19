@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
@@ -6,7 +6,7 @@
     "summary": """Telegram integration powered by Sync Studio""",
     "category": "Discuss",
     "images": ["images/sync_telegram.jpg"],
-    "version": "14.0.1.0.0",
+    "version": "14.0.2.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ilya Ilchenko",
     "support": "help@itpp.dev",
@@ -14,9 +14,15 @@
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["data/sync_project_data.xml", "data/mail_sync_project_data.xml"],
+    "data": [
+        "data/sync_project_data.xml",
+        "data/mail_sync_project_data.xml",
+        "views/mail/assets.xml",
+    ],
     "demo": [],
-    "qweb": [],
+    "qweb": [
+        "static/src/mail/components/discuss_sidebar/discuss_sidebar.xml",
+    ],
     "post_load": None,
     "pre_init_hook": None,
     "post_init_hook": None,
