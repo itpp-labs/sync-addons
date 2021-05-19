@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2021 ilya ilchenko
+     Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="telegram_task_odoo2tele" model="sync.task">
@@ -18,11 +19,11 @@ def handle_db(records):
             continue
 
         channel = env["mail.channel"].browse(r.res_id)
-        telegram_user_ref = channel.search_links(CHANNEL_REL).external
+        telegram_user_ref = channel.search_links(TG_CHAT_CHANNEL_REL).external
 
         if r.author_id.id in operators_partner_list:
-          telegram_message_html = "%s\n\n%s" % (html_sanitize_telegram(r.body), r.author_id.name.split()[0])
-          telegram.sendMessage(telegram_user_ref, telegram_message_html)
+          telegram_message_html = "%s\n\n<i>%s</i>" % (html_sanitize_telegram(r.body), r.author_id.name.split()[0])
+          telegram.sendMessage(telegram_user_ref, telegram_message_html, parse_mode='HTML')
 
         ]]></field>
     </record>
