@@ -11,19 +11,24 @@
             name="code"
         ><![CDATA[
 def handle_db(records):
-    # records are instances of mail.message with model = mail.channel
-    for r in records:
-        log("MESSAGE data: channel_id %s - author_id %s - message_text: %s " % (r.res_id, r.author_id.id, r.body), LOG_DEBUG)
+    # records are instances of mail.message
+    for mail_message in records:
+        for channel in mail_message.channel_ids:
+            if channel.channel_type != 'telegram':
+                continue
+            log("MESSAGE data: channel_id %s - author_id %s - message_text: %s " % (mail_message.res_id, mail_message.author_id.id, mail_message.body), LOG_DEBUG)
 
-        if not html2plaintext(r.body or ""):
-            continue
+            if not html2plaintext(mail_message.body or ""):
+                continue
 
-        channel = env["mail.channel"].browse(r.res_id)
-        telegram_user_ref = channel.search_links(TG_CHAT_CHANNEL_REL).external
+            channel_link = channel.search_links(TG_CHAT_CHANNEL_REL)
+            if not channel_link:
+                continue
+            telegram_user_ref = channel_link.external
 
-        if r.author_id.id in operators_partner_list:
-          telegram_message_html = "%s\n\n<i>%s</i>" % (html_sanitize_telegram(r.body), r.author_id.name.split()[0])
-          telegram.sendMessage(telegram_user_ref, telegram_message_html, parse_mode='HTML')
+            if mail_message.author_id.id in operators_partner_list or mail_message.model != 'mail.channel':
+              telegram_message_html = "%s\n\n<i>%s</i>" % (html_sanitize_telegram(mail_message.body), mail_message.author_id.name.split()[0])
+              telegram.sendMessage(telegram_user_ref, telegram_message_html, parse_mode='HTML')
 
         ]]></field>
     </record>
@@ -32,7 +37,8 @@ def handle_db(records):
         <field name="active" eval="True" />
         <field name="sync_task_id" ref="telegram_task_odoo2tele" />
         <field name="model_id" ref="mail.model_mail_message" />
-        <field name="trigger">on_create</field>
-        <field name="filter_domain">[["model","=","mail.channel"]]</field>
+        <field name="trigger">on_write</field>
+        <field name="filter_pre_domain">[["channel_ids","=",False]]</field>
+        <field name="filter_domain">[["channel_ids","!=",False]]</field>
     </record>
 </odoo>
