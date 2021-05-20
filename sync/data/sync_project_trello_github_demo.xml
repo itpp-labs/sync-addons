@@ -153,14 +153,14 @@ def color2trello(hex):
         </field>
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
-    <record id="trello-github_project_param_prefix_name" model="sync.project.param">
+    <record id="trello-github_project_param_prefix_name" model="sync.project.text">
         <field name="key">ISSUE_FROM_GITHUB_PREFIX</field>
         <field name="value">GITHUB:</field>
         <field name="description" />
         <field name="url" />
         <field name="project_id" ref="sync.trello-github_project" />
     </record>
-    <record id="trello-github_project_param_prefix_message" model="sync.project.param">
+    <record id="trello-github_project_param_prefix_message" model="sync.project.text">
         <field name="key">MESSAGE_PREFIX</field>
         <field name="value">A Message posted on GitHub:</field>
         <field name="description" />
@@ -261,7 +261,7 @@ def handle_webhook_issue_comment(data):
     issue_id = issue["number"]
     card_id = issue_id2card_id(issue_id)
     issue_message = data["comment"]["body"]
-    message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+    message = "%s\n%s" % (texts.MESSAGE_PREFIX, issue_message)
     trello.card_add_message(card_id, message)
 
 def handle_webhook_issues_update(data):
@@ -274,13 +274,13 @@ def handle_webhook_issues_update(data):
     issue_name = issue["title"]
     card_id = issue_id2card_id(issue_id)
     if not card_id:
-        card_id = trello.card_create(params.ISSUE_FROM_GITHUB_PREFIX + issue_name, issue_id)
+        card_id = trello.card_create(texts.ISSUE_FROM_GITHUB_PREFIX + issue_name, issue_id)
         set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
 
     if data["action"] == "opened":
         issue_message = issue["body"]
         if issue_message:
-            message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+            message = "%s\n%s" % (texts.MESSAGE_PREFIX, issue_message)
             trello.card_add_message(card_id, message)
 
     # attached labels:
@@ -335,13 +335,13 @@ def process_github_issues(issues):
         if issue_id2card_id(issue_id):
             log("Issue is already pushed: %s" % data["id"])
             continue
-        issue_name = params.ISSUE_FROM_GITHUB_PREFIX + data["name"]
+        issue_name = texts.ISSUE_FROM_GITHUB_PREFIX + data["name"]
         card_id = trello.card_create(issue_name, issue_id)
         set_link(ISSUES_REL, {GITHUB: issue_id, TRELLO: card_id})
 
         issue_message = data["body"]
         if issue_message:
-            message = "%s\n%s" % (params.MESSAGE_PREFIX, issue_message)
+            message = "%s\n%s" % (texts.MESSAGE_PREFIX, issue_message)
             trello.card_add_message(card_id, message)
 
         labels = data["labels"]
