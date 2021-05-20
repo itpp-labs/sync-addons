@@ -1,4 +1,5 @@
 # Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
@@ -6,7 +7,7 @@
     "summary": """Telegram integration powered by Sync Studio""",
     "category": "Discuss",
     "images": ["images/sync_telegram.jpg"],
-    "version": "14.0.2.0.0",
+    "version": "14.0.3.0.0",
     "application": False,
     "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",

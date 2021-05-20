@@ -43,20 +43,11 @@ def html_sanitize_telegram(html):
         <field name="url" eval="" />
         <field name="project_id" ref="telegram_project" />
     </record>
-    <record id="telegram_project_param_welcome" model="sync.project.param">
+    <record id="telegram_project_param_welcome" model="sync.project.text">
         <field name="key">TELEGRAM_WELCOME_MESSAGE</field>
         <field name="value">Hello! How can I help you?</field>
         <field name="description">
             Message that is sent to a user on first bot usage
-        </field>
-        <field name="url" eval="" />
-        <field name="project_id" ref="telegram_project" />
-    </record>
-    <record id="telegram_project_param_message_sent" model="sync.project.param">
-        <field name="key">TELEGRAM_MESSAGE_SENT</field>
-        <field name="value">The message has sent in telegram:</field>
-        <field name="description">
-            When Odoo Bot reports on successfully sent telegram message
         </field>
         <field name="url" eval="" />
         <field name="project_id" ref="telegram_project" />
@@ -153,7 +144,7 @@ def handle_webhook(httprequest):
 
   if params.WEBHOOK_CHAT != "no":
     if message.text == "/start":
-      telegram.sendMessage(message.chat.id, params.TELEGRAM_WELCOME_MESSAGE)
+      telegram.sendMessage(message.chat.id, texts.TELEGRAM_WELCOME_MESSAGE)
     elif bool(update.edited_message):
       odoo_message_text = "Contact has edited the message:"
 
