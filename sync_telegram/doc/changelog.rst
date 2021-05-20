@@ -1,3 +1,8 @@
+`3.0.0`
+-------
+
+- **Fix:** Separate text fields and params to avoid misleading when changing parameters
+
 `2.0.0`
 -------
 
