@@ -39,10 +39,11 @@ Project
 
   * In the ``Parameters`` tab
 
-    * **Parameters**
+    * **Params**
 
       * **Key**
       * **Value**
+    * **Texts**:  Translatable parameters
     * **Secrets**: Parameters with restricted access: key values are visible for Managers only
 
   * In the ``Evaluation Context`` tab
