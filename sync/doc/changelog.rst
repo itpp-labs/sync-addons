@@ -1,3 +1,8 @@
+`3.0.0`
+-------
+
+**Improvement:** add translatable multi-line parameters and make original params non-translatable
+
 `2.4.0`
 -------
 
