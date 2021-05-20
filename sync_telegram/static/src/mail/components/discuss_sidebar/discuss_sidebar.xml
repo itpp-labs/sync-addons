@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.DiscussSidebar" t-inherit-mode="extension">
+        <xpath expr="//*[@name='root']" position="inside">
+            <t
+                t-set="telegram_chats"
+                t-value="quickSearchOrderedAndPinnedTelegramChatList()"
+            />
+            <t t-if="telegram_chats and telegram_chats.length">
+                <div class="o_DiscussSidebar_group o_DiscussSidebar_groupLivechat">
+                    <div class="o_DiscussSidebar_groupHeader">
+                        <div
+                            class="o_DiscussSidebar_groupHeaderItem o_DiscussSidebar_groupTitle"
+                        >
+                            Telegram
+                        </div>
+                    </div>
+                    <div class="o_DiscussSidebar_list">
+                        <t t-foreach="telegram_chats" t-as="chat" t-key="chat.localId">
+                            <DiscussSidebarItem
+                                class="o_DiscussSidebar_item"
+                                threadLocalId="chat.localId"
+                            />
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+</templates>
