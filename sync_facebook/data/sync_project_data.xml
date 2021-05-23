@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="facebook-intergration_sync-project" model="sync.project">
+        <field name="name">Facebook Intergration</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">facebook</field>
+        <field
+            name="common_code"
+        ><![CDATA[FB_VERIFY_TOKEN="Sync Studio"
+REL_LEAD="FB_REL_LEAD"]]></field>
+    </record>
+    <record id="app-secret_project-secret-parameter" model="sync.project.secret">
+        <field name="key">APP_SECRET</field>
+        <field name="description">Facebook App Secret</field>
+        <field
+            name="url"
+            eval="'https://github.com/itpp-labs/sync-addons/blob/14.0/sync_facebook/doc/index.rst'"
+        />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="user-access-token_project-secret-parameter" model="sync.project.secret">
+        <field name="key">USER_ACCESS_TOKEN</field>
+        <field name="description">
+            Access token from Graph API Explorer. Select your app and required
+            permissions. The token is valid 1 hour only
+        </field>
+        <field
+            name="url"
+            eval="'https://github.com/itpp-labs/sync-addons/blob/14.0/sync_facebook/doc/index.rst'"
+        />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="page-access-token_project-secret-parameter" model="sync.project.secret">
+        <field name="key">PAGE_ACCESS_TOKEN</field>
+        <field name="description">
+            Use GENERATE_PAGE_ACCESS_TOKEN to set the value
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="app-id_project-parameter" model="sync.project.param">
+        <field name="key">APP_ID</field>
+        <field name="description">Facebook App ID</field>
+        <field
+            name="url"
+            eval="'https://github.com/itpp-labs/sync-addons/blob/14.0/sync_facebook/doc/index.rst'"
+        />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="graph-api-version_project-parameter" model="sync.project.param">
+        <field name="key">GRAPH_API_VERSION</field>
+        <field name="value">v10.0</field>
+        <field name="description">API Version for graph_api function</field>
+        <field
+            name="url"
+            eval="'https://developers.facebook.com/docs/graph-api/changelog'"
+        />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="page-id_project-parameter" model="sync.project.param">
+        <field name="key">PAGE_ID</field>
+        <field name="description">Facebook Page ID</field>
+        <field name="url" eval="'https://www.facebook.com/help/1503421039731588'" />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+    </record>
+    <record id="setup-facebook-app_sync-task" model="sync.task">
+        <field name="name">Setup</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_button():
+  if trigger == "GENERATE_PAGE_ACCESS_TOKEN":
+    # See https://developers.facebook.com/docs/pages/access-tokens
+    FB_EXCHANGE_TOKEN.user2page()
+  elif trigger == "SETUP_APP":
+    # See step 2 at this guide https://developers.facebook.com/docs/marketing-api/guides/lead-ads/quickstart/webhooks-integration
+    FB_GRAPH_API.app("POST", "subscriptions", data={
+      "object": "page",
+      "callback_url": webhooks.PAGE,
+      "fields": "leadgen",
+      "verify_token": FB_VERIFY_TOKEN,
+    }, files={})
+  elif trigger == "SETUP_PAGE_WEBHOOK":
+    # See step 3 at this guide https://developers.facebook.com/docs/marketing-api/guides/lead-ads/quickstart/webhooks-integration
+    FB_GRAPH_API.page("POST", "subscribed_apps", data={
+      "subscribed_fields": "leadgen"
+    }, files={})
+  else:
+    raise Exception("Unknown button event: %s" % trigger)
+
+
+]]></field>
+    </record>
+    <record id="button-GENERATE_PAGE_ACCESS_TOKEN" model="sync.trigger.button">
+        <field name="trigger_name">GENERATE_PAGE_ACCESS_TOKEN</field>
+        <field name="name">
+            Gets long-term PAGE_ACCESS_TOKEN by using USER_ACCESS_TOKEN
+        </field>
+        <field name="sync_task_id" ref="setup-facebook-app_sync-task" />
+    </record>
+    <record id="button-SETUP_APP" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_APP</field>
+        <field name="name">
+            Validates webhook ulrs for facebook app, but doesn't subscribe for page
+            updates (page information is not used)
+        </field>
+        <field name="sync_task_id" ref="setup-facebook-app_sync-task" />
+    </record>
+    <record id="button-SETUP_PAGE_WEBHOOK" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_PAGE_WEBHOOK</field>
+        <field name="name">Subscribe for page updates</field>
+        <field name="sync_task_id" ref="setup-facebook-app_sync-task" />
+    </record>
+</odoo>
