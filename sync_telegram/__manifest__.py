@@ -8,7 +8,7 @@
     "images": ["images/sync_telegram.jpg"],
     "version": "14.0.2.0.0",
     "application": False,
-    "author": "IT-Projects LLC, Ilya Ilchenko",
+    "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
