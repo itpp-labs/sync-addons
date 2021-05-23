@@ -9,7 +9,7 @@
     "images": [],
     "version": "11.0.2.0.0",
     "application": True,
-    "author": "IT-Projects LLC, Ivan Yelizariev",
+    "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
