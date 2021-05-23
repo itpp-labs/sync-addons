@@ -8,7 +8,7 @@
     "images": ["images/sync_woo.jpg"],
     "version": "12.0.1.0.0",
     "application": False,
-    "author": "IT-Projects LLC, Ivan Yelizariev",
+    "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
     "website": "https://apps.odoo.com/apps/modules/12.0/sync",
     "license": "Other OSI approved licence",  # MIT
