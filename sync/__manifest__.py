@@ -9,7 +9,7 @@
     "images": ["images/sync-studio.jpg"],
     "version": "13.0.2.0.1",
     "application": True,
-    "author": "IT-Projects LLC, Ivan Yelizariev",
+    "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
