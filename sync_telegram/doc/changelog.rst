@@ -1,3 +1,8 @@
+`3.1.0`
+-------
+
+- **New:** allow editing telegram chat
+
 `3.0.1`
 -------
 
