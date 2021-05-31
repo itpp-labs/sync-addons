@@ -53,10 +53,10 @@ class SyncProject(models.Model):
         You can add here a function or variable, that don't start with underscore and then reuse it in task's code.
     """,
     )
-    param_ids = fields.One2many("sync.project.param", "project_id")
-    text_param_ids = fields.One2many("sync.project.text", "project_id")
-    secret_ids = fields.One2many("sync.project.secret", "project_id")
-    task_ids = fields.One2many("sync.task", "project_id")
+    param_ids = fields.One2many("sync.project.param", "project_id", copy=True)
+    text_param_ids = fields.One2many("sync.project.text", "project_id", copy=True)
+    secret_ids = fields.One2many("sync.project.secret", "project_id", copy=True)
+    task_ids = fields.One2many("sync.task", "project_id", copy=True)
     task_count = fields.Integer(compute="_compute_task_count")
     trigger_cron_count = fields.Integer(
         compute="_compute_triggers", help="Enabled Crons"
@@ -77,6 +77,11 @@ class SyncProject(models.Model):
     job_count = fields.Integer(compute="_compute_job_count")
     log_ids = fields.One2many("ir.logging", "sync_project_id")
     log_count = fields.Integer(compute="_compute_log_count")
+
+    def copy(self, default=None):
+        default = dict(default or {})
+        default["active"] = False
+        return super(SyncProject, self).copy(default)
 
     def _compute_eval_context_description(self):
         for r in self:

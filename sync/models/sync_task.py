@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
@@ -27,11 +28,13 @@ class SyncTask(models.Model):
     code = fields.Text("Code")
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
-    cron_ids = fields.One2many("sync.trigger.cron", "sync_task_id")
-    automation_ids = fields.One2many("sync.trigger.automation", "sync_task_id")
-    webhook_ids = fields.One2many("sync.trigger.webhook", "sync_task_id")
+    cron_ids = fields.One2many("sync.trigger.cron", "sync_task_id", copy=True)
+    automation_ids = fields.One2many(
+        "sync.trigger.automation", "sync_task_id", copy=True
+    )
+    webhook_ids = fields.One2many("sync.trigger.webhook", "sync_task_id", copy=True)
     button_ids = fields.One2many(
-        "sync.trigger.button", "sync_task_id", string="Manual Triggers"
+        "sync.trigger.button", "sync_task_id", string="Manual Triggers", copy=True
     )
     active_cron_ids = fields.Many2many(
         "sync.trigger.cron",
