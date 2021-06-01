@@ -1,3 +1,9 @@
+`3.0.0`
+-------
+
+**Improvement:** add translatable multi-line parameters and make original params non-translatable
+**Improvement:** add the possibility to fully duplicate the project
+
 `2.1.3`
 -------
 
