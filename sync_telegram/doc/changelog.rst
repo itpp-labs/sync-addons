@@ -1,3 +1,8 @@
+`3.0.1`
+-------
+
+- **Fix:** transfer customizable module settings to demo data to avoid overriding during the update
+
 `3.0.0`
 -------
 
