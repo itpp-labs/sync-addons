@@ -17,6 +17,9 @@ TG_CHAT_CHANNEL_REL = "TG_CHAT_CHANNEL_REL"
 operators_user_list = list(map(int, params.OPERATOR_IDS.split(",")))
 operators_partner_list = [env.user.browse(x).partner_id.id for x in operators_user_list]
 
+odoobot_id = env.user.browse(1).partner_id.id
+
+
 def user2name(user):
     name = user.first_name
     if user.last_name:
@@ -24,14 +27,6 @@ def user2name(user):
     if user.username:
         name += ' (@%s)' % user.username
     return name
-
-def html_sanitize_telegram(html):
-    allowed_tags = set({"b", "i", "u", "s", "a", "code", "pre"})
-    cleaner = Cleaner(safe_attrs_only=True, safe_attrs=set(), allow_tags=allowed_tags, remove_unknown_tags=False)
-    html = cleaner.clean_html(html)
-    # remove surrounding div
-    return html[5:-6]
-
         ]]></field>
     </record>
     <record id="telegram_project_secret" model="sync.project.secret">
@@ -120,42 +115,32 @@ def handle_webhook(httprequest):
 
   update = telegram.parse_data(data)
   message = update.message or update.edited_message
-  odoo_message_text = message.text
+  odoo_message_text = message.text or message.caption or ""
   name = params.PARTNER_NAME_TEMPLATE % user2name(message.from_user)
   record_name = params.CHAT_RECORD_NAME_TEMPLATE % user2name(message.from_user)
-
   telegram_user_ref =  message.from_user.id
-  odoobot = env.user.browse(1).partner_id.id
   main_operator = env.user.browse(operators_user_list[0])
-  log("main_operator: %s" % main_operator, LOG_INFO)
 
   partner_link = get_link(TG_PARTNER_REL, telegram_user_ref)
 
   if not partner_link:
-    partner = env["res.partner"].with_user(main_operator).create({"name": name})
+    partner_image =  telegram.getUserPhoto(telegram_user_ref)
+    partner = env["res.partner"].with_user(main_operator).create({"name": name, "image_1920": partner_image})
     partner.set_link(TG_PARTNER_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
     partner_link = get_link(TG_PARTNER_REL, telegram_user_ref)
 
   if params.WEBHOOK_CHAT != "no":
     if message.text == "/start":
-      telegram.sendMessage(message.chat.id, texts.TELEGRAM_WELCOME_MESSAGE)
+      telegram.sendMessage(telegram_user_ref, texts.TELEGRAM_WELCOME_MESSAGE)
     elif bool(update.edited_message):
       odoo_message_text = "Contact has edited the message:"
-
-    partners_to = [partner_link.odoo.id] + operators_partner_list
-    log("partners_to: %s" % partners_to, LOG_INFO)
 
     channel_link = get_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
     if channel_link:
       channel = channel_link.odoo
     else:
-      channel = env['mail.channel'].create({
-          'channel_partner_ids': [(4, partner_id) for partner_id in partners_to],
-          'public': 'private',
-          'channel_type': 'telegram',
-          'email_send': False,
-          'name': ', '.join(env['res.partner'].sudo().browse(partners_to).mapped('name')),
-      })
+      partners = [partner_link.odoo.id] + operators_partner_list
+      channel = telegram.create_mail_сhannel(partners)
       channel.set_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
 
     model_rel = TG_CHAT_MODEL_REL + params.CHAT_MODEL
@@ -167,12 +152,45 @@ def handle_webhook(httprequest):
         record_model.set_link(model_rel, telegram_user_ref, sync_date=None, allow_many2many=False)
 
         record_model.message_post(body="""<b><a href="/web#action=%s&active_id=mail.channel_%s">Chat with partner is created. </a></b>""" %
-        (env.ref("mail.action_discuss").id, channel.id), author_id=odoobot, message_type="comment", subtype_xmlid="mail.mt_comment")
+        (env.ref("mail.action_discuss").id, channel.id), author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
 
         channel.message_post(body="""<b><a href="/web#id=%s&model=%s">Record is created. </a></b>""" %
-        (record_model.id, record_model._name), author_id=odoobot, message_type="comment", subtype_xmlid="mail.mt_comment")
+        (record_model.id, record_model._name), author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
 
-    channel.message_post(body=odoo_message_text, author_id=partner_link.odoo.id, message_type="comment", subtype_xmlid="mail.mt_comment")
+    file_bin_data = []
+    telegram_document = update.message.document
+    telegram_photo = update.message.photo
+    telegram_media = update.message.video or update.message.voice or update.message.video_note
+    telegram_sticker = update.message.sticker
+
+
+    if not update.message.text:
+        if telegram_photo and telegram_photo[-1].file_size < telegram.MAX_SIZE_FOR_RECEIVE:
+            log("telegram_photo: %s" % telegram_photo, LOG_INFO)
+            file_bin_data = telegram.getMediaFile(telegram_user_ref, telegram_photo[-1])
+
+        elif telegram_media and telegram_media.file_size < telegram.MAX_SIZE_FOR_RECEIVE:
+            log("telegram_media: %s" % telegram_media, LOG_INFO)
+            file_bin_data = telegram.getMediaFile(telegram_user_ref, telegram_media)
+
+        elif telegram_document and telegram_document.file_size < telegram.MAX_SIZE_FOR_RECEIVE:
+            log("telegram_document: %s" % telegram_document, LOG_INFO)
+            file_bin_data = telegram.getDocumentFile(telegram_user_ref, telegram_document)
+
+        else:
+            channel.message_post(body="The partner did not send the file due to an error: File is too big!",
+            author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+            telegram.sendMessage(telegram_user_ref, "File is too big, file size must not exceed 20 MB.")
+
+        if telegram_sticker:
+            log("telegram_sticker: %s" % telegram_sticker, LOG_INFO)
+            channel.message_post(body=telegram_sticker.emoji, author_id=partner_link.odoo.id,
+            message_type="comment", subtype_xmlid="mail.mt_comment")
+
+
+    channel.message_post(body=odoo_message_text, attachments=[file_bin_data], author_id=partner_link.odoo.id,
+    message_type="comment", subtype_xmlid="mail.mt_comment")
+
 
 
         ]]></field>
