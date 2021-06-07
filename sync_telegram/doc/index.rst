@@ -37,6 +37,7 @@ In Odoo
 Usage
 =====
 
+
 In Telegram:
 
 * send some message to the created bot
@@ -51,4 +52,18 @@ In telegram:
 
 * RESULT: the message is delivered via bot
 
-You can continue chatting in this way
+You can continue chatting this way
+
+File sending and receiving
+--------------------------
+The operator has the ability to send not just text messages, but also messages with attachments.
+
+The Telegram Bot API has a `limit <https://core.telegram.org/bots/api#inputfile>`__ on the files sent through the bot:
+ - The operator cannot send to Telegram user more than **10 MB for photos** and **50 MB for other files**.
+ - Also, the operator cannot receive **files larger than 20 MB** from a Telegram user.
+
+Subscribing telegram user to chatter
+------------------------------------
+After the bot has created a record, you can also send messages to telegram user directly from the record page (Lead, Task, etc.).
+In order to do that, subscribe corresponding channel to the record.
+Use button ``Show Followers -> Add Channels``.
