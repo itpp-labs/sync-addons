@@ -12,6 +12,8 @@
 
 With this module you can create a Telegram bot to communicate with people through Odoo.
 
+For each telegram user, the module creates a partner with corresponding information (name, nickname, avatar).
+
 Roadmap
 =======
 

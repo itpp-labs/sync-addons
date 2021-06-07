@@ -1,3 +1,9 @@
+`3.2.0`
+-------
+
+- **New:** Add file sending from Telegram to Odoo and vice versa.
+- **New:** The photo of the Telegram user is added to the partner's record
+
 `3.1.1`
 -------
 
