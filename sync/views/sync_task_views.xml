@@ -85,6 +85,8 @@
                                 widget="ace"
                                 options="{'mode': 'python'}"
                             />
+                            <separator />
+                            <field name="code_check" />
                         </page>
                         <page name="triggers" string="Available Triggers">
                             <separator string="Cron" />
