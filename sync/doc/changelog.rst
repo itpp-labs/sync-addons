@@ -1,3 +1,11 @@
+`3.1.0`
+-------
+
+- **Improvement:** generate cleaner xmlid on generating XML data file
+- **Improvement:** dynamically check python code for syntax errors
+- **Fix:** support POST methods in http webhooks
+- **Fix:** allow change field "active" for DB Triggers
+
 `3.0.0`
 -------
 
