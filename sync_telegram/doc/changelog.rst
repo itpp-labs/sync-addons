@@ -1,3 +1,8 @@
+`3.1.1`
+-------
+
+**Fix:** get rid of archiving integration after each update
+
 `3.1.0`
 -------
 
