@@ -43,7 +43,10 @@ Developer Hints
 Public webhook address
 ----------------------
 
-If you run Odoo locally and need to test webhook, you can use ssh tunneling:
+If you run Odoo locally and need to test webhook, your Odoo server should be available via public URL. You can either use specialized services like https://ngrok.com/ or make proxing via ssh tunneling as described in the next section. Once it's done set corresponding ``https://...`` value for ``web.base.url`` parameter (menu ``[[ Settings ]] >> System Parameters``). Also, you should set any value to  `web.base.url.freeze <https://odoo-source.com/?q=web.base.url.freeze&i=nope&files=&excludeFiles=po%24%7Cpot%24%7Cyml%24%7Cyaml%24%7Ccss%24%7C%2Fstatic%2Flib%2F&repos=odoo>`__ to avoid automatic change of ``web.base.url``.
+
+SSH tunneling
+~~~~~~~~~~~~~
 
 * Connect your server:
 
@@ -59,7 +62,7 @@ If you run Odoo locally and need to test webhook, you can use ssh tunneling:
 
       ssh user@yourserver.example -R 0.0.0.0:8069:localhost:8069
 
-Now you can set ``http://yourserver.example:8069`` as a value for ``web.base.url`` in Odoo (menu ``[[ Settings ]] >> System Parameters``). Also, you need to set any value to parameter `web.base.url.freeze <https://odoo-source.com/?q=web.base.url.freeze&i=nope&files=&excludeFiles=po%24%7Cpot%24%7Cyml%24%7Cyaml%24%7Ccss%24%7C%2Fstatic%2Flib%2F&repos=odoo>`__
+Now you can use ``http://yourserver.example:8069`` as a value for ``web.base.url`` in Odoo.
 
 Few more steps requires to use https connection (e.g. telegram api works with https only). In your server do as following:
 
@@ -82,8 +85,6 @@ Few more steps requires to use https connection (e.g. telegram api works with ht
      sudo certbot --nginx
 
 * Done!
-
-Now set corresponding ``https://...`` value for ``web.base.url`` parameter.
 
 Questions?
 ==========
