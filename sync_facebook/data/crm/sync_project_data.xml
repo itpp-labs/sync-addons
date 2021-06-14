@@ -37,8 +37,8 @@ def process_lead(fb_lead):
   if not link:
     odoo_lead = env["crm.lead"].create({
       "name": field_data["full_name"], # TODO: add prefix/template for lead name
-      "email_from": field_data["email"],
-      "phone": field_data["phone_number"],
+      "email_from": field_data.get("email"),
+      "phone": field_data.get("phone_number"),
     })
     odoo_lead.set_link(REL_LEAD, fb_id)
     log("Odoo Lead created: %s" % odoo_lead)]]></field>

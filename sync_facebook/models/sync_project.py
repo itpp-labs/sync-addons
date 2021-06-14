@@ -1,4 +1,5 @@
 # Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 import requests
 from facebook_business.adobjects.application import Application
@@ -48,6 +49,9 @@ class SyncProjectFacebook(models.Model):
         """
         log_transmission = eval_context["log_transmission"]
         log = eval_context["log"]
+        LOG_INFO = eval_context["LOG_INFO"]
+        LOG_ERROR = eval_context["LOG_ERROR"]
+        LOG_CRITICAL = eval_context["LOG_CRITICAL"]
         params = eval_context["params"]
         if not all([params.APP_ID, secrets.APP_SECRET]):
             raise UserError(_("Facebook Credentials are not set"))
@@ -65,7 +69,14 @@ class SyncProjectFacebook(models.Model):
             if access_token:
                 kwargs.setdefault("data", {}).setdefault("access_token", access_token)
             response = requests.request(method, url, **kwargs)
-            log("Graph API RESPONSE:\n{}".format(response.text))
+            log_level = LOG_INFO
+            try:
+                data = response.json()
+                if "error" in data:
+                    log_level = LOG_ERROR
+            except Exception:
+                log_level = LOG_CRITICAL
+            log("Graph API RESPONSE:\n{}".format(response.text), log_level)
             return response
 
         def graph_api_app(method, path, **kwargs):
