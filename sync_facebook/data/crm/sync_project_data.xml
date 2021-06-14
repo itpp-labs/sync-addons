@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="handle-webhook_sync-task" model="sync.task">
+        <field name="name">Handle webhook</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="facebook-intergration_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_webhook(httprequest):
+  args = httprequest.args
+  challenge = args.get('hub.challenge')
+  verify_token = args.get('hub.verify_token')
+
+  if verify_token == FB_VERIFY_TOKEN:
+    log("Verfied!")
+    return challenge
+  data = json.loads(httprequest.data.decode("utf-8"))
+  log("Query: %s\nBody\n%s" % (args, data), LOG_DEBUG)
+  for entry in data.get('entry', []):
+    for change in entry.get('changes', []):
+      value = change.get('value', {})
+      # form_id = value.get('form_id')
+      # page_id = value.get('page_id')
+      # created_time = value.get('created_time')
+      leadgen_id = value.get('leadgen_id')
+      lead = FB.Lead(leadgen_id, api=FB_TOKEN.page)
+      process_lead(lead.api_get())
+
+def process_lead(fb_lead):
+  log("FB LEAD: %s" % fb_lead)
+  # created_time=lead.created_time
+  fb_id = fb_lead["id"]
+  field_data = dict((data["name"], "\n".join(data["values"])) for data in fb_lead["field_data"])
+  link = get_link(REL_LEAD, fb_id)
+  if not link:
+    odoo_lead = env["crm.lead"].create({
+      "name": field_data["full_name"], # TODO: add prefix/template for lead name
+      "email_from": field_data.get("email"),
+      "phone": field_data.get("phone_number"),
+    })
+    odoo_lead.set_link(REL_LEAD, fb_id)
+    log("Odoo Lead created: %s" % odoo_lead)]]></field>
+    </record>
+    <record id="page_webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">PAGE</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="handle-webhook_sync-task" />
+        <field name="webhook_type">json</field>
+    </record>
+</odoo>

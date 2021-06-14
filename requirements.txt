@@ -1,3 +1,4 @@
 # generated from manifests external_dependencies
 bravado_core
+facebook_business
 swagger_spec_validator
