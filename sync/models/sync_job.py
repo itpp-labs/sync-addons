@@ -59,7 +59,9 @@ class SyncJob(models.Model):
         ],
         compute="_compute_state",
     )
-    in_progress = fields.Boolean(compute="_compute_state",)
+    in_progress = fields.Boolean(
+        compute="_compute_state",
+    )
 
     @api.depends("queue_job_id.max_retries")
     def _compute_max_retries_str(self):
