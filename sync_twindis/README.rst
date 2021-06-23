@@ -10,7 +10,7 @@
  Sync Twindis
 ==============
 
-
+Tool to integrate `Twindis <https://www.twindis.com/>`__ with Odoo
 
 Questions?
 ==========
@@ -25,7 +25,7 @@ Contributors
 Further information
 ===================
 
-Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/sync/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/sync_twindis/
 
 
 Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/14.0/sync_twindis.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/sync_twindis.atom>`_

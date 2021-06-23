@@ -3,18 +3,18 @@
 
 {
     "name": """Sync Twindis""",
-    "summary": """Integration with Twindis' API""",
+    "summary": """Twindis integration powered by Sync Studio""",
     "category": "Extra Tools",
     "images": ["images/sync_twindis.jpg"],
     "version": "14.0.1.0.0",
-    "author": "IT-Projects Labs, Denis Mudarisov",
+    "author": "IT Projects Labs, Denis Mudarisov",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sale_management", "sync", "purchase"],
     "external_dependencies": {"python": [], "bin": []},
     "data": [
-        "data/sync_project_twindis_integration_data.xml",
+        "data/sync_project_data.xml",
         "data/data.xml",
     ],
     "qweb": [],
