@@ -14,7 +14,7 @@
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync"],
-    "external_dependencies": {"python": [], "bin": []},
+    "external_dependencies": {"python": ["python-telegram-bot"], "bin": []},
     "data": [
         "data/sync_project_data.xml",
         "data/mail_sync_project_data.xml",
