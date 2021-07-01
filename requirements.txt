@@ -1,2 +1,3 @@
 bravado
+python-telegram-bot
 swagger-spec-validator==2.4.3
