@@ -42,16 +42,20 @@ class SyncProjectTwindis(models.Model):
             reader = csv.reader(f, delimiter=";")
             fields = next(reader)
             data = [row for row in reader]
-            return fields, data
+            return fields, reader
 
-        def get_file(url, ref, update=False):
-            if not ref.datas:
-                update = True
-            if update:
-                r = requests.get(url, auth=(secrets.LOGIN, secrets.PASSWORD))
-                ref.datas = base64.b64encode(r.content or "\n")
+        # def get_file(url, ref, update=False):
+        #     if not ref.datas:
+        #         update = True
+        #     if update:
+        #         r = requests.get(url, auth=(secrets.LOGIN, secrets.PASSWORD))
+        #         ref.datas = base64.b64encode(r.content or "\n")
 
-            return ref
+        #     return ref
+
+        def get_file(url):
+            r = requests.get(url, auth=(secrets.LOGIN, secrets.PASSWORD))
+            return base64.b64encode(r.content or "\n")
 
         def fetch_image_from_url(url):
             """
@@ -103,7 +107,6 @@ class SyncProjectTwindis(models.Model):
         return {
             "get_file": get_file,
             "read_csv_attachment": read_csv_attachment,
-            "safe_eval": safe_eval,
             "fetch_image_from_url": fetch_image_from_url,
             # "create_pricelist": create_pricelist,
         }

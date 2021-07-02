@@ -15,7 +15,6 @@
     "external_dependencies": {"python": [], "bin": []},
     "data": [
         "data/sync_project_data.xml",
-        "data/data.xml",
     ],
     "qweb": [],
     "post_load": None,
