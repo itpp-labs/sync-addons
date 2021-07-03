@@ -192,7 +192,7 @@ class SyncLink(models.Model):
         self, record, relation, ref, sync_date=None, allow_many2many=False
     ):
         refs = {ODOO: record.id, EXTERNAL: ref}
-        self._set_link_external(
+        return self._set_link_external(
             relation, refs, sync_date, allow_many2many, record._name
         )
 
