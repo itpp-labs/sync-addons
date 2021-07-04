@@ -1,17 +1,16 @@
 # Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
-# Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
+# Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {
     "name": """REST API/OpenAPI/Swagger""",
     "summary": """RESTful API to integrate Odoo with whatever system you need""",
     "category": "",
-    # "live_test_url": "",
     "images": ["images/openapi-swagger.png"],
-    "version": "12.0.1.1.10",
+    "version": "12.0.1.1.11",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/12.0/openapi/",
+    "support": "help@itpp.dev",
+    "website": "https://github.com/itpp-labs/sync-addons",
     "license": "LGPL-3",
     "depends": ["web_tour", "web_settings_dashboard"],
     "external_dependencies": {

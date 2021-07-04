@@ -34,7 +34,7 @@ API_ENDPOINT_V1 = "/v1"
 
 
 class ApiV1Controller(http.Controller):
-    """ Implements the REST API V1 endpoint.
+    """Implements the REST API V1 endpoint.
     .. methods:
 
         CRUD Methods:

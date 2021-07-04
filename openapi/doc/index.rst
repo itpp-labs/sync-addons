@@ -79,6 +79,90 @@ As the simplest example, you can try API in Swagger Editor. It allows to review 
 * Click ``[Authorize]`` button
 
   * **Username** -- set database name
-  * **Password** -- set **OpenAPI Token**
+  * **Password** -- set **OpenAPI Token** (how to get one is described in `authentication <#authentication>`__ above)
+
+Note:
+  The Swagger Editor sends requests directly from browser which leads to CORS error and work with it is not available in `odoo.sh`.
+  The easiest solution is to simply copy-past the curl command from Swagger Editor and run it from the terminal.
+
+  Alternatively, you can grant CORS headers in your web server. Below is example for Nginx::
+
+    location /api/v1 {
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        if ($request_method = 'POST') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+        }
+        if ($request_method = 'GET') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+        }
+        if ($request_method = 'PUT') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+        }
+        if ($request_method = 'DELETE') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+        }
+        if ($request_method = 'PATCH') {
+            add_header 'Access-Control-Allow-Origin' '*' 'always';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE, PATCH' 'always';
+            add_header 'Access-Control-Allow-Headers' 'Authorization,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range' 'always';
+        }
+
+        # ...
+    }
+
+How to call methods with arguments via API
+------------------------------------------
+
+Here is an example of calling a search method with domain.
+
+This is how it is usually done from python code:
+
+.. code-block:: python
+
+  partner_ids = self.env["res.partner"].search([("is_company", "=", "True")])
+
+On using API it would be as following:
+
+.. code-block:: bash
+
+  curl -X PATCH "http://example.com/api/v1/demo/res.partner/call/search" -H "accept: application/json" \
+  -H "authorization: Basic BASE64_ENCODED_EXPRESSION" -H "Content-Type: application/json" \
+  -d '{ "args": [[["is_company", "=", "True" ]]]}'
+
+
+Updating existing record
+-----------------------------
+
+For example, to set *phone* value for a partner, make a PUT request in the following way:
+
+.. code-block:: bash
+
+  curl -X PUT -H "Authorization: Basic BASE64_ENCODED_EXPRESSION" \
+  -H "Content-Type: application/json" -H "Accept: */*" \
+  -d '{ "phone": "+7123456789"}' "http://example.com/api/v1/demo/res.partner/41"
+
+To set many2one field, you need to pass id as a value:
+
+.. code-block:: bash
+
+  curl -X PUT -H "Authorization: Basic BASE64_ENCODED_EXPRESSION" \
+  -H "Content-Type: application/json" -H "Accept: */*" \
+  -d '{ "parent_id": *RECORD_ID*}' "http://example.com/api/v1/demo/res.partner/41"
 
 For more examples visit https://itpp.dev/sync website

@@ -2,7 +2,7 @@
 Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 */
-odoo.define("openapi.configure_API", function(require) {
+odoo.define("openapi.configure_API", function (require) {
     "use strict";
     var ListView = require("web.ListView");
     var Model = require("web.DataModel");
@@ -16,7 +16,7 @@ odoo.define("openapi.configure_API", function(require) {
                 ["name", "=", "openapi.namespace"],
                 ["model", "=", "openapi.namespace"],
             ],
-        ]).then(function(ids) {
+        ]).then(function (ids) {
             var context = {
                 default_model: self.model,
                 default_model_id: ids[0],
@@ -32,7 +32,7 @@ odoo.define("openapi.configure_API", function(require) {
     }
 
     ListView.include({
-        render_buttons: function() {
+        render_buttons: function () {
             this._super.apply(this, arguments);
             this.$buttons.on(
                 "click",

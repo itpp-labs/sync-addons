@@ -3,7 +3,7 @@ Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 Copyright 2018 Rafis Bikbov <https://it-projects.info/team/bikbov>
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 */
-odoo.define("openapi.dashboard", function(require) {
+odoo.define("openapi.dashboard", function (require) {
     "use strict";
     var Widget = require("web.Widget");
     var dashboard = require("web_settings_dashboard");
@@ -17,7 +17,7 @@ odoo.define("openapi.dashboard", function(require) {
             "click .o_openapi_namespace": "on_namespace_clicked",
         },
 
-        init: function(parent, data) {
+        init: function (parent, data) {
             this.data = data;
             this.parent = parent;
             return this._super.apply(this, arguments);
@@ -27,7 +27,7 @@ odoo.define("openapi.dashboard", function(require) {
 
         // },
 
-        on_openapi_create: function() {
+        on_openapi_create: function () {
             this.do_action({
                 type: "ir.actions.act_window",
                 res_model: "openapi.namespace",
@@ -36,7 +36,7 @@ odoo.define("openapi.dashboard", function(require) {
             });
         },
 
-        on_namespace_clicked: function(e) {
+        on_namespace_clicked: function (e) {
             var self = this;
             e.preventDefault();
             var namespace_id = $(e.currentTarget).data("namespace-id");
@@ -50,7 +50,7 @@ odoo.define("openapi.dashboard", function(require) {
                 target: "new",
             };
             this.do_action(action, {
-                on_reverse_breadcrumb: function() {
+                on_reverse_breadcrumb: function () {
                     return self.reload();
                 },
             });
@@ -58,18 +58,16 @@ odoo.define("openapi.dashboard", function(require) {
     });
 
     dashboard.Dashboard.include({
-        init: function(parent, data) {
+        init: function (parent, data) {
             var ret = this._super(parent, data);
             this.all_dashboards.push("openapi");
             return ret;
         },
-        load_openapi: function(data) {
+        load_openapi: function (data) {
             if (data.openapi_not_allowed === true) {
                 return $.when();
             }
-            this.$(".o_web_settings_dashboard_openapi")
-                .parent()
-                .show();
+            this.$(".o_web_settings_dashboard_openapi").parent().show();
             return new DashboardOpenAPI(this, data.openapi).replace(
                 this.$(".o_web_settings_dashboard_openapi")
             );
