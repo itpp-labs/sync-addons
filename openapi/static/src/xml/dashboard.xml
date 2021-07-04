@@ -50,7 +50,10 @@
                             </b>
                         </a>
                         <br />
-                        <em>Last connection: <t t-esc="ns.last_connection" /></em>
+                        <em>
+                            Last connection:
+                            <t t-esc="ns.last_connection" />
+                        </em>
                     </div>
                     <t t-if="!ns_last">
                         <hr />
