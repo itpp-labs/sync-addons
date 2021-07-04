@@ -1,12 +1,18 @@
 [![help@itpp.dev](https://itpp.dev/images/infinity-readme.png)](mailto:help@itpp.dev)
 # [12.0] Odoo Integration Addons
 
+:open_file_folder: Get a **.zip** file with all needed dependencies:
+
 :heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/12.0/base_automation_webhook/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/12.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/12.0/sync/)
 <br/>:heavy_check_mark: [sync_1c](https://apps.odoo.com/apps/modules/12.0/sync_1c/)
 <br/>:heavy_check_mark: [sync_woo](https://apps.odoo.com/apps/modules/12.0/sync_woo/)
 <br/>:heavy_check_mark: [telegram_leads](https://apps.odoo.com/apps/modules/12.0/telegram_leads/)
+
+:star: Star this repo if you **like** it!
+
+:heart: [Sponsor us](https://patreon.com/itpp) if you **love** it!
 
 Other Addons
 ============
