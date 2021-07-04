@@ -41,7 +41,10 @@ class Access(models.Model):
     # * all forbidden
     # * all allowed
     # * some are allowed
-    api_public_methods = fields.Boolean("Call Public methods via API", default=False,)
+    api_public_methods = fields.Boolean(
+        "Call Public methods via API",
+        default=False,
+    )
     public_methods = fields.Text(
         "Restric Public methods",
         help="Allowed public methods besides basic ones.\n"

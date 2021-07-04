@@ -105,8 +105,8 @@ class ApiJsonRequest(WebRequest):
 
     def _handle_exception(self, exception):
         """Called within an except block to allow converting exceptions
-           to arbitrary responses. Anything returned (except None) will
-           be used as response."""
+        to arbitrary responses. Anything returned (except None) will
+        be used as response."""
         try:
             return super(ApiJsonRequest, self)._handle_exception(exception)
         except Exception:
