@@ -1,10 +1,16 @@
 [![help@itpp.dev](https://itpp.dev/images/infinity-readme.png)](mailto:help@itpp.dev)
 # [13.0] Odoo Integration Addons
 
+:open_file_folder: Get a **.zip** file with all needed dependencies:
+
 :heavy_check_mark: [base_api](https://apps.odoo.com/apps/modules/13.0/base_api/)
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/13.0/base_automation_webhook/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/13.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/13.0/sync/)
+
+:star: Star this repo if you **like** it!
+
+:heart: [Sponsor us](https://patreon.com/itpp) if you **love** it!
 
 Other Addons
 ============
