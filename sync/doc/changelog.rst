@@ -1,3 +1,8 @@
+`3.0.1`
+-------
+
+- **Fix:** allow getting link after setting it
+
 `3.0.0`
 -------
 
