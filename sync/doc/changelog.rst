@@ -1,3 +1,8 @@
+`3.1.2`
+-------
+
+- **Improvement:** delete link if odoo record doesn't exist anymore
+
 `3.1.1`
 -------
 

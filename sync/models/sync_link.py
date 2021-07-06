@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
@@ -151,6 +152,23 @@ class SyncLink(models.Model):
             operator = "in" if isinstance(v, list) else "="
             domain.append((k, operator, v))
         links = self.search(domain)
+        odoo_links = links.filtered(lambda r: r.system2 == ODOO)
+        odoo_ids = [int(getattr(link, ODOO_REF)) for link in odoo_links]
+        if odoo_ids and model:
+            existing_odoo_records = self.env[model].sudo().browse(odoo_ids).exists()
+            odoo_ids_to_remove = set(odoo_ids) - set(existing_odoo_records.ids)
+            odoo_links_to_delete = odoo_links.filtered(
+                lambda r: int(r.ref2) in odoo_ids_to_remove
+            )
+            self._log(
+                "Delete obsolete links: {}".format(
+                    [
+                        (link.odoo, link.relation, link.system2, link.ref2, link.date)
+                        for link in odoo_links_to_delete
+                    ]
+                )
+            )
+            odoo_links_to_delete.unlink()
         if make_logs:
             self._log("Search links: {} -> {}".format(domain, links))
         return links
