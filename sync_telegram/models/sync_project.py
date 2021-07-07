@@ -78,7 +78,7 @@ class SyncProjectTelegram(models.Model):
                             (4, partner_id) for partner_id in partners
                         ],
                         "public": "private",
-                        "channel_type": "telegram",
+                        "channel_type": "multi_livechat_telegram",
                         "email_send": False,
                         "name": channel_name,
                     }

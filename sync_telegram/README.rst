@@ -18,7 +18,6 @@ Roadmap
 =======
 
 * Docs: cover all functionality in ``doc/index.rst``
-* Telegram channels are always visible, which may become a problem on growing number of channels
 
 Questions?
 ==========

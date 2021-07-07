@@ -7,7 +7,7 @@
     "summary": """Telegram integration powered by Sync Studio""",
     "category": "Discuss",
     "images": ["images/sync_telegram.jpg"],
-    "version": "14.0.3.2.2",
+    "version": "14.0.4.0.0",
     "application": False,
     "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",
@@ -18,15 +18,11 @@
     "data": [
         "data/sync_project_data.xml",
         "data/mail_sync_project_data.xml",
-        "views/mail/assets.xml",
     ],
     "demo": [
         "data/sync_project_data_demo.xml",
     ],
-    "qweb": [
-        "static/src/mail/components/discuss_sidebar/discuss_sidebar.xml",
-        "static/src/mail/components/discuss_sidebar_item/discuss_sidebar_item.xml",
-    ],
+    "qweb": [],
     "post_load": None,
     "pre_init_hook": None,
     "post_init_hook": None,

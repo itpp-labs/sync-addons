@@ -1,3 +1,8 @@
+`4.0.0`
+-------
+
+- **Improvement:** code refactoring to make it compatible with other messenger integration (facebook, viber, etc.)
+
 `3.2.2`
 -------
 

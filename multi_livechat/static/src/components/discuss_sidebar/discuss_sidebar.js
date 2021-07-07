@@ -1,7 +1,8 @@
 odoo.define(
-    "sync_telegram/static/src/mail/components/discuss_sidebar/discuss_sidebar.js",
+    "multi_livechat/static/src/mail/components/discuss_sidebar/discuss_sidebar.js",
     function (require) {
         "use strict";
+        const ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat"];
 
         const components = {
             DiscussSidebar: require("mail/static/src/components/discuss_sidebar/discuss_sidebar.js"),
@@ -11,7 +12,7 @@ odoo.define(
 
         patch(
             components.DiscussSidebar,
-            "sync_telegram/static/src/mail/components/discuss_sidebar/discuss_sidebar.js",
+            "multi_livechat/static/src/components/discuss_sidebar/discuss_sidebar.js",
             {
                 // --------------------------------------------------------------------------
                 // Public
@@ -22,13 +23,11 @@ odoo.define(
                  *
                  * @returns {mail.thread[]}
                  */
-                quickSearchOrderedAndPinnedTelegramChatList() {
-                    const allOrderedAndPinnedTelegramChats = this.env.models[
-                        "mail.thread"
-                    ]
+                getMultiLivechatGroups() {
+                    let allChats = this.env.models["mail.thread"]
                         .all(
                             (thread) =>
-                                thread.channel_type === "telegram" &&
+                                !(thread.channel_type in ODOO_CHANNEL_TYPES) &&
                                 thread.isPinned &&
                                 thread.model === "mail.channel"
                         )
@@ -48,14 +47,34 @@ odoo.define(
                             }
                             return c2.id - c1.id;
                         });
-                    if (!this.discuss.sidebarQuickSearchValue) {
-                        return allOrderedAndPinnedTelegramChats;
+                    let qsVal = this.discuss.sidebarQuickSearchValue;
+                    if (qsVal) {
+                        qsVal = qsVal.toLowerCase();
+                        allChats = allChats.filter((chat) => {
+                            const nameVal = chat.displayName.toLowerCase();
+                            return nameVal.includes(qsVal);
+                        });
                     }
-                    const qsVal = this.discuss.sidebarQuickSearchValue.toLowerCase();
-                    return allOrderedAndPinnedTelegramChats.filter((chat) => {
-                        const nameVal = chat.displayName.toLowerCase();
-                        return nameVal.includes(qsVal);
+                    const groups = {};
+                    _.each(this.env.messaging.multi_livechat.channel_types, function (
+                        name,
+                        channel_type
+                    ) {
+                        groups[channel_type] = {
+                            name: name,
+                            chats: [],
+                        };
                     });
+                    console.log("groups", groups);
+                    console.log("allChats", allChats);
+
+                    _.each(allChats, (chat) => {
+                        if (groups[chat.channel_type]) {
+                            groups[chat.channel_type].chats.push(chat);
+                        }
+                    });
+
+                    return _.map(groups, (value) => value);
                 },
 
                 // --------------------------------------------------------------------------
@@ -67,7 +86,7 @@ odoo.define(
                  */
                 _useStoreCompareDepth() {
                     return Object.assign(this._super(...arguments), {
-                        allOrderedAndPinnedTelegramChats: 1,
+                        multiLivechatGroups: 2,
                     });
                 },
                 /**
@@ -77,7 +96,7 @@ odoo.define(
                  */
                 _useStoreSelector(props) {
                     return Object.assign(this._super(...arguments), {
-                        allOrderedAndPinnedTelegramChats: this.quickSearchOrderedAndPinnedTelegramChatList(),
+                        multiLivechatGroups: this.getMultiLivechatGroups(),
                     });
                 },
             }
