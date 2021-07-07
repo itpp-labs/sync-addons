@@ -14,7 +14,7 @@ def handle_db(records):
     # records are instances of mail.message
     for mail_message in records:
         for channel in mail_message.channel_ids:
-            if channel.channel_type != 'telegram':
+            if channel.channel_type != 'multi_livechat_telegram':
                 continue
             channel_link = channel.search_links(TG_CHAT_CHANNEL_REL)
             if not channel_link:
