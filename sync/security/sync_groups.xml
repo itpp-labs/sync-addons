@@ -8,7 +8,7 @@
             <field name="description">
                 User: read-only access;
             Developer: restricted write access;
-            Manager: same as Developer, but access to secure staff.
+            Administrator: same as Developer, but access to secure staff.
             </field>
         </record>
         <record id="sync_group_user" model="res.groups">
@@ -22,7 +22,7 @@
             <field name="implied_ids" eval="[(4, ref('sync.sync_group_user'))]" />
         </record>
         <record id="sync_group_manager" model="res.groups">
-            <field name="name">Manager</field>
+            <field name="name">Administrator</field>
             <field name="category_id" ref="module_category_sync" />
             <field name="implied_ids" eval="[(4, ref('sync.sync_group_dev'))]" />
         </record>

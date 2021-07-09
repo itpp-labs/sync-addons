@@ -27,7 +27,7 @@ User Access Levels
 
 * ``Sync Studio: User``: read-only access
 * ``Sync Studio: Developer``: restricted write access
-* ``Sync Studio: Manager``: same as Developer, but with access to **Secrets**
+* ``Sync Studio: Administrator``: same as Developer, but with access to **Secrets**
 
 Project
 =======
@@ -44,7 +44,7 @@ Project
       * **Key**
       * **Value**
     * **Texts**:  Translatable parameters
-    * **Secrets**: Parameters with restricted access: key values are visible for Managers only
+    * **Secrets**: Parameters with restricted access: key values are visible for Administrators only
 
   * In the ``Evaluation Context`` tab
 

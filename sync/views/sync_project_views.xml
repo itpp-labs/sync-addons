@@ -212,7 +212,8 @@
                             <p class="oe_read_only">
                                 <em>
                                     Secret parameters values are available for Sync
-                                    Managers only (click on a line to see the value)
+                                    Administrators only (click on a line to see the
+                                    value)
                                 </em>
                             </p>
                             <field name="secret_ids">

@@ -1,3 +1,8 @@
+`3.1.2`
+-------
+
+- **Improvement:** Manager access group renamed to Administrator
+
 `3.1.1`
 -------
 
