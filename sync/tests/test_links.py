@@ -1,6 +1,8 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
+import logging
 import uuid
 from datetime import datetime
 
@@ -8,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase
+_logger = logging.getLogger(__name__)
 
 
 def generate_ref():
@@ -27,14 +30,22 @@ class TestLink(TransactionCase):
 
     def test_odoo_record_remove(self):
         REL = "sync_test_record_removing"
-
-        self.assertFalse(self.env["res.partner"].search([]).search_links(REL))
-
+        
+        _logger.debug("Initial links searching")
+        self.assertFalse(self.env["sync.link"].search([("relation", "=", REL)]))
+        _logger.debug("Record creating")
         r = self.create_record()
         ref = generate_ref()
+        _logger.debug("Setting link")
         r.set_link(REL, ref)
+        self.assertTrue(self.env["sync.link"].search([("relation", "=", REL)]))
+        self.assertTrue(self.get_link(REL, ref))
+        _logger.debug("Unlinking record")
         r.unlink()
+        _logger.debug("Checking that record res.partner model is deleted and link is unavailable")
         self.assertFalse(self.env["res.partner"].search([]).search_links(REL))
+        _logger.debug("Checking that link is deleted/archived")
+        self.assertFalse(self.get_link(REL, ref))
 
     def test_odoo_link(self):
         REL = "sync_test_links_partner"
