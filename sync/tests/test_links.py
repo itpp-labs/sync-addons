@@ -25,6 +25,17 @@ class TestLink(TransactionCase):
     def create_record(self):
         return self.env["res.partner"].create({"name": "Test"})
 
+    def test_odoo_record_remove(self):
+        REL = "sync_test_record_removing"
+
+        self.assertFalse(self.env["res.partner"].search([]).search_links(REL))
+
+        r = self.create_record()
+        ref = generate_ref()
+        r.set_link(REL, ref)
+        r.unlink()
+        self.assertFalse(self.env["res.partner"].search([]).search_links(REL))
+
     def test_odoo_link(self):
         REL = "sync_test_links_partner"
         REL2 = "sync_test_links_partner2"
