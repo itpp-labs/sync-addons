@@ -1,3 +1,8 @@
+`3.0.2`
+-------
+
+- **Improvement:** remove unnecessary "archive" buttons, add "archived" ribbons and "active" fields
+
 `3.0.1`
 -------
 
