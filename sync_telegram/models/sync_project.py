@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
@@ -73,7 +74,7 @@ class SyncProjectTelegram(models.Model):
             datas = base64.b64encode(r.content)
             return datas
 
-        def create_mail_сhannel(partners):
+        def create_mail_сhannel(partners, channel_name):
             return (
                 self.env["mail.channel"]
                 .sudo()
@@ -85,12 +86,7 @@ class SyncProjectTelegram(models.Model):
                         "public": "private",
                         "channel_type": "telegram",
                         "email_send": False,
-                        "name": ", ".join(
-                            self.env["res.partner"]
-                            .sudo()
-                            .browse(partners)
-                            .mapped("name")
-                        ),
+                        "name": channel_name,
                     }
                 )
             )

@@ -140,7 +140,7 @@ def handle_webhook(httprequest):
       channel = channel_link.odoo
     else:
       partners = [partner_link.odoo.id] + operators_partner_list
-      channel = telegram.create_mail_сhannel(partners)
+      channel = telegram.create_mail_сhannel(partners, record_name)
       channel.set_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
 
     model_rel = TG_CHAT_MODEL_REL + params.CHAT_MODEL
