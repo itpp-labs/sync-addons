@@ -26,29 +26,6 @@ class SyncTriggerWebhook(models.Model):
         "ir.actions.server", delegate=True, required=True, ondelete="cascade"
     )
     active = fields.Boolean(default=True)
-    webhook_type = fields.Selection(
-        [("http", "application/x-www-form-urlencoded"), ("json", "application/json")],
-        string="Webhook Type",
-        default="json",
-    )
-    website_url = fields.Char("Webhook URL", compute="_compute_website_url")
-
-    @api.depends(
-        "webhook_type",
-        "action_server_id.state",
-        "action_server_id.website_published",
-        "action_server_id.website_path",
-        "action_server_id.xml_id",
-    )
-    def _compute_website_url(self):
-        for r in self:
-            website_url = r.action_server_id.website_url
-            if not website_url:
-                continue
-            website_url = website_url.replace(
-                "/website/action/", "/website/action-%s/" % r.webhook_type
-            )
-            r.website_url = website_url
 
     @api.model
     def default_get(self, fields):
@@ -57,10 +34,6 @@ class SyncTriggerWebhook(models.Model):
         vals["groups_id"] = [(4, self.env.ref("base.group_public").id, 0)]
         vals["website_path"] = uuid.uuid4()
         return vals
-
-    def action_website_path(self):
-        for r in self:
-            r.website_path = uuid.uuid4()
 
     def start(self):
         record = self.sudo()

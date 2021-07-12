@@ -7,13 +7,13 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY. ETL/ESB tool similar to OCA/connector, but more flexible""",
     "category": "Extra Tools",
     "images": ["images/sync-studio.jpg"],
-    "version": "14.0.3.1.2",
+    "version": "14.0.4.0.0",
     "application": True,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
-    "depends": ["base_automation", "mail", "website", "queue_job"],
+    "depends": ["base_automation", "mail", "queue_job"],
     "external_dependencies": {"python": [], "bin": []},
     "data": [
         "security/sync_groups.xml",

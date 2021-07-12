@@ -36,6 +36,7 @@ Roadmap
 
 * Code widget: show line numbers
 * Webhooks: add a possibility to retry failed webhook (e.g. to debug code)
+* Webhooks: during the migration rename `website` appearances in links to `sync`. We decided not to do this in the stable branch to not break existing integrations
 
 Developer Hints
 ===============

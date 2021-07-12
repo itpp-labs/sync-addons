@@ -1,3 +1,8 @@
+`4.0.0`
+-------
+
+**Improvement:** remove Website module from dependencies, handle webhooks directly in Sync Studio
+
 `3.1.2`
 -------
 
