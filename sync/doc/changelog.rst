@@ -1,3 +1,8 @@
+`3.0.2`
+-------
+
+- **Fix:** it was impossible to run manual trigger on task form
+
 `3.0.1`
 -------
 
