@@ -1,3 +1,8 @@
+`2.0.1`
+-------
+
+- **Fix:** it was impossible to run manual trigger on task form
+
 `2.0.0`
 -------
 
