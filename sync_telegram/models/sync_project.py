@@ -7,12 +7,22 @@ import json
 import logging
 
 import requests
+from lxml.html.clean import Cleaner
+from telegram import (  # pylint: disable=missing-manifest-dependency; disabled because pre-commit cannot find external dependency in manifest. https://github.com/itpp-labs/DINAR/issues/91
+    Bot,
+    Update,
+)
 
 from odoo import api, fields, models
+from odoo.tools import html2plaintext
 
 from odoo.addons.sync.models.sync_project import AttrDict
 
 _logger = logging.getLogger(__name__)
+
+MAX_SIZE_IMAGE = 10485760
+MAX_SIZE_DOCUMENT = 52428800
+MAX_SIZE_TO_DOWNLOAD = 20971520
 
 
 class SyncProjectTelegram(models.Model):
@@ -32,25 +42,9 @@ class SyncProjectTelegram(models.Model):
         * telegram.setWebhook
         * telegram.parse_data
         """
-        from lxml.html.clean import Cleaner
-
-        from odoo.tools import html2plaintext
-
-        try:
-            # https://github.com/python-telegram-bot/python-telegram-bot
-            from telegram import (  # pylint: disable=missing-manifest-dependency
-                Bot,
-                Update,
-            )
-        except (ImportError, IOError) as err:
-            _logger.debug(err)
 
         log_transmission = eval_context["log_transmission"]
         log = eval_context["log"]
-
-        MAX_SIZE_IMAGE = 10485760
-        MAX_SIZE_DOCUMENT = 52428800
-        MAX_SIZE_TO_DOWNLOAD = 20971520
 
         if secrets.TELEGRAM_BOT_TOKEN:
             bot = Bot(token=secrets.TELEGRAM_BOT_TOKEN)
