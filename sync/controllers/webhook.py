@@ -1,12 +1,13 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
-# License MIT (https://opensource.org/licenses/MIT).
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl).
 
 from odoo import http
 
-from odoo.addons.website.controllers.main import Website
+from ..lib.controllers.main import Website
 
 
-class Webhook(http.Controller):
+class Webhook(Website):
     @http.route(
         [
             "/website/action-json/<path_or_xml_id_or_id>",
@@ -18,7 +19,7 @@ class Webhook(http.Controller):
         csrf=False,
     )
     def actions_server_json(self, path_or_xml_id_or_id, **post):
-        res = Website().actions_server(path_or_xml_id_or_id, **post)
+        res = self.actions_server(path_or_xml_id_or_id, **post)
         return res.data
 
     @http.route(
@@ -32,4 +33,4 @@ class Webhook(http.Controller):
         csrf=False,
     )
     def actions_server_http(self, path_or_xml_id_or_id, **post):
-        return Website().actions_server(path_or_xml_id_or_id, **post)
+        return self.actions_server(path_or_xml_id_or_id, **post)
