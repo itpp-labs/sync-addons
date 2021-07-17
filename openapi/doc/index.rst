@@ -8,6 +8,10 @@
 Installation
 ============
 
+* Install python packages:
+
+  ``python3 -m pip install bravado_core swagger_spec_validator``
+
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 * Add ``openapi`` to `--load parameter <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
 
