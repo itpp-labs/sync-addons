@@ -1,3 +1,9 @@
+`3.0.2`
+-------
+
+- **Improvement:** remove unnecessary "archive" buttons, add "archived" ribbons and "active" fields
+- **Fix:** it was impossible to run manual trigger on task form
+
 `3.0.1`
 -------
 
