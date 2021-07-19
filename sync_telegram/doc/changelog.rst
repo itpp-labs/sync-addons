@@ -1,3 +1,8 @@
+`3.2.2`
+-------
+
+**Fix:** An error rises in odoo.sh when the project is active by default
+
 `3.2.1`
 -------
 

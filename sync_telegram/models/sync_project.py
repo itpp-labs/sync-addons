@@ -24,6 +24,7 @@ class SyncProjectTelegram(models.Model):
         ],
         ondelete={"telegram": "cascade"},
     )
+    active = fields.Boolean(default=False)
 
     @api.model
     def _eval_context_telegram(self, secrets, eval_context):
