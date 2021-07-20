@@ -1,3 +1,5 @@
+- **Improvement:** initial values do not overwrite parameter values after a module update.
+
 `4.1.1`
 -------
 
