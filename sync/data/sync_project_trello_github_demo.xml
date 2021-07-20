@@ -5,7 +5,6 @@
 <odoo>
     <record id="trello-github_project" model="sync.project">
         <field name="name">Demo Trello-Github Integration</field>
-        <field name="active" eval="False" />
         <field name="eval_context">trello_github</field>
         <field
             name="common_code"

@@ -4,7 +4,6 @@
 <odoo>
     <record id="facebook-intergration_sync-project" model="sync.project">
         <field name="name">Facebook Intergration</field>
-        <field name="active" eval="False" />
         <field name="eval_context">facebook</field>
         <field
             name="common_code"
