@@ -1,3 +1,8 @@
+`4.0.1`
+-------
+
+- **Fix:** set project as archived by default to avoid errors on installation and updating sync modules
+
 `4.0.0`
 -------
 
