@@ -44,7 +44,7 @@ class SyncProject(models.Model):
     name = fields.Char(
         "Name", help="e.g. Legacy Migration or eCommerce Synchronization", required=True
     )
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=False)
     eval_context = fields.Selection([], string="Evaluation context")
     eval_context_description = fields.Text(compute="_compute_eval_context_description")
 
