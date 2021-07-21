@@ -9,7 +9,8 @@ from pytz import timezone
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict, html2plaintext
+from odoo.tools.misc import get_lang
 from odoo.tools.safe_eval import (
     datetime,
     dateutil,
@@ -22,6 +23,7 @@ from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
 
+from ..tools import url2base64
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
 
 _logger = logging.getLogger(__name__)
@@ -242,6 +244,9 @@ class SyncProject(models.Model):
                 "RetryableJobError": RetryableJobError,
                 "getattr": safe_getattr,
                 "setattr": safe_setattr,
+                "get_lang": get_lang,
+                "url2base64": url2base64,
+                "html2plaintext": html2plaintext,
                 "time": time,
                 "datetime": datetime,
                 "dateutil": dateutil,
