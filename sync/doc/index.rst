@@ -154,11 +154,7 @@ Base
   * ``LOG_ERROR``
   *
 
-* ``type2str``: get type of the given object
-
 * ``log_transmission(recipient_str, data_str)``: report on data transfer to external recipients
-
-* ``DEFAULT_SERVER_DATETIME_FORMAT``
 
 Links
 ~~~~~
@@ -347,6 +343,15 @@ Libs
 * ``timezone``
 * ``b64encode``
 * ``b64decode``
+
+Tools
+~~~~~
+
+* ``url2base64``
+* ``get_lang(env, lang_code=False)``: returns `res.lang` record
+* ``html2plaintext``
+* ``type2str``: get type of the given object
+* ``DEFAULT_SERVER_DATETIME_FORMAT``
 
 Exceptions
 ~~~~~~~~~~
