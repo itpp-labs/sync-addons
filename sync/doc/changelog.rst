@@ -1,3 +1,10 @@
+`4.1.0`
+-------
+
+- **Improvement:** add more eval context functions (`get_lang`, `url2base64`, `html2plaintext`)
+- **Improvement:** add development tools (`LogExternalQuery`), add new type for `ir.logging`
+- **Improvement:** move code checker above in task form to make it more visible
+
 `4.0.1`
 -------
 
