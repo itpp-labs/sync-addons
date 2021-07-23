@@ -162,7 +162,7 @@
                                     <field name="trigger_name" />
                                     <field name="active" invisible="1" />
                                     <button
-                                        name="run"
+                                        name="start_button"
                                         string="Run Now"
                                         class="oe_highlight"
                                         type="object"
