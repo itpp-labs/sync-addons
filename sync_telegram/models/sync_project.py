@@ -14,7 +14,6 @@ from telegram import (  # pylint: disable=missing-manifest-dependency; disabled 
 )
 
 from odoo import api, fields, models
-from odoo.tools import html2plaintext
 
 from odoo.addons.sync.models.sync_project import AttrDict
 
@@ -153,6 +152,5 @@ class SyncProjectTelegram(models.Model):
 
         return {
             "telegram": telegram,
-            "html2plaintext": html2plaintext,
             "Cleaner": Cleaner,
         }
