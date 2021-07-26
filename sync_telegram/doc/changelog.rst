@@ -1,7 +1,13 @@
+`3.2.2`
+-------
+
+- **Improvement:** code clean up
+
 `3.2.1`
 -------
 
-**Improvement:** In cases when there are many subscribed partners channel name was too long
+- **Improvement:** In cases when there are many subscribed partners channel name was too long
+
 
 `3.2.0`
 -------
