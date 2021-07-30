@@ -30,14 +30,14 @@ class SyncProjectDemo(models.Model):
     _inherit = "sync.project"
     eval_context = fields.Selection(
         selection_add=[
-            ("odoo2odoo", "Odoo2odoo"),
+            ("odoo2odoo_demo", "Odoo2odoo (Demo)"),
             ("telegram_demo", "Telegram (Demo)"),
             ("trello_github", "Trello & Github"),
         ]
     )
 
     @api.model
-    def _eval_context_odoo2odoo(self, secrets, eval_context):
+    def _eval_context_odoo2odoo_demo(self, secrets, eval_context):
         """
         Additional functions to access external Odoo:
 
