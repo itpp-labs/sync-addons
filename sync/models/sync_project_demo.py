@@ -30,7 +30,7 @@ class SyncProjectDemo(models.Model):
     _inherit = "sync.project.context"
 
     @api.model
-    def _eval_context_odoo2odoo(self, secrets, eval_context):
+    def _eval_context_odoo2odoo_demo(self, secrets, eval_context):
         """
         Additional functions to access external Odoo:
 
