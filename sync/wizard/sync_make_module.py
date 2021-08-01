@@ -92,6 +92,14 @@ class SyncMakeModule(models.TransientModel):
                 (param, ("key", "initial_value", "description", "url", "project_id"))
             )
 
+        for text_param in project.text_param_ids:
+            records.append(
+                (
+                    text_param,
+                    ("key", "initial_value", "description", "url", "project_id"),
+                )
+            )
+
         for task in project.task_ids:
             records.append((task, ("name", "active", "project_id", "code")))
             for trigger in task.button_ids:
