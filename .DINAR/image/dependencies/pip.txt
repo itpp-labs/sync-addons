@@ -5,3 +5,4 @@ python-telegram-bot
 PyGithub
 py-trello
 facebook_business
+viberbot
