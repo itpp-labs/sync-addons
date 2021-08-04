@@ -15,13 +15,12 @@ class Website(http.Controller):
         action = trigger.sudo().search(
             [
                 ("website_path", "=", path_or_xml_id_or_id),
-                ("website_published", "=", True),
             ],
             limit=1,
         )
         # run it, return only if we got a Response object
         if action:
-            if action.state == "code" and action.website_published:
+            if action.state == "code":
                 action_res = action.action_server_id.run()
                 if isinstance(action_res, werkzeug.wrappers.Response):
                     return action_res

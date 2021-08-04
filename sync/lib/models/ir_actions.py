@@ -20,15 +20,6 @@ class ServerAction(models.Model):
         compute="_compute_website_url",
         help="The full URL to access the server action through the website.",
     )
-    website_published = fields.Boolean(
-        "Available on the Website",
-        copy=False,
-        help="A code server action can be executed from the website, using a dedicated "
-        "controller. The address is <base>/website/action/<website_path>. "
-        "Set this field as True to allow users to run this action. If it "
-        "is set to False the action cannot be run through the website.",
-    )
-
     webhook_type = fields.Selection(
         [("http", "application/x-www-form-urlencoded"), ("json", "application/json")],
         string="Webhook Type",
@@ -52,13 +43,12 @@ class ServerAction(models.Model):
     @api.depends(
         "webhook_type",
         "action_server_id.state",
-        "website_published",
         "website_path",
     )
     def _compute_website_url(self):
         for trigger in self:
             action = trigger.action_server_id
-            if action.state == "code" and trigger.website_published:
+            if action.state == "code":
                 trigger.website_url = trigger._get_website_url(
                     trigger.website_path, trigger.webhook_type
                 )
