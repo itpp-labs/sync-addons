@@ -5,10 +5,12 @@
 
 :heavy_check_mark: [base_api](https://apps.odoo.com/apps/modules/14.0/base_api/)
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/14.0/base_automation_webhook/)
+<br/>:heavy_check_mark: [multi_livechat](https://apps.odoo.com/apps/modules/14.0/multi_livechat/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/14.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/14.0/sync/)
 <br/>:heavy_check_mark: [sync_facebook](https://apps.odoo.com/apps/modules/14.0/sync_facebook/)
 <br/>:heavy_check_mark: [sync_telegram](https://apps.odoo.com/apps/modules/14.0/sync_telegram/)
+<br/>:heavy_check_mark: [sync_viber](https://apps.odoo.com/apps/modules/14.0/sync_viber/)
 
 :star: Star this repo if you **like** it!
 
