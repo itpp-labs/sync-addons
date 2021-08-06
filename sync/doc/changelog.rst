@@ -1,3 +1,11 @@
+`4.1.0`
+-------
+
+- **Improvement:** add more eval context functions (`get_lang`, `url2base64`, `html2plaintext`)
+- **Improvement:** add development tools (`LogExternalQuery`), add new type for `ir.logging`
+- **Improvement:** move code checker above in task form to make it more visible
+- **Fix:** delete `website_published` for sake of simplicity and to avoid webhooks problem on upgrading the module to v4.0.0+
+
 `4.0.1`
 -------
 

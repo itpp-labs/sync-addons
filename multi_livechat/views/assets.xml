@@ -5,17 +5,17 @@
     <data>
         <template
             id="assets_backend"
-            name="sync_telegram assets backend"
+            name="multi_livechat assets backend"
             inherit_id="web.assets_backend"
         >
             <xpath expr="." position="inside">
                 <script
                     type="text/javascript"
-                    src="/sync_telegram/static/src/mail/components/discuss_sidebar/discuss_sidebar.js"
+                    src="/multi_livechat/static/src/components/discuss_sidebar/discuss_sidebar.js"
                 />
                 <script
                     type="text/javascript"
-                    src="/sync_telegram/static/src/mail/models/messaging_initializer/messaging_initializer.js"
+                    src="/multi_livechat/static/src/models/messaging_initializer/messaging_initializer.js"
                 />
             </xpath>
         </template>
