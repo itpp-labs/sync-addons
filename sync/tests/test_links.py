@@ -29,7 +29,10 @@ class TestLink(TransactionCase):
         REL = "sync_test_links_partner"
         REL2 = "sync_test_links_partner2"
 
-        self.assertFalse(self.env["res.partner"].search([]).search_links(REL))
+        # empty link recordset
+        no_links = self.env["res.partner"].search([]).search_links(REL)
+        self.assertFalse(no_links)
+        self.assertEqual(self.env["res.partner"], no_links.odoo)
 
         # Set and get links
         r = self.create_record()
@@ -64,6 +67,14 @@ class TestLink(TransactionCase):
         self.assertTrue(all_links)
         self.assertEqual(1, len(all_links))
         self.assertEqual(r, all_links[0].odoo)
+
+        # multiple links
+        r = self.create_record()
+        ref = generate_ref()
+        r.set_link(REL, ref)
+        all_links = self.env["res.partner"].search([]).search_links(REL)
+        self.assertEqual(2, len(all_links))
+        self.assertEqual(2, len(all_links.odoo))
 
         # Multiple refs for the same relation and record
         r = self.create_record()
