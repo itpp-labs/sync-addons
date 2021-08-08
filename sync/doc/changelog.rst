@@ -1,3 +1,8 @@
+`4.1.1`
+-------
+
+- **Fix:** For empty `links`, the property `links.odoo` must return empty recordset, not `None`
+
 `4.1.0`
 -------
 

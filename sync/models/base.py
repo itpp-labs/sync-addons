@@ -13,4 +13,8 @@ class Base(models.AbstractModel):
         )
 
     def search_links(self, relation_name, refs=None):
-        return self.env["sync.link"]._search_links_odoo(self, relation_name, refs)
+        return (
+            self.env["sync.link"]
+            .with_context(sync_link_odoo_model=self._name)
+            ._search_links_odoo(self, relation_name, refs)
+        )
