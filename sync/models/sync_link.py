@@ -172,14 +172,17 @@ class SyncLink(models.Model):
     # Odoo links
     @property
     def odoo(self):
-        res = None
+        res = set()
+        model = self.env.context.get("sync_link_odoo_model")
         for r in self:
-            record = self.env[r.model].browse(int(getattr(r, ODOO_REF)))
-            if res:
-                res |= record
-            else:
-                res = record
-        return res
+            if model is None:
+                model = r.model
+            elif model != r.model:
+                raise ValidationError(
+                    _("Mixing apples and oranges: %s and %s") % (model, r.model)
+                )
+            res.add(int(r[ODOO_REF]))
+        return self.env[model].browse(res) if model else None
 
     @property
     def external(self):
