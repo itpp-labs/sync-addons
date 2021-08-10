@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Eugene Molotov <https://github.com/em230418>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="shopify_sync-project" model="sync.project">
+        <field name="name">Shopify</field>
+        <field name="active" eval="False" />
+        <field name="eval_context">shopify</field>
+        <field
+            name="common_code"
+        ><![CDATA[PRODUCT_REL="shopify_product"
+PRODUCT_IMAGE_REL="shopify_product_image"
+def product_odoo2x(odoo):
+    return {
+      "title": odoo.name,
+    }
+
+def x_product_get_all():
+    data = shopify_api_request("get", "products")
+    return data["products"]
+
+def x_product_create(odoo):
+    data = product_odoo2x(odoo)
+    res = shopify_api_request("post", "products", {"product": data})
+    return res['product']['id']
+def x_product_update(ref, odoo):
+    data = product_odoo2x(odoo)
+    res = shopify_api_request("put", "products/%s" % ref, {"product": data})
+    return ref
+
+def odoo_product_get_all(to_create=False, to_update=False):
+    all_records = env["product.template"].search([])
+    if to_create and to_update:
+        return all_records
+    linked = all_records.search_links(PRODUCT_REL).mapped(lambda link: link.odoo) or env["product.template"]
+    if to_create:
+        return all_records - linked
+    if to_update:
+        return linked
+
+def x_image2ref(x_image):
+    return str(x_image["id"]) + "_" + x_image["updated_at"]
+
+def link_product_image(product, x_image):
+    if not x_image.get("id"):
+        log("NO IMAGE TO LINK: %s" % product)
+        return
+    full_id = x_image2ref(x_image)
+    image = record2image(product)
+
+    previous_image_links = image.search_links(PRODUCT_IMAGE_REL)
+    if len(previous_image_links) == 1 and image == previous_image_links.odoo:
+        log("PRODUCT IMAGE IS THE SAME: %s" % product)
+    else:
+        previous_image_links.unlink()
+        image.set_link(PRODUCT_IMAGE_REL, full_id)
+        log("PRODUCT IMAGE CREATED: %s" % product)
+
+def sync_products_shopify2odoo(x_products, create=False, update=False):
+    for x_product in x_products:
+        log("PRODUCT: %s" % x_product)
+        x_product_id = x_product["id"]
+        x_image = x_product["image"] or {}
+
+        link = get_link(PRODUCT_REL, x_product_id)
+        if link and link.odoo and not link.odoo.exists(): # TODO: take out after https://github.com/itpp-labs/sync-addons/pull/286 merged
+           log("REMOVING LINK FROM UNEXISTING PRODUCT: %s" % link.odoo)
+           link.unlink()
+           link = None
+
+        if create:
+           if link:
+              log("PRODUCT ALREADY EXISTS: %s" % x_product)
+           else:
+              product = env["product.template"].create({
+                  "name": x_product["title"],
+                  "image_1920": url2base64(x_image.get("src"))
+              })
+              product.set_link(PRODUCT_REL, x_product_id)
+              log("PRODUCT CREATED: %s" % product)
+
+              link_product_image(product, x_image)
+
+        if update:
+             if not link:
+                 log("PRODUCT DOES NOT EXIST: %s" % x_product)
+             else:
+                 product = link.odoo
+                 vals = {
+                     "name": x_product["title"],
+                 }
+
+                 if not x_image.get("id"):
+                     # image is NOT set in shopify
+
+                     vals["image_1920"] = False
+                     # TODO: remove link on image, if existed
+                 else:
+                     # image is set in shopify
+
+                     image_link = get_link(PRODUCT_IMAGE_REL, x_image2ref(x_image))
+
+                     if image_link:
+                          # stored image link matches x_image
+                          pass
+                     else:
+                          vals["image_1920"] = url2base64(x_image["src"])
+                          # TODO: remove old link
+
+                 product.write(vals)
+                 link_product_image(product, x_image)
+
+def sync_products_odoo2shopify(records, create=False, update=False):
+    for record in records:
+        log("RECORD: %s" % record)
+        x_product_to_post = {
+            "title": record.name,
+        }
+
+        if create:
+            if record.image_1920:
+                x_product_to_post["images"] = [{
+                    "attachment": record.image_1920,
+                }]
+
+            data = shopify_api_request("post", "products", {"product": x_product_to_post})
+            x_product = data["product"]
+            x_image = x_product["image"] or {}
+            record.set_link(PRODUCT_REL, x_product["id"])
+            link_product_image(record, x_image)
+
+        if update:
+            product_link = record.search_links(PRODUCT_REL)[0]
+            if not record.image_1920:
+                x_product_to_post["images"] = []
+
+            data = shopify_api_request("put", "products/%s" % product_link.external, {"product": x_product_to_post})
+            x_product = data["product"]
+
+            x_image = x_product["image"] or {}
+            if record.image_1920:
+
+                if x_image.get("id"):
+                    data = shopify_api_request("put", "products/%s/images/%s" % (product_link.external, x_image["id"]), {"image": {
+                        "attachment": record.image_1920.decode('ascii'),
+                    }})
+                else:
+                    data = shopify_api_request("post", "products/%s/images" % product_link.external, {"image": {
+                        "attachment": record.image_1920.decode('ascii'),
+                    }})
+                x_image = data["image"]
+                link_product_image(record, x_image)
+
+]]></field>
+    </record>
+    <record id="api-key--project-secret-parameter" model="sync.project.secret">
+        <field name="key">API_KEY</field>
+        <field name="description">Credentials wth Read/Write access</field>
+        <field name="url">https://shopify.dev/apps/auth/basic-http</field>
+        <field name="project_id" ref="shopify_sync-project" />
+    </record>
+    <record id="api-secret--project-secret-parameter" model="sync.project.secret">
+        <field name="key">API_SECRET</field>
+        <field name="description">Credentials wth Read/Write access</field>
+        <field name="url">https://shopify.dev/apps/auth/basic-http</field>
+        <field name="project_id" ref="shopify_sync-project" />
+    </record>
+    <record id="shop-domain--project-parameter" model="sync.project.param">
+        <field name="key">SHOP_DOMAIN</field>
+        <field name="value">example.myshopify.com</field>
+        <field name="description">Shop domain</field>
+        <field name="url" />
+        <field name="project_id" ref="shopify_sync-project" />
+    </record>
+    <record id="api-version--project-parameter" model="sync.project.param">
+        <field name="key">API_VERSION</field>
+        <field name="value">2021-07</field>
+        <field name="url">https://shopify.dev/api/usage/versioning</field>
+        <field name="project_id" ref="shopify_sync-project" />
+    </record>
+    <record id="sync-shopify-products-to-odoo_sync-task" model="sync.task">
+        <field name="name">Sync Shopify products to Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="shopify_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_x2odoo(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_PRODUCTS_SHOPIFY2ODOO":
+        _sync_x2odoo(update=True)
+    elif trigger == "CREATE_PRODUCTS_SHOPIFY2ODOO":
+        _sync_x2odoo(create=True)
+    elif trigger == "SETUP_SHOPIFY_WEBHOOKS":
+        setup_shopify_webhooks()
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+
+def _sync_x2odoo(create=False, update=False):
+    return sync_products_shopify2odoo(x_product_get_all(), create=create, update=update)
+
+def setup_shopify_webhooks():
+    for topic, webhook in (
+      ("products/create", webhooks.SHOPIFY_PRODUCT_CREATED),
+      ("products/update", webhooks.SHOPIFY_PRODUCT_UPDATED),
+      # TODO: delete product webhook
+    ):
+        data = {
+          "topic": topic,
+          "format": "json",
+          "address": webhook
+        }
+
+        shopify_api_request("post", "webhooks", {"webhook": data})
+
+def handle_webhook(httprequest):
+    data = json.loads(httprequest.data.decode())
+    # TODO: verify webhook (https://shopify.dev/apps/webhooks#6-verify-a-webhook)
+    # TODO: delete product webhook
+    log("Shopify payload:\n{}".format(json.dumps(data, indent=4, sort_keys=True)))
+    if trigger == "SHOPIFY_PRODUCT_CREATED":
+        sync_shopify2odoo([data], create=True)
+    elif trigger == "SHOPIFY_PRODUCT_UPDATED":
+        sync_shopify2odoo([data], update=True)
+
+]]></field>
+    </record>
+    <record
+        id="CREATE_PRODUCTS_SHOPIFY2ODOO_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">CREATE_PRODUCTS_SHOPIFY2ODOO</field>
+        <field name="name">
+            Fetch all records from shopify and create new ones in Odoo
+        </field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record
+        id="UPDATE_PRODUCTS_SHOPIFY2ODOO_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">UPDATE_PRODUCTS_SHOPIFY2ODOO</field>
+        <field name="name">
+            Fetch all records from shopify  records and update corresponding records in
+            Odoo
+        </field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record id="setup-shopify-webhooks--manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_SHOPIFY_WEBHOOKS</field>
+        <field name="name">
+            Configure Shopify to notify Odoo on updates in Shopify
+        </field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record id="CRON_PRODUCTS_SHOPIFY2ODOO_cron-trigger" model="sync.trigger.cron">
+        <field name="trigger_name">CRON_PRODUCTS_SHOPIFY2ODOO</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="shopify-products-updates--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">SHOPIFY_PRODUCT_CREATED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record id="shopify-product-updated--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">SHOPIFY_PRODUCT_UPDATED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record id="shopify-product-deleted--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">SHOPIFY_PRODUCT_DELETED</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
+    </record>
+    <record id="sync-odoo-products-to-shopify_sync-task" model="sync.task">
+        <field name="name">Sync Odoo products to Shopify</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="shopify_sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_cron():
+    _sync_odoo2x(create=True, update=True)
+
+def handle_button():
+    if trigger == "UPDATE_PRODUCTS_ODOO2SHOPIFY":
+        _sync_odoo2x(update=True)
+    elif trigger == "CREATE_PRODUCTS_ODOO2SHOPIFY":
+        _sync_odoo2x(create=True)
+    else:
+        raise Exception("Unknown button: %s" % trigger)
+
+def handle_db(records):
+    if trigger == "ODOO_PRODUCTS_CREATE":
+        return sync_products_odoo2shopify(records, create=True)
+    elif trigger == "ODOO_PRODUCTS_UPDATE":
+        return sync_products_odoo2shopify(records, update=True)
+
+
+def _sync_odoo2x(create=False, update=False):
+    return sync_products_odoo2shopify(odoo_product_get_all(to_create=create, to_update=update), create=create, update=update)
+
+
+        ]]></field>
+    </record>
+    <record
+        id="CREATE_PRODUCTS_ODOO2SHOPIFY_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">CREATE_PRODUCTS_ODOO2SHOPIFY</field>
+        <field name="name">Push new (unlinked) odoo records to shopify</field>
+        <field name="sync_task_id" ref="sync-odoo-products-to-shopify_sync-task" />
+    </record>
+    <record
+        id="UPDATE_PRODUCTS_ODOO2SHOPIFY_manual-trigger"
+        model="sync.trigger.button"
+    >
+        <field name="trigger_name">UPDATE_PRODUCTS_ODOO2SHOPIFY</field>
+        <field name="name">Push updates of linked records to shopify</field>
+        <field name="sync_task_id" ref="sync-odoo-products-to-shopify_sync-task" />
+    </record>
+    <record id="CRON_PRODUCTS_ODOO2SHOPIFY_cron-trigger" model="sync.trigger.cron">
+        <field name="trigger_name">CRON_PRODUCTS_ODOO2SHOPIFY</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-shopify_sync-task" />
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+    </record>
+    <record id="ODOO_PRODUCTS_UPDATE_db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ODOO_PRODUCTS_UPDATE</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-shopify_sync-task" />
+        <field name="model_id" ref="account.model_product_product" />
+        <field name="trigger">on_write</field>
+    </record>
+    <record id="odoo-products-create--db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ODOO_PRODUCTS_CREATE</field>
+        <field name="active" eval="False" />
+        <field name="sync_task_id" ref="sync-odoo-products-to-shopify_sync-task" />
+        <field name="model_id" ref="account.model_product_product" />
+        <field name="trigger">on_create</field>
+    </record>
+</odoo>
