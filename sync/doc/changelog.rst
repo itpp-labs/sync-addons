@@ -1,3 +1,8 @@
+`4.2.0`
+-------
+
+- **Improvement:** add eval context function `record2image`
+
 `4.1.2`
 -------
 
