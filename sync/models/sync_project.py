@@ -217,6 +217,24 @@ class SyncProject(models.Model):
         def type2str(obj):
             return "%s" % type(obj)
 
+        def record2image(record, fname=None):
+            # TODO: implement test, that is useful for backporting to 12.0
+            if not fname:
+                fname = "image_1920"
+
+            return (
+                record.sudo()
+                .env["ir.attachment"]
+                .search(
+                    [
+                        ("res_model", "=", record._name),
+                        ("res_field", "=", fname),
+                        ("res_id", "=", record.id),
+                    ],
+                    limit=1,
+                )
+            )
+
         context = dict(self.env.context, log_function=log)
         env = self.env(context=context)
         link_functions = env["sync.link"]._get_eval_context()
@@ -255,6 +273,7 @@ class SyncProject(models.Model):
                 "b64encode": base64.b64encode,
                 "b64decode": base64.b64decode,
                 "type2str": type2str,
+                "record2image": record2image,
                 "DEFAULT_SERVER_DATETIME_FORMAT": DEFAULT_SERVER_DATETIME_FORMAT,
             }
         )
