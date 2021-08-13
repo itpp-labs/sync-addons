@@ -684,19 +684,15 @@ Configuration
   * Click ``[Run Now]`` buttons in trigger *SETUP_GITHUB*
   * Click ``[Run Now]`` buttons in triggers *SETUP_TRELLO*. Note, that `it doesn't work <https://github.com/odoo/odoo/issues/57133>`_ without one of the following workarounds:
 
+    * delete `line <https://github.com/odoo/odoo/blob/db25a9d02c2fd836e05632ef1e27b73cfdd863e3/odoo/http.py#L326>`__ that raise exception in case of type mismatching (search for ``Function declared as capable of handling request of type`` in standard Odoo code). In most cases, this workaround doesn't need to be reverted
     * open file ``sync/controllers/webhook.py`` and temporarily change ``type="json"`` to ``type="http"``. Revert the changes after successfully setting up trello
-    * add header "Content-Type: application/json" via your web server. Example for nginx:
+    * Add a temporal handler in your proxy/web server. Example for nginx:
 
       .. code-block:: nginx
 
         location /website/action-json/ {
             return 200 "{}";
         }
-
-
-  * After a successful *SETUP_TRELLO* trigger run, return everything to its original position, otherwise the project will not work correctly
-
-
 
 Usage
 -----
