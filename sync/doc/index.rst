@@ -21,6 +21,20 @@ Installation
 
 * If your Sync projects use webhooks (most likely), be sure that url opens correct database without asking to select one
 
+Odoo.sh
+-------
+
+`queue_job` may not work properly in odoo.sh with workers more than 1 due to `restrictions <https://github.com/OCA/queue/pull/256#issuecomment-895111832>`__  from Odoo.sh
+
+For the `queue_job` work correctly in odoo.sh additional configuration is needed.
+
+Add following lines to `~/.config/odoo.conf` and restart odoo via `odoo-restart` command in Webshell::
+
+    [queue_job]
+    scheme=https
+    port=443
+    host=ODOO_SH_ADDRESS.com
+
 
 User Access Levels
 ==================
