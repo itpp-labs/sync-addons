@@ -1,5 +1,6 @@
 # Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+# Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
 import base64
 
@@ -88,7 +89,15 @@ class SyncMakeModule(models.TransientModel):
 
         for param in project.param_ids:
             records.append(
-                (param, ("key", "value", "description", "url", "project_id"))
+                (param, ("key", "initial_value", "description", "url", "project_id"))
+            )
+
+        for text_param in project.text_param_ids:
+            records.append(
+                (
+                    text_param,
+                    ("key", "initial_value", "description", "url", "project_id"),
+                )
             )
 
         for task in project.task_ids:

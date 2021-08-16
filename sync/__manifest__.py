@@ -1,5 +1,6 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
+# Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
@@ -7,7 +8,7 @@
     "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY. ETL/ESB tool similar to OCA/connector, but more flexible""",
     "category": "Extra Tools",
     "images": ["images/sync-studio.jpg"],
-    "version": "14.0.4.1.1",
+    "version": "14.0.4.1.2",
     "application": True,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",

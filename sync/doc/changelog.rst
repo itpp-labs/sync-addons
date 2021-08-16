@@ -1,3 +1,9 @@
+`4.1.2`
+-------
+
+- **Improvement:** initial values do not overwrite parameter values after a module update.
+- **Fix:** add exporting of text parameter values
+
 `4.1.1`
 -------
 
