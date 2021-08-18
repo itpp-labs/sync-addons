@@ -32,11 +32,6 @@ Add following code to your module:
         )
 
 
-Roadmap
-=======
-
-* Live Chat channels are always visible, which may become a problem on growing number of channels. Workaround for now is acrhiving the channels manually
-
 Questions?
 ==========
 

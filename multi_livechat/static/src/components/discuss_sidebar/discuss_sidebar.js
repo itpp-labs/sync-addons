@@ -66,8 +66,6 @@ odoo.define(
                             chats: [],
                         };
                     });
-                    console.log("groups", groups);
-                    console.log("allChats", allChats);
 
                     _.each(allChats, (chat) => {
                         if (groups[chat.channel_type]) {

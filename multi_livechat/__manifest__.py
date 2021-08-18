@@ -14,7 +14,7 @@
     "license": "Other OSI approved licence",  # MIT
     "depends": ["mail"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["views/assets.xml"],
+    "data": ["views/assets.xml", "views/mail_channel_views.xml"],
     "demo": [],
     "qweb": [
         "static/src/components/discuss_sidebar/discuss_sidebar.xml",
