@@ -9,6 +9,7 @@
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/14.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/14.0/sync/)
 <br/>:heavy_check_mark: [sync_facebook](https://apps.odoo.com/apps/modules/14.0/sync_facebook/)
+<br/>:heavy_check_mark: [sync_shopify](https://apps.odoo.com/apps/modules/14.0/sync_shopify/)
 <br/>:heavy_check_mark: [sync_telegram](https://apps.odoo.com/apps/modules/14.0/sync_telegram/)
 <br/>:heavy_check_mark: [sync_viber](https://apps.odoo.com/apps/modules/14.0/sync_viber/)
 
