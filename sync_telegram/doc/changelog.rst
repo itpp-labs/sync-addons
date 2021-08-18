@@ -1,3 +1,8 @@
+`4.1.0`
+-------
+
+- **Improvement:** set initial values on non-demo installation
+
 `4.0.0`
 -------
 

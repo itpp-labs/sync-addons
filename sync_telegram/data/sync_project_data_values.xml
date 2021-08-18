@@ -4,18 +4,18 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="telegram_project_param_model" model="sync.project.param">
-        <field name="value">crm.lead</field>
+        <field name="initial_value">crm.lead</field>
     </record>
     <record id="telegram_project_param_operator_id" model="sync.project.param">
-        <field name="value">2</field>
+        <field name="initial_value">2</field>
     </record>
     <record id="telegram_project_param_welcome" model="sync.project.text">
-        <field name="value">Hello! How can I help you?</field>
+        <field name="initial_value">Hello! How can I help you?</field>
     </record>
     <record id="telegram_project_param_prefix" model="sync.project.param">
-        <field name="value">%s [Telegram]</field>
+        <field name="initial_value">%s [Telegram]</field>
     </record>
     <record id="record-name-prefix_project-parameter" model="sync.project.param">
-        <field name="value">%s [Telegram]</field>
+        <field name="initial_value">%s [Telegram]</field>
     </record>
 </odoo>
