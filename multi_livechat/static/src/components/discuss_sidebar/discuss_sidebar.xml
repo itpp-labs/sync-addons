@@ -7,7 +7,8 @@
                     <div class="o_DiscussSidebar_group o_DiscussSidebar_groupLivechat">
                         <div class="o_DiscussSidebar_groupHeader">
                             <div
-                                class="o_DiscussSidebar_groupHeaderItem o_DiscussSidebar_groupTitle"
+                                class="o_DiscussSidebar_groupHeaderItem o_DiscussSidebar_groupTitle o-clickable"
+                                t-on-click.stop="_onClickChannelTitle(livechat_group.channel_type)"
                             >
                                 <t t-esc="livechat_group.name" />
                             </div>
