@@ -6,7 +6,7 @@
     "summary": """Be in touch with your partners via any supported channels (Telegram, WhatsApp, Instragram, etc.)""",
     "category": "Marketing",
     "images": ["images/multi_livechat.jpg"],
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.1.0",
     "application": False,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
