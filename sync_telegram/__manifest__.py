@@ -13,7 +13,7 @@
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
-    "depends": ["sync"],
+    "depends": ["sync", "multi_livechat"],
     "external_dependencies": {"python": ["python-telegram-bot"], "bin": []},
     "data": [
         "data/sync_project_data.xml",
