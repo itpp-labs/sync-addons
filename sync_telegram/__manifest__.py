@@ -7,14 +7,14 @@
     "summary": """Telegram integration powered by Sync Studio""",
     "category": "Discuss",
     "images": ["images/sync_telegram.jpg"],
-    "version": "14.0.4.1.1",
+    "version": "14.0.5.0.0",
     "application": False,
     "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",
     "website": "https://github.com/itpp-labs/sync-addons",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "multi_livechat"],
-    "external_dependencies": {"python": ["python-telegram-bot"], "bin": []},
+    "external_dependencies": {"python": ["pyTelegramBotAPI"], "bin": []},
     "data": [
         "data/sync_project_data.xml",
         "data/mail_sync_project_data.xml",

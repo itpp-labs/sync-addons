@@ -3,19 +3,17 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
-import json
 import logging
 
 import requests
+import telebot  # pylint: disable=missing-manifest-dependency
 from lxml.html.clean import Cleaner
-from telegram import (  # pylint: disable=missing-manifest-dependency; disabled because pre-commit cannot find external dependency in manifest. https://github.com/itpp-labs/DINAR/issues/91
-    Bot,
-    Update,
-)
 
 from odoo import api, fields, models
 
+from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
+from odoo.addons.sync.tools import LogExternalQuery, url2base64
 
 _logger = logging.getLogger(__name__)
 
@@ -42,11 +40,8 @@ class SyncProjectTelegram(models.Model):
         * telegram.parse_data
         """
 
-        log_transmission = eval_context["log_transmission"]
-        log = eval_context["log"]
-
         if secrets.TELEGRAM_BOT_TOKEN:
-            bot = Bot(token=secrets.TELEGRAM_BOT_TOKEN)
+            bot = telebot.TeleBot(token=secrets.TELEGRAM_BOT_TOKEN)
         else:
             raise Exception("Telegram bot token is not set")
 
@@ -72,55 +67,63 @@ class SyncProjectTelegram(models.Model):
                 "multi_livechat_telegram", channel_name, partners
             )
             return self.env["mail.channel"].sudo().create(vals)
+        def url2bin(url):
+            if not url:
+                return None
+            r = requests.get(url, timeout=42)
+            return r.content
 
+        @LogExternalQuery("Telegram->send message", eval_context)
         def sendMessage(chat_id, html, *args, **kwargs):
-            log_transmission("%s@telegram" % chat_id, "Message: %s" % html)
-            bot.sendMessage(chat_id, _html_sanitize_telegram(html), *args, **kwargs)
+            bot.send_message(chat_id, _html_sanitize_telegram(html), *args, **kwargs)
 
+        @LogExternalQuery("Telegram->send photo", eval_context)
         def sendPhoto(chat_id, datas):
-            log_transmission("%s@telegram" % chat_id, "Photo sent")
-            bot.sendPhoto(chat_id, photo=base64.b64decode(datas))
+            bot.send_photo(chat_id, photo=base64.b64decode(datas))
 
-        def sendDocument(chat_id, name, datas):
-            log_transmission("%s@telegram" % chat_id, "Document sent")
-            bot.sendDocument(chat_id, filename=name, document=base64.b64decode(datas))
+        @LogExternalQuery("Telegram->send document", eval_context)
+        def sendDocument(chat_id, datas, name):
+            bot.send_document(chat_id, base64.b64decode(datas), visible_file_name=name)
 
+        def getFullPath(file_path):
+            return "https://api.telegram.org/file/bot{}/{}".format(
+                secrets.TELEGRAM_BOT_TOKEN, file_path
+            )
+
+        @LogExternalQuery("Telegram->get document file", eval_context)
         def getDocumentFile(chat_id, file_data):
             file_name = file_data.file_name
-            content = bot.getFile(file_data).download_as_bytearray()
-            log(
-                "Attachment from telegram received: %s" % file_name,
-                name="%s@telegram" % chat_id,
-            )
+            file_path = bot.get_file(file_data.file_id).file_path
+            content = url2bin(getFullPath(file_path))
             return [file_name, content]
 
+        @LogExternalQuery("Telegram->get media file", eval_context)
         def getMediaFile(chat_id, file_data):
-            file_name = bot.getFile(file_data).file_path.split("/")[-1]
-            content = bot.getFile(file_data).download_as_bytearray()
-            log(
-                "Attachment from telegram received: %s" % file_name,
-                name="%s@telegram" % chat_id,
-            )
-            return [file_name, content]
+            file_path = bot.get_file(file_data.file_id).file_path
+            content = url2bin(getFullPath(file_path))
+            return [file_path.split("/")[-1], content]
 
+        @LogExternalQuery("Telegram->get user photo", eval_context)
         def getUserPhoto(chat_id):
-            photo_list = bot.getUserProfilePhotos(chat_id).photos
+            photo_list = bot.get_user_profile_photos(chat_id).photos
             if not photo_list:
                 return None
             else:
-                photo_path = bot.getFile(photo_list[0][0]).file_path
-                log(
-                    "The user's photo has been added to the partner record.",
-                    name="%s@telegram" % chat_id,
-                )
-                return _url2base64(photo_path)
+                file_path = bot.get_file(photo_list[0][0].file_id).file_path
+                return url2base64(getFullPath(file_path))
 
+        @LogExternalQuery("Telegram-> Webhook is configured", eval_context)
         def setWebhook(*args, **kwargs):
-            log_transmission("Telegram->setWebhook", json.dumps([args, kwargs]))
-            bot.setWebhook(*args, **kwargs)
+            bot.set_webhook(*args, **kwargs)
 
         def parse_data(data):
-            return Update.de_json(data, bot)
+            return telebot.types.Update.de_json(data)
+
+        multi_livechat_context = AttrDict(
+            get_multi_livechat_eval_context(
+                self.env, "multi_livechat_telegram", eval_context
+            )
+        )
 
         telegram = AttrDict(
             {
@@ -132,7 +135,6 @@ class SyncProjectTelegram(models.Model):
                 "getUserPhoto": getUserPhoto,
                 "setWebhook": setWebhook,
                 "parse_data": parse_data,
-                "create_mail_сhannel": create_mail_сhannel,
                 "MAX_SIZE_IMAGE": MAX_SIZE_IMAGE,
                 "MAX_SIZE_DOCUMENT": MAX_SIZE_DOCUMENT,
                 "MAX_SIZE_TO_DOWNLOAD": MAX_SIZE_TO_DOWNLOAD,
@@ -142,4 +144,5 @@ class SyncProjectTelegram(models.Model):
         return {
             "telegram": telegram,
             "Cleaner": Cleaner,
+            "multi_livechat": multi_livechat_context,
         }

@@ -1,3 +1,9 @@
+`5.0.0`
+-------
+
+- **Improvement:** use another telegram library
+- **Improvement:** code refactoring
+
 `4.1.1`
 -------
 
