@@ -19,6 +19,11 @@ Docs
 
 * Viber lib https://developers.viber.com/docs/api/python-bot-api/
 
+Roadmap
+=======
+
+* No need to use `add_job` anymore.
+
 Questions?
 ==========
 
