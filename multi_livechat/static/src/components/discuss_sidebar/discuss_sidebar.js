@@ -61,12 +61,11 @@ odoo.define(
                         channel_type
                     ) {
                         groups[channel_type] = {
+                            channel_type: channel_type,
                             name: name,
                             chats: [],
                         };
                     });
-                    console.log("groups", groups);
-                    console.log("allChats", allChats);
 
                     _.each(allChats, (chat) => {
                         if (groups[chat.channel_type]) {
@@ -97,6 +96,23 @@ odoo.define(
                 _useStoreSelector(props) {
                     return Object.assign(this._super(...arguments), {
                         multiLivechatGroups: this.getMultiLivechatGroups(),
+                    });
+                },
+                // --------------------------------------------------------------------------
+                // Handlers
+                // --------------------------------------------------------------------------
+                _onClickChannelTitle(channel_type) {
+                    return this.env.bus.trigger("do-action", {
+                        action: {
+                            name: this.env._t("Channels"),
+                            type: "ir.actions.act_window",
+                            res_model: "mail.channel",
+                            views: [
+                                [false, "kanban"],
+                                [false, "form"],
+                            ],
+                            domain: [["channel_type", "=", channel_type]],
+                        },
                     });
                 },
             }

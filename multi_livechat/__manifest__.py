@@ -6,7 +6,7 @@
     "summary": """Be in touch with your partners via any supported channels (Telegram, WhatsApp, Instragram, etc.)""",
     "category": "Marketing",
     "images": ["images/multi_livechat.jpg"],
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.1.0",
     "application": False,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
@@ -14,7 +14,7 @@
     "license": "Other OSI approved licence",  # MIT
     "depends": ["mail"],
     "external_dependencies": {"python": [], "bin": []},
-    "data": ["views/assets.xml"],
+    "data": ["views/assets.xml", "views/mail_channel_views.xml"],
     "demo": [],
     "qweb": [
         "static/src/components/discuss_sidebar/discuss_sidebar.xml",

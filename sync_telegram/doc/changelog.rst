@@ -1,3 +1,9 @@
+`4.1.0`
+-------
+
+- **Improvement:** set initial values on non-demo installation
+- **Fix:** add missing dependency `multi_livechat`
+
 `4.0.0`
 -------
 
