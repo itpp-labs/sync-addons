@@ -20,6 +20,14 @@ Installation
     * either delete `line <https://github.com/odoo/odoo/blob/db25a9d02c2fd836e05632ef1e27b73cfdd863e3/odoo/http.py#L326>`__ that raise exception in case of type mismatching (search for ``Function declared as capable of handling request of type`` in standard Odoo code). In most cases, this workaround doesn't need to be reverted
     * or open file ``sync/controllers/webhook.py`` and temporarily change ``type="json"`` to ``type="http"``
 
+
+ Specific installation of queue_job
+-----------------------------------
+
+If messages from Odoo to Viber Bot haven't been sent the problem may be in the wrong `queue_job` installation.
+You should check how to install this module in its `docs <https://github.com/OCA/queue/tree/14.0/queue_job#installation>`__
+In particular, you need to add `queue_job` to `server_wide_modules`.
+
 Configuration
 =============
 
