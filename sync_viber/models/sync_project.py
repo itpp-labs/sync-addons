@@ -16,6 +16,11 @@ from odoo.addons.sync.tools import LogExternalQuery
 
 _logger = logging.getLogger(__name__)
 
+# Check README for details
+MAX_DOC_SIZE = 52_428_800
+MAX_PHOTO_SIZE = 1_048_576
+MAX_VIDEO_SIZE = 27_262_976
+
 
 class SyncProjectViber(models.Model):
 
@@ -46,6 +51,7 @@ class SyncProjectViber(models.Model):
 
         - multi_livechat.*
         """
+
         params = eval_context["params"]
 
         if not secrets.VIBER_BOT_TOKEN:
@@ -139,6 +145,7 @@ class SyncProjectViber(models.Model):
                     "ContactMessage",
                     "PictureMessage",
                     "VideoMessage",
+                    "FileMessage",
                     "LocationMessage",
                     "StickerMessage",
                     "RichMediaMessage",
@@ -148,4 +155,7 @@ class SyncProjectViber(models.Model):
             "viber_webhook_check": viber_webhook_check,
             "viber_webhook_parse": viber_webhook_parse,
             "multi_livechat": multi_livechat_context,
+            "MAX_DOC_SIZE": MAX_DOC_SIZE,
+            "MAX_PHOTO_SIZE": MAX_PHOTO_SIZE,
+            "MAX_VIDEO_SIZE": MAX_VIDEO_SIZE,
         }
