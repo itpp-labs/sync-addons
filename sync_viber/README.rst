@@ -17,12 +17,26 @@ For each Viber user, the module creates a partner with corresponding information
 Docs
 ====
 
-* Viber lib https://developers.viber.com/docs/api/python-bot-api/
+https://developers.viber.com/docs/api/python-bot-api/
 
-Roadmap
-=======
+Limits on files sending
+-----------------------------
 
-* No need to use `add_job` anymore.
+* Files
+
+  Some files format are forbidden: https://developers.viber.com/docs/api/rest-bot-api/#forbiddenFileFormats
+
+* Photo
+
+   The URL must have a resource with a .jpeg, .png or .gif file extension as the last path segment.
+   Example: http://www.example.com/path/image.jpeg. Animated GIFs can be sent as URL messages or file messages.
+   Max image size: 1MB on iOS, 3MB on Android.
+
+* Video
+
+   Max size 26 MB. Only MP4 and H264 are supported.
+   The URL must have a resource with a .mp4 file extension as the last path segment.
+
 
 Questions?
 ==========

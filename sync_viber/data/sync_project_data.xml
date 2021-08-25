@@ -148,7 +148,18 @@ VIBER_THREAD="VIBER_THREAD"
 
     odoo_message_text = None
     if isinstance(vrequest, viber_requests.ViberMessageRequest):
-      odoo_message_text = vrequest.message.text
+      log("vrequest.message=%s" % vrequest.message)
+      if data['message']['type'] == 'text':
+        odoo_message_text = vrequest.message.text
+        multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
+
+      elif data['message']['type'] == 'picture' or 'video' or 'document':
+        bin_data = url2bin(vrequest.message.media)
+        file_name = data['message']['file_name']
+        log("file_name=%s bin_data=%s" % (file_name, bin_data))
+        channel.message_post(body="", author_id=partner.id,
+            message_type="comment", subtype_xmlid="mail.mt_comment", attachments=[[file_name, bin_data]])
+
     elif isinstance(vrequest, viber_requests.ViberDeliveredRequest):
       # TODO
       pass
@@ -158,9 +169,6 @@ VIBER_THREAD="VIBER_THREAD"
     else:
       odoo_message_text = str(data)
     log("type=%s" % type2str(vrequest))
-    # TODO files processing
-    if odoo_message_text:
-        multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
 ]]></field>
     </record>
     <record id="viber--webhook-trigger" model="sync.trigger.webhook">
@@ -177,6 +185,12 @@ VIBER_THREAD="VIBER_THREAD"
             name="code"
         ><![CDATA[def send_viber_message(external_user_ref, text):
     viber_api.send_messages(external_user_ref, [viber_messages.TextMessage(text=text)])
+
+def send_viber_photo(external_user_ref, media):
+    viber_api.send_messages(external_user_ref, [viber_messages.PictureMessage(media=media)])
+
+def send_viber_file(external_user_ref, media, size, file_name):
+    viber_api.send_messages(external_user_ref, [viber_messages.FileMessage(media=media, size=size, file_name=file_name)])
 
 def handle_db(records):
     # records are instances of mail.message
@@ -199,23 +213,29 @@ def handle_db(records):
 
             if mail_message.body:
                 text = "%s\n\n%s" % (html2plaintext(mail_message.body), mail_message.author_id.name)
-                add_job(send_viber_message)(external_user_ref, text)
+                send_viber_message(external_user_ref, text)
 
             if mail_message.attachment_ids:
                 for attach in mail_message.attachment_ids:
-                    log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+                    attach_url = attach.get_public_url()
+                    log("ATTACHMENT public url: %s" % attach_url, LOG_DEBUG)
 
-                    # TODO
-                    continue
                     if attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "image":
-                        if  attach.file_size < telegram.MAX_SIZE_IMAGE:
-                            telegram.sendPhoto(telegram_user_ref, attach.datas)
+                        if  attach.file_size < MAX_PHOTO_SIZE:
+                            send_viber_photo(external_user_ref, attach_url)
                         else:
-                            channel.message_post(body="You cannot send more than 10 MB for photos.",
+                            channel.message_post(body="You cannot send more than 1 MB for photos.",
+                                author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+
+                    elif attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "video":
+                        if  attach.file_size < MAX_VIDEO_SIZE:
+                            send_viber_file(external_user_ref, attach_url, attach.file_size, attach.name)
+                        else:
+                            channel.message_post(body="You cannot send more than 26 MB for videos.",
                                 author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
                     else:
-                        if  attach.file_size < telegram.MAX_SIZE_DOCUMENT:
-                            telegram.sendDocument(telegram_user_ref, attach.name, attach.datas)
+                        if  attach.file_size < MAX_DOC_SIZE:
+                            send_viber_file(external_user_ref, attach_url, attach.file_size, attach.name)
                         else:
                             channel.message_post(body="You cannot send more than 50 MB for documents.",
                                 author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
