@@ -1,3 +1,8 @@
+`5.0.1`
+-------
+
+- **Fix:** add missing `Trigger Fields` field in the Automation Trigger view
+
 `5.0.0`
 -------
 
