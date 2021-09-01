@@ -56,7 +56,7 @@ In Odoo:
 * RESULT: there is new channel for the viber contact
 * Open the channel and reply to message
 
-In telegram:
+In Viber:
 
 * RESULT: the message is delivered via bot
 
