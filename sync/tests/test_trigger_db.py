@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
@@ -13,6 +14,12 @@ _logger = logging.getLogger(__name__)
 class TestTriggerDB(TransactionCase):
     def setUp(self):
         super(TestTriggerDB, self).setUp()
+        self.env = self.env(
+            context=dict(
+                self.env.context,
+                test_queue_job_no_delay=True,  # no jobs thanks
+            )
+        )
         funcs = self.env["sync.link"]._get_eval_context()
         self.get_link = funcs["get_link"]
 

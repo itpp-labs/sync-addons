@@ -120,7 +120,7 @@ class SyncTask(models.Model):
         queue_job_or_result = run(
             job, trigger._sync_handler, args, raise_on_error=raise_on_error
         )
-        if with_delay:
+        if with_delay and not self.env.context.get("test_queue_job_no_delay"):
             job.queue_job_id = queue_job_or_result.db_record()
             return job
         else:
