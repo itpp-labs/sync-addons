@@ -1,4 +1,5 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
 from odoo import api, fields, models
@@ -18,7 +19,7 @@ class SyncTriggerAutomation(models.Model):
 
     def start(self, records):
         if self.active:
-            self.sync_task_id.start(self, args=(records,))
+            self.sync_task_id.start(self, args=(records,), with_delay=True)
 
     def get_code(self):
         return (
