@@ -15,6 +15,19 @@ class MailChannel(models.Model):
         help="Refresh page after updating",
     )
 
+    @api.model
+    def _prepare_multi_livechat_channel_vals(
+        self, channel_type, channel_name, partner_ids
+    ):
+        return {
+            "channel_partner_ids": [(4, pid) for pid in partner_ids],
+            "public": "groups",
+            "group_public_id": self.env.ref("base.group_user").id,
+            "channel_type": channel_type,
+            "email_send": False,
+            "name": channel_name,
+        }
+
     def _compute_is_pinned(self):
         # TODO: make batch search via read_group
         for r in self:
