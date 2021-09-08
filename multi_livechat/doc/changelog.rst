@@ -1,3 +1,8 @@
+`1.1.1`
+-------
+
+- **Fix:** public channels were not shown
+
 `1.1.0`
 -------
 
