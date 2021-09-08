@@ -1,3 +1,8 @@
+`4.1.1`
+-------
+
+- **Improvement:** refactor to use common method to create channel
+
 `4.1.0`
 -------
 

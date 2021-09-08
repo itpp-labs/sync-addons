@@ -68,21 +68,10 @@ class SyncProjectTelegram(models.Model):
             return datas
 
         def create_mail_сhannel(partners, channel_name):
-            return (
-                self.env["mail.channel"]
-                .sudo()
-                .create(
-                    {
-                        "channel_partner_ids": [
-                            (4, partner_id) for partner_id in partners
-                        ],
-                        "public": "private",
-                        "channel_type": "multi_livechat_telegram",
-                        "email_send": False,
-                        "name": channel_name,
-                    }
-                )
+            vals = self.env["mail.channel"]._prepare_multi_livechat_channel_vals(
+                "multi_livechat_telegram", channel_name, partners
             )
+            return self.env["mail.channel"].sudo().create(vals)
 
         def sendMessage(chat_id, html, *args, **kwargs):
             log_transmission("%s@telegram" % chat_id, "Message: %s" % html)
