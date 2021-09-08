@@ -101,7 +101,7 @@ odoo.define(
                 // --------------------------------------------------------------------------
                 // Handlers
                 // --------------------------------------------------------------------------
-                _onClickChannelTitle(channel_type) {
+                _onClickLiveChatGroupTitle(channel_type) {
                     return this.env.bus.trigger("do-action", {
                         action: {
                             name: this.env._t("Channels"),
