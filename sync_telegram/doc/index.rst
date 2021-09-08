@@ -14,7 +14,7 @@ Configuration
 In Telegram
 -----------
 
-* Send message ``/new`` to @BotFather and follow further instructions to create a bot and get the bot token
+* Send message ``/newbot`` to @BotFather and follow further instructions to create a bot and get the bot token
 
 In Odoo
 -------
