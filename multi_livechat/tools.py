@@ -17,19 +17,10 @@ def get_multi_livechat_eval_context(env, channel_type, eval_context):
         is_new = False
         if not link:
             is_new = True
-            channel = (
-                env["mail.channel"]
-                .sudo()
-                .create(
-                    {
-                        "channel_partner_ids": [(4, pid) for pid in partner_ids],
-                        "public": "private",
-                        "channel_type": channel_type,
-                        "email_send": False,
-                        "name": channel_name,
-                    }
-                )
+            vals = env["mail.channel"]._prepare_multi_livechat_channel_vals(
+                channel_type, channel_name, partner_ids
             )
+            channel = env["mail.channel"].sudo().create(vals)
             link = channel.set_link(relation, ref)
             log("Channel created: %s" % channel)
 

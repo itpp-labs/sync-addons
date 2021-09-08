@@ -2,6 +2,7 @@
 -------
 
 - **Fix:** public channels were not shown
+- **Fix:** access error while leaving the channel
 
 `1.1.0`
 -------
