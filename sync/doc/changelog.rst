@@ -1,3 +1,8 @@
+`5.0.2`
+-------
+
+- **Fix:** avoid base.automation errors after deleting sync.task
+
 `5.0.1`
 -------
 
