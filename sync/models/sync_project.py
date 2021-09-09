@@ -89,6 +89,10 @@ class SyncProject(models.Model):
         default["active"] = False
         return super(SyncProject, self).copy(default)
 
+    def unlink(self):
+        self.with_context(active_test=False).mapped("task_ids").unlink()
+        return super().unlink()
+
     def _compute_eval_context_description(self):
         for r in self:
             if not r.eval_context:
