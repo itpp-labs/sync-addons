@@ -1,3 +1,9 @@
+`6.2.0`
+-------
+
+- **Improvement:** add method get_public_url() for attachment object
+
+
 `6.1.0`
 -------
 - **Improvement:** use light telegram library in Telegram demo project (pyTelegramBotAPI)

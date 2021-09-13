@@ -12,5 +12,6 @@ from . import sync_trigger_button
 from . import sync_job
 from . import ir_logging
 from . import ir_actions
+from . import ir_attachment
 from . import sync_link
 from . import base
