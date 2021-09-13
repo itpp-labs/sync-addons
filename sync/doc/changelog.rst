@@ -1,3 +1,9 @@
+`5.1.0`
+-------
+
+- **Improvement:** add eval context function `url2bin`
+- **Improvement:** add method get_public_url() for attachment object
+
 `5.0.1`
 -------
 

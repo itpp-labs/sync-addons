@@ -54,3 +54,10 @@ def url2base64(url):
     r = requests.get(url, timeout=42)
     datas = base64.b64encode(r.content)
     return datas
+
+
+def url2bin(url):
+    if not url:
+        return None
+    r = requests.get(url, timeout=42)
+    return r.content

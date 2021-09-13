@@ -347,6 +347,12 @@ Asynchronous work
   * ``identity_key`` key uniquely identifying the job, if specified and a job
     with the same key has not yet been run, the new job will not be added.
 
+
+Attachments
+~~~~~~~~~~~
+
+* ``attachment.get_public_url()``:  generates access url. Can be used to pass attachments to an external system as url, instead of direct uploading the content.
+
 Libs
 ~~~~
 
@@ -362,6 +368,7 @@ Tools
 ~~~~~
 
 * ``url2base64``
+* ``url2bin``
 * ``get_lang(env, lang_code=False)``: returns `res.lang` record
 * ``html2plaintext``
 * ``type2str``: get type of the given object
