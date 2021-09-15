@@ -20,7 +20,6 @@ class SyncTriggerWebhook(models.Model):
     ]
     _description = "Webhook Trigger"
     _sync_handler = "handle_webhook"
-    _default_name = "Webhook"
 
     action_server_id = fields.Many2one(
         "ir.actions.server", delegate=True, required=True, ondelete="cascade"
