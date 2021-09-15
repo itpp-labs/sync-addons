@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 from odoo import api, fields, models
@@ -9,7 +9,6 @@ class SyncTriggerMixin(models.AbstractModel):
     _name = "sync.trigger.mixin"
     _description = "Mixing for trigger models"
     _rec_name = "trigger_name"
-    _default_name = None
 
     trigger_name = fields.Char(
         "Trigger Name", help="Technical name to be used in task code", required=True
@@ -21,21 +20,37 @@ class SyncTriggerMixin(models.AbstractModel):
         for r in self:
             r.job_count = len(r.job_ids)
 
+    def _update_name(self, vals):
+        if not ("sync_task_id" in vals or "trigger_name" in vals):
+            return
+        if not self._fields["name"].required:
+            return
+        for record in self:
+            if record.name != self._description:
+                continue
+            name = "Sync Studio: %s -> %s" % (
+                record.sync_project_id.name,
+                record.trigger_name,
+            )
+            record.write({"name": name})
+
+    def write(self, vals):
+        res = super().write(vals)
+        self._update_name(vals)
+        return res
+
     @api.model
+    def create(self, vals):
+        res = super().create(vals)
+        res._update_name(vals)
+        return res
+
     def default_get(self, fields):
         vals = super(SyncTriggerMixin, self).default_get(fields)
-        if self._default_name:
-            vals["name"] = self._default_name
+        # put model description in case if name is required field
+        if self._fields["name"].required:
+            vals["name"] = self._description
         return vals
-
-    def name_get(self):
-        result = []
-        for r in self:
-            name = r.trigger_name
-            if r.name and r.name != self._default_name:
-                name += " " + r.name
-            result.append((r.id, name))
-        return result
 
 
 class SyncTriggerMixinModelId(models.AbstractModel):
