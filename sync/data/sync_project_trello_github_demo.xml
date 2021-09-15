@@ -227,12 +227,10 @@ def handle_button():
     </record>
     <record id="delete-trello-webhooks_manual-trigger" model="sync.trigger.button">
         <field name="trigger_name">DELETE_TRELLO_WEBHOOKS</field>
-        <field name="name" />
         <field name="sync_task_id" ref="sync.trello-github_task_setup" />
     </record>
     <record id="debug_manual-trigger" model="sync.trigger.button">
         <field name="trigger_name">DEBUG</field>
-        <field name="name" />
         <field name="sync_task_id" ref="sync.trello-github_task_setup" />
     </record>
     <record id="trello-github_task_issues" model="sync.task">
@@ -378,7 +376,6 @@ def process_github_issues(issues):
     <record id="github-issue-comment_webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">GITHUB_ISSUE_COMMENT</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="sync.trello-github_task_issues" />
     </record>
     <record id="trello-github_task_cards" model="sync.task">

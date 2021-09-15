@@ -140,7 +140,6 @@ class SyncMakeModule(models.TransientModel):
                         (
                             "trigger_name",
                             "active",
-                            "name",
                             "sync_task_id",
                             "webhook_type",
                         ),

@@ -14,7 +14,6 @@ class SyncTriggerAutomation(models.Model):
     _inherit = ["sync.trigger.mixin", "sync.trigger.mixin.actions"]
     _description = "DB Trigger"
     _sync_handler = "handle_db"
-    _default_name = "DB Trigger"
 
     automation_id = fields.Many2one(
         "base.automation", delegate=True, required=True, ondelete="cascade"
