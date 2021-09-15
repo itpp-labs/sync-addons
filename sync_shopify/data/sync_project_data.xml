@@ -266,19 +266,16 @@ def handle_webhook(httprequest):
     <record id="shopify-products-updates--webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">SHOPIFY_PRODUCT_CREATED</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
     </record>
     <record id="shopify-product-updated--webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">SHOPIFY_PRODUCT_UPDATED</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
     </record>
     <record id="shopify-product-deleted--webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">SHOPIFY_PRODUCT_DELETED</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="sync-shopify-products-to-odoo_sync-task" />
     </record>
     <record id="sync-odoo-products-to-shopify_sync-task" model="sync.task">

@@ -46,7 +46,6 @@ def process_lead(fb_lead):
     <record id="page_webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">PAGE</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="handle-webhook_sync-task" />
         <field name="webhook_type">json</field>
     </record>

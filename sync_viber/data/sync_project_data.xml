@@ -79,7 +79,6 @@ VIBER_THREAD="VIBER_THREAD"
     </record>
     <record id="setup-webhook--manual-trigger" model="sync.trigger.button">
         <field name="trigger_name">SETUP_WEBHOOK</field>
-        <field name="name" />
         <field name="sync_task_id" ref="setup--sync-task" />
     </record>
     <record id="process-viber-events--sync-task" model="sync.task">
@@ -167,7 +166,6 @@ VIBER_THREAD="VIBER_THREAD"
     <record id="viber--webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">VIBER</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="process-viber-events--sync-task" />
         <field name="webhook_type">json</field>
     </record>
