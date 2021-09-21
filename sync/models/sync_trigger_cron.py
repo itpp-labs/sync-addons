@@ -20,6 +20,12 @@ class SyncTriggerCron(models.Model):
         "ir.cron", delegate=True, required=True, ondelete="cascade"
     )
 
+    def unlink(self):
+        crons = self.mapped("cron_id")
+        if crons:
+            crons.unlink()
+        return super().unlink()
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

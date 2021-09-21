@@ -1,3 +1,9 @@
+`5.0.2`
+-------
+
+- **Fix:** avoid base.automation errors after deleting sync.task
+- **Improvement:** better names for triggers, Server Actions and Base Automation records
+
 `5.0.1`
 -------
 

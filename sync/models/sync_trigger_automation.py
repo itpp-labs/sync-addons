@@ -1,8 +1,11 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
+import logging
 
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class SyncTriggerAutomation(models.Model):
@@ -11,14 +14,25 @@ class SyncTriggerAutomation(models.Model):
     _inherit = ["sync.trigger.mixin", "sync.trigger.mixin.actions"]
     _description = "DB Trigger"
     _sync_handler = "handle_db"
-    _default_name = "DB Trigger"
 
     automation_id = fields.Many2one(
         "base.automation", delegate=True, required=True, ondelete="cascade"
     )
 
+    def unlink(self):
+        self.mapped("automation_id").unlink()
+        return super().unlink()
+
     def start(self, records):
         if self.active:
+            if not self.sync_task_id:
+                # workaround for old deployments
+                _logger.warning(
+                    "Task was deleted, but there is still base.automation record for it: %s"
+                    % self.automation_id
+                )
+                return
+
             self.sync_task_id.start(self, args=(records,), with_delay=True)
 
     def get_code(self):
