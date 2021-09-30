@@ -1,3 +1,8 @@
+`5.1.0`
+-------
+
+- **Improvement:** use light telegram library in Telegram demo project (pyTelegramBotAPI)
+
 `5.0.2`
 -------
 
