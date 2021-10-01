@@ -11,7 +11,7 @@
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "sync@it-projects.info",
-    "website": "https://apps.odoo.com/apps/modules/10.0/openapi/",
+    "website": "https://t.me/sync_studio",
     "license": "LGPL-3",
     "depends": ["web_tour", "web_settings_dashboard", "report"],
     "external_dependencies": {
