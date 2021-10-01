@@ -11,7 +11,7 @@
     "application": False,
     "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",
-    "website": "https://github.com/itpp-labs/sync-addons",
+    "website": "https://t.me/sync_studio",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "multi_livechat"],
     "external_dependencies": {"python": ["python-telegram-bot"], "bin": []},
