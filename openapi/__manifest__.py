@@ -10,7 +10,7 @@
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "help@itpp.dev",
-    "website": "https://github.com/itpp-labs/sync-addons",
+    "website": "https://t.me/sync_studio",
     "license": "LGPL-3",
     "depends": ["base_api", "mail"],
     "external_dependencies": {
