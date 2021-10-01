@@ -10,7 +10,7 @@
     "application": False,
     "author": "IT-Projects LLC, Anvar Kildebekov",
     "support": "apps@itpp.dev",
-    "website": "https://apps.odoo.com/apps/modules/13.0/base_api/",
+    "website": "https://t.me/sync_studio",
     "license": "LGPL-3",
     "depends": [],
     "external_dependencies": {"python": [], "bin": []},
