@@ -11,7 +11,7 @@
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "apps@itpp.dev",
-    "website": "https://github.com/itpp-labs/sync-addons",
+    "website": "https://t.me/sync_studio",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["base_action_rule"],
     "external_dependencies": {"python": [], "bin": []},
