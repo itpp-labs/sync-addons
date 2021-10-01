@@ -10,7 +10,7 @@
     "version": "13.0.1.2.4",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
-    "support": "apps@itpp.dev",
+    "support": "help@itpp.dev",
     "website": "https://t.me/sync_studio",
     "license": "LGPL-3",
     "depends": ["base_api", "mail"],
