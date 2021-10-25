@@ -13,17 +13,22 @@ Facebook App
   * **App type:** Business
   * **Apps Purpose:** Yourself or your own business
 
-* In Facebook App page open ``Settings >> Basic`` to get **App ID** and **App Secret**
+* In Facebook App page open ``Settings >> Basic`` to get **App ID** and **App Secret** (``APP_ID`` &  ``APP_SECRET``)
 
 Facebook Page
 -------------
 
 * `Select your page <https://www.facebook.com/pages/>`__ or `create new one <https://www.facebook.com/pages/creation>`__
-* Get **Page ID** from Page url. For example, for Page ``https://www.facebook.com/Facebook-intergration-testing-123456789`` Page ID is 123456789
+* Get **Page ID** from Page, that you want to connect your chat bot. Do do that, go to link ``https://www.facebook.com/your_page/about/``. 
+* (where your_page - real url of your page)  Scroll to the bottom of the page untill you would see "page ID" string. 
+* Copy the ID number given in **More info** section. Example: <https://prnt.sc/1xa09c6> Page ID is something like 123456789. This would be your ``PAGE_ID`` parametr.
+
+
 
 Facebook Page: Lead Ad
 ----------------------
 
+* If you want to get leads from Facebook, you should create lead ad. To create that, do the following:
 * `Create a Lead Ad <https://www.facebook.com/business/help/397336587121938>`__ via menu ``Publishing Tools >> Forms Library``
 * Once form is created, click `[Create Ad]` button
 
@@ -31,8 +36,8 @@ Facebook Page: Access Token
 ---------------------------
 
 * Open `Graph API Explorer <https://developers.facebook.com/tools/explorer/>`__
-* Select Facebook App
-* Select option "User Access Token"
+* Select Facebook App you created on a previous step in Facebook app Setting: <https://prnt.sc/1xa186e>
+* Select option "Get User Access Token"
 * Select required `permisions <https://developers.facebook.com/docs/pages/overview/permissions-features>`__, e.g.:
 
   * public_profile
@@ -40,6 +45,10 @@ Facebook Page: Access Token
   * pages_read_engagement
   * leads_retrieval
   * pages_manage_metadata
+  
+* The result should look like that: <https://prnt.sc/1xa1kd3>
+* Press the button `[generate Access token]`
+* Save the resulted value from the field "Access Token" on the top". This would be your ``USER_ACCESS_TOKEN`
 
 You can ignore warning "Submit for Login Review". It just means that you cannot
 work with Facebook Pages where you don't have a role.
@@ -64,7 +73,7 @@ Configuration
 * Choose ``Facebook`` project
 * Go to ``Parameters`` tab
 * Click ``[Edit]``
-* Set **Parameters** and **Secrets**:
+* Set **Parameters** and **Secrets**. You should edit the **Value** feilds. Fill them with data, received above:
 
   * ``APP_ID``
   * ``APP_SECRET``
