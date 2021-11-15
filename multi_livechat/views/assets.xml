@@ -11,11 +11,16 @@
             <xpath expr="." position="inside">
                 <script
                     type="text/javascript"
-                    src="/multi_livechat/static/src/components/discuss_sidebar/discuss_sidebar.js"
+                    src="/multi_livechat/static/src/js/discuss.js"
                 />
                 <script
                     type="text/javascript"
-                    src="/multi_livechat/static/src/models/messaging_initializer/messaging_initializer.js"
+                    src="/multi_livechat/static/src/js/services/mail_manager.js"
+                />
+                <link
+                    rel="stylesheet"
+                    type="text/scss"
+                    href="/multi_livechat/static/src/scss/discuss.scss"
                 />
             </xpath>
         </template>

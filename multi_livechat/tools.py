@@ -60,19 +60,19 @@ def get_multi_livechat_eval_context(env, channel_type, eval_context):
         return link.odoo, is_new
 
     def get_channel_url(channel):
-        return "/web#action=%s&active_id=mail.channel_%s" % (
+        return "/web#action={}&active_id=mail.channel_{}".format(
             env.ref("mail.action_discuss").id,
             channel.id,
         )
 
     def get_record_url(record):
-        return "/web#id=%s&model=%s" % (
+        return "/web#id={}&model={}".format(
             record.id,
             record._name,
         )
 
     def post_channel_message(channel, message, author=None):
-        log("Post message to %s:\n%s" % (channel, message), LOG_DEBUG)
+        log("Post message to {}:\n{}".format(channel, message), LOG_DEBUG)
         channel.message_post(
             body=message,
             author_id=author or odoobot_id,

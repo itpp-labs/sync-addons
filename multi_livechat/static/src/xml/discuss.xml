@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<template>
+    <t t-extend="mail.discuss.SidebarChannels">
+        <t t-jquery="t[t-call='mail.discuss.SidebarItems']:last" t-operation="after">
+            <t t-set="type" t-value="'multi_user_channel'" />
+            <t
+                t-foreach="options.getGroupedMultiLivechatChannels(channels)"
+                t-as="livechat_group"
+            >
+                <t t-if="livechat_group.chats &amp;&amp; livechat_group.chats.length">
+                    <t t-call="mail.discuss.SidebarTitle">
+                        <t
+                            t-set="useMultiLivechatType"
+                            t-value="livechat_group.channel_type"
+                        />
+                        <t t-set="title" t-value="livechat_group.name" />
+                        <t t-set="disableAddThread" t-value="true" />
+                    </t>
+                    <t t-call="mail.discuss.SidebarItems">
+                        <t t-set="useMultiLivechat" t-value="true" />
+                        <t t-set="displayHash" t-value="true" />
+                        <t t-set="channels" t-value="livechat_group.chats" />
+                    </t>
+                </t>
+            </t>
+        </t>
+    </t>
+    <t t-extend="mail.discuss.SidebarItems">
+        <t t-jquery="t[t-foreach='channels']" t-operation="attributes">
+            <attribute name="t-foreach">
+                useMultiLivechat ? options.getMultiLivechatChannels(channels) :
+                options.getNonMultiLivechatChannels(channels)
+            </attribute>
+        </t>
+    </t>
+    <t t-extend="mail.discuss.SidebarTitle">
+        <t t-jquery="div.o_mail_sidebar_title > h4" t-operation="attributes">
+            <attribute name="t-att-class">
+                type == 'multi_user_channel' ? (useMultiLivechatType ?
+                'o_mail_open_multi_livechat_channels' : 'o_mail_open_channels') : ''
+            </attribute>
+            <attribute name="t-att-data-multi-livechat-type">
+                useMultiLivechatType
+            </attribute>
+            <attribute name="t-att-data-multi-livechat-title">
+                useMultiLivechatType ? title : ''
+            </attribute>
+        </t>
+    </t>
+</template>
