@@ -7,7 +7,7 @@
     "summary": """Telegram integration powered by Sync Studio""",
     "category": "Discuss",
     "images": ["images/sync_telegram.jpg"],
-    "version": "14.0.4.1.1",
+    "version": "13.0.4.1.1",
     "application": False,
     "author": "IT Projects Labs, Ilya Ilchenko",
     "support": "help@itpp.dev",

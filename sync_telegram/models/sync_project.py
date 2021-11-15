@@ -31,7 +31,6 @@ class SyncProjectTelegram(models.Model):
         selection_add=[
             ("telegram", "Telegram"),
         ],
-        ondelete={"telegram": "cascade"},
     )
 
     @api.model

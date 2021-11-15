@@ -33,6 +33,6 @@ Contributors
 Further information
 ===================
 
-Apps store: https://apps.odoo.com/apps/modules/14.0/sync_telegram
+Apps store: https://apps.odoo.com/apps/modules/13.0/sync_telegram
 
-Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/6916981f56783de7008cd04d4e37e80166150ff7>`_
+Tested on `Odoo 13.0 <https://github.com/odoo/odoo/commit/3097e0b977ddbaa9efc4c3e60399d169dee45604>`_
