@@ -36,6 +36,12 @@ Questions?
 
 To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
+Contributors
+============
+
+* `Ivan Yelizariev <https://twitter.com/yelizariev>`__
+* `Eugene Molotov <https://github.com/em230418>`__
+
 Further information
 ===================
 
