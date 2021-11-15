@@ -37,6 +37,7 @@ def user2name(user):
         <field name="url" eval="" />
         <field name="project_id" ref="telegram_project" />
     </record>
+    <!-- не надо заливать -->
     <record id="telegram_project_param_welcome" model="sync.project.text">
         <field name="key">TELEGRAM_WELCOME_MESSAGE</field>
         <field name="description">
