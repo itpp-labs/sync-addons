@@ -1,3 +1,9 @@
+`4.0.0`
+-------
+
+- **Fix:** resolving name conflicts with the demo project (backported from 14.0.2.1.1)
+- **Improvement:** initial values do not overwrite parameter values after a module update (backported from 14.0.4.1.2)
+
 `3.0.2`
 -------
 

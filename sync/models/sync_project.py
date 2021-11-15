@@ -1,5 +1,6 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
+# Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
@@ -392,11 +393,26 @@ class SyncProjectParamMixin(models.AbstractModel):
 
     key = fields.Char("Key", required=True)
     value = fields.Char("Value")
+    initial_value = fields.Char(
+        compute="_compute_initial_value",
+        inverse="_inverse_initial_value",
+        help="A virtual field that, during writing, stores the value in the value field, but only if it is empty. \
+             It's used during module upgrade to prevent overwriting parameter values. ",
+    )
     description = fields.Char("Description", translate=True)
     url = fields.Char("Documentation")
     project_id = fields.Many2one("sync.project", ondelete="cascade")
 
     _sql_constraints = [("key_uniq", "unique (project_id, key)", "Key must be unique.")]
+
+    def _compute_initial_value(self):
+        for r in self:
+            r.initial_value = r.value
+
+    def _inverse_initial_value(self):
+        for r in self:
+            if not r.value:
+                r.value = r.initial_value
 
 
 class SyncProjectParam(models.Model):

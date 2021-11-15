@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <data>
+        <template
+            id="assets_backend"
+            name="multi_livechat assets backend"
+            inherit_id="web.assets_backend"
+        >
+            <xpath expr="." position="inside">
+                <script
+                    type="text/javascript"
+                    src="/multi_livechat/static/src/js/discuss.js"
+                />
+                <script
+                    type="text/javascript"
+                    src="/multi_livechat/static/src/js/services/mail_manager.js"
+                />
+                <link
+                    rel="stylesheet"
+                    type="text/scss"
+                    href="/multi_livechat/static/src/scss/discuss.scss"
+                />
+            </xpath>
+        </template>
+    </data>
+</odoo>
