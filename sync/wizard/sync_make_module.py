@@ -35,6 +35,7 @@ class SyncMakeModule(models.TransientModel):
     )
     state = fields.Selection([("choose", "choose"), ("get", "get")], default="choose")
     project_id = fields.Many2one("sync.project")
+    data_noupdate = fields.Boolean(default=True)
 
     def _compute_name(self):
         for r in self:
@@ -80,6 +81,8 @@ class SyncMakeModule(models.TransientModel):
             )
         )
         root = etree.Element("odoo")
+        root_data = etree.SubElement(root, "data")
+        root_data.set("noupdate", str(int(self.data_noupdate)))
         project = self.project_id.with_context(active_test=False)
         records = [
             (project, ("name", "eval_context", "common_code")),
@@ -140,6 +143,7 @@ class SyncMakeModule(models.TransientModel):
                         (
                             "trigger_name",
                             "active",
+                            "name",
                             "sync_task_id",
                             "webhook_type",
                         ),
@@ -147,7 +151,7 @@ class SyncMakeModule(models.TransientModel):
                 )
 
         for r, field_names in records:
-            root.append(self._record2xml(r, field_names))
+            root_data.append(self._record2xml(r, field_names))
 
         if hasattr(etree, "indent"):
             etree.indent(root, space="    ")

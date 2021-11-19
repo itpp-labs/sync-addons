@@ -46,14 +46,6 @@
                         widget="many2many_tags"
                     />
                     <field
-                        name="on_change_field_ids"
-                        string="Trigger Fields"
-                        domain="[('model_id', '=', model_id)]"
-                        attrs="{'invisible': [('trigger', '!=', 'on_change')], 'required': [('trigger', '=', 'on_change')]}"
-                        widget='many2many_tags'
-                        options="{'no_create': True}"
-                    />
-                    <field
                         name="filter_pre_domain"
                         widget="domain"
                         options="{'model': 'model_name', 'in_dialog': True}"
@@ -66,6 +58,7 @@
                     />
                     <field
                         name="on_change_field_ids"
+                        domain="[('model_id', '=', model_id)]"
                         attrs="{'invisible': [('trigger', '!=', 'on_change')], 'required': [('trigger', '=', 'on_change')]}"
                     />
                     <field

@@ -20,8 +20,16 @@ class SyncTriggerAutomation(models.Model):
     )
 
     def unlink(self):
-        self.mapped("automation_id").unlink()
-        return super().unlink()
+        for record in self:
+            related_automation = record.automation_id
+            related_server_action = record.action_server_id
+            if super(SyncTriggerAutomation, record).unlink():
+                if related_automation:
+                    related_automation.unlink()
+                if related_server_action:
+                    related_server_action.unlink()
+                return True
+        return False
 
     def start(self, records):
         if self.active:

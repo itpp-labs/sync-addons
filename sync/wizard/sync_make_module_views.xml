@@ -13,6 +13,7 @@
                     <field name="author_name" />
                     <field name="author_url" />
                     <field name="license_line" />
+                    <field name="data_noupdate" string="No auto-update" widget="boolean_toggle" />
                     <field name="name" invisible="1" />
                     <field name="name2" invisible="1" />
                 </group>
