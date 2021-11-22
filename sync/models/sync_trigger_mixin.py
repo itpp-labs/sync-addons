@@ -21,29 +21,24 @@ class SyncTriggerMixin(models.AbstractModel):
             r.job_count = len(r.job_ids)
 
     def _update_name(self, vals):
-        if not ("sync_task_id" in vals or "trigger_name" in vals):
-            return
-        if not self._fields["name"].required:
-            return
-        for record in self:
-            if record.name != self._description:
-                continue
-            name = "Sync Studio: %s -> %s" % (
-                record.sync_project_id.name,
-                record.trigger_name,
-            )
-            record.write({"name": name})
+        if not hasattr(self, "sync_task_id"):
+            return vals.get('name')
+        return "Sync Studio [%s]: %s -> %s" % (
+            self.sync_task_id.project_id.name,
+            self.sync_task_id.name,
+            vals.get('trigger_name', self.trigger_name)
+        )
 
     def write(self, vals):
-        res = super().write(vals)
-        self._update_name(vals)
-        return res
+        for record in self:
+            vals['name'] = record._update_name(vals)
+            super(SyncTriggerMixin, record).write(vals)
+        return True
 
     @api.model
     def create(self, vals):
-        res = super().create(vals)
-        res._update_name(vals)
-        return res
+        vals['name'] = self._update_name(vals)
+        return super(SyncTriggerMixin, self).create(vals)
 
     def default_get(self, fields):
         vals = super(SyncTriggerMixin, self).default_get(fields)
