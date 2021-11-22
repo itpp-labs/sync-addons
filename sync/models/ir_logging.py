@@ -16,11 +16,9 @@ SHORT_MESSAGE_CHARS = 100
 class IrLogging(models.Model):
     _inherit = "ir.logging"
 
-    sync_job_id = fields.Many2one("sync.job")
-    sync_task_id = fields.Many2one("sync.task", related="sync_job_id.task_id")
-    sync_project_id = fields.Many2one(
-        "sync.project", related="sync_job_id.task_id.project_id"
-    )
+    sync_job_id = fields.Many2one("sync.job", ondelete="cascade")
+    sync_task_id = fields.Many2one("sync.task", related="sync_job_id.task_id", ondelete="cascade")
+    sync_project_id = fields.Many2one("sync.project", related="sync_job_id.task_id.project_id", ondelete="cascade")
     message_short = fields.Text(string="Message...", compute="_compute_message_short")
     type = fields.Selection(
         selection_add=[("data_out", "Data Transmission"), ("data_in", "Response")],
