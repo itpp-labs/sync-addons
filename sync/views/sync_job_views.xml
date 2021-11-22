@@ -165,6 +165,17 @@
         <field name="res_model">sync.job</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="sync_job_action_requeue_from_job" model="ir.actions.server">
+        <field name="name">Requeue task/s</field>
+        <field name="model_id" ref="model_sync_job"/>
+        <field name="binding_model_id" ref="model_sync_job"/>
+        <field name="state">code</field>
+        <field name="code">
+            for sync_job in records.filtered(lambda x: x.queue_job_id and x.queue_job_id.state == 'failed'):
+              sync_job.log_ids.unlink()
+              sync_job.queue_job_id.requeue()
+        </field>
+    </record>
     <menuitem
         id="sync_job_menu_action"
         name="Jobs"
