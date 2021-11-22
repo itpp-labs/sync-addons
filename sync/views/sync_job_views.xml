@@ -148,22 +148,58 @@
             </form>
         </field>
     </record>
+    <record id="sync_job_view_search" model="ir.ui.view">
+        <field name="name">sync.job.search</field>
+        <field name="model">sync.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter
+                    string="Pending jobs"
+                    name="pending_jobs"
+                    domain="[('queue_job_id.state', '=', 'pending')]"
+                />
+                <filter
+                    string="Enqueued jobs"
+                    name="enqueued_jobs"
+                    domain="[('queue_job_id.state', '=', 'enqueued')]"
+                />
+                <filter
+                    string="Started jobs"
+                    name="started_jobs"
+                    domain="[('queue_job_id.state', '=', 'started')]"
+                />
+                <filter
+                    string="Done jobs"
+                    name="done_jobs"
+                    domain="[('queue_job_id.state', '=', 'done')]"
+                />
+                <filter
+                    string="Failed jobs"
+                    name="failed_jobs"
+                    domain="[('queue_job_id.state', '=', 'failed')]"
+                />
+            </search>
+        </field>
+    </record>
     <record id="sync_job_action_from_project" model="ir.actions.act_window">
         <field name="name">Project Jobs</field>
         <field name="res_model">sync.job</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="search_view_id" ref="sync_job_view_search" />
     </record>
     <record id="sync_job_action_from_task" model="ir.actions.act_window">
         <field name="name">Task Jobs</field>
         <field name="res_model">sync.job</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[('task_id', '=', active_id)]</field>
+        <field name="search_view_id" ref="sync_job_view_search" />
     </record>
     <record id="sync_job_action" model="ir.actions.act_window">
         <field name="name">Jobs</field>
         <field name="res_model">sync.job</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="sync_job_view_search" />
     </record>
     <record id="sync_job_action_requeue_from_job" model="ir.actions.server">
         <field name="name">Requeue task/s</field>
