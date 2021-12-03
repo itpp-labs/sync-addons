@@ -1,7 +1,13 @@
 [![help@itpp.dev](https://itpp.dev/images/infinity-readme.png)](mailto:help@itpp.dev)
-# [8.0] Odoo Integration Addons
+# [9.0] Odoo Integration Addons
 
-:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/8.0/openapi/)
+:open_file_folder: Get a **.zip** file with all needed dependencies:
+
+
+
+:star: Star this repo if you **like** it!
+
+:heart: [Sponsor us](https://patreon.com/itpp) if you **love** it!
 
 Other Addons
 ============
