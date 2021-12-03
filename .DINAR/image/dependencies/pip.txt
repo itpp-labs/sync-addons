@@ -1,0 +1,8 @@
+# Python dependencies
+bravado
+swagger-spec-validator==2.4.3
+python-telegram-bot
+PyGithub
+py-trello
+facebook_business
+viberbot
