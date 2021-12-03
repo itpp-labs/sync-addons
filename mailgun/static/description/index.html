@@ -1,0 +1,334 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span12">
+            <h2 class="oe_slogan" style="color:#875A7B;">Mailgun</h2>
+            <h3 class="oe_slogan">Easy to setup the outgoing and incoming mail flow</h3>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <p class="oe_mt32">
+	<div class="alert alert-success" style="padding:0.3em 0.6em; font-size: 150%;">
+	  The module provides Odoo and Mailgun integration to be able to easily configure <em>Outgoing</em> and <em>Incoming</em> mail flow.
+	  <div style="margin-top:2%;">
+	    From Mailgun side you get:
+	    <ul style="padding-left: 1.6em;">
+	      <li style="margin-top: 0.3em;">
+		Powerful Sending Infrastructure
+	      </li>
+	      <li>
+		Intelligent Inbound Routing &amp; Storage
+	      </li>
+	      <li>
+		Tracking and Analytics
+	      </li>
+	      <li>
+		Email Validation
+	      </li>
+	    </ul>
+	  </div>
+	</div>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <h3 class="oe_slogan">Mailgun Configuration</h3>
+    <h4 class="oe_slogan"><b>Manage Domains</b></h4>
+    <div class="oe_span12">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  <ul style="padding-left: 1.4em;">
+	    <li>
+	      Create account on <a href="https://mailgun.com" target="_blank">Mailgun</a> service
+	    </li>
+	    <li>
+	      Add domain in <b>Domains</b> menu
+	    </li>
+	  </ul>
+	  Note that the state of your domain should be <b>Active</b> to be able to use it from Odoo side. To verify it follow the instruction <a href="https://help.mailgun.com/hc/en-us/articles/202052074-How-do-I-verify-my-domain-" target="_blank">How do I verify my domain</a>
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_add_domain.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Click on added domain name and see all the information needed to configure your <em>Incoming</em> and <em>Outgoing</em> mail feature.
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_domain_details.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  If you use sandbox domain, add <b>Authorized Recipient</b> first (sandbox domains are restricted to <a href="https://help.mailgun.com/hc/en-us/articles/217531258" target="_blank">authorized recipients</a>)
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_auth_recipients.png"/>
+    </div>
+    <br/>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_auth_recipients_form.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="margin-top: 5em;">
+    <h4 class="oe_slogan"><b>Routes</b></h4>
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Navigate to <b>Routes</b> menu and create a new route
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_route.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Set the following fields and values:
+	  <ul>
+	    <li>
+	      <b>Expression Type</b>: Custom
+	    </li>
+	    <li>
+	      <b>Raw Expression</b>: match_recipient('.*@your_mail_domain')
+	    </li>
+	    <li>
+	      <b>Actions</b>:
+	      <ul>
+		<li>
+		  Check the box <em>Store and notify</em>
+		</li>
+		<li>
+		  Put there http://your_odoo_domain/mailgun/notify
+		</li>
+	    </li>
+	  </ul>
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_route_form.png"/>
+    </div>
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  <b>Now everything is ready to move to Odoo configuration.</b>
+	</font>
+      </p>		
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="margin-top: 6em;">
+    <h3 class="oe_slogan">Odoo Configuration</h3>
+    <h4 class="oe_slogan"><b>Outgoing Mail Feature</b></h4>
+    <div class="oe_span12">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  At first, activate <a href="https://odoo-development.readthedocs.io/en/latest/odoo/usage/debug-mode.html" target="_blank">the developer mode</a>. Then go to <em>Settings &rarr; Technical &rarr; Email &rarr; Outgoing Mail Servers</em> menu and populate the following fields:
+	  <ul>
+	    <li>
+	      <b>Description</b> - e.g. Mailgun
+	    </li>
+	    <li>
+	      <b>SMTP Server</b> - smtp.mailgun.org
+	    </li>
+	    <li>
+	      <b>Connection Security</b> - SSL/TLS
+	    </li>
+	    <li>
+	      <b>Username</b> - use <em>Default SMTP Login</em> from mailgun
+	    </li>
+	    <li>
+	      <b>Password</b> - use <em>Default Password</em> from mailgun
+	    </li>
+	  </ul>
+	  Once the fields are populated, click <b>Test Connection</b> button to check the connection to smtp server. If everything is ok, you can see popup message <em>Connection Test Succeeded! Everything seems properly set up!</em> and you are able to send messages now.
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_odoo_outgoing.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <h4 class="oe_slogan"><b>Incoming Mail Feature</b></h4>
+    <div class="oe_span12">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Note that to setup incoming mailing, it is not required to setup <em>Incoming Mail Server</em>.
+	  <br/>
+	  Open <em>Settings &rarr; General Settings</em> menu:
+	  <ul>
+	    <li>
+	      Check the box <b>External Email Servers</b>
+	    </li>
+	    <li>
+	      Set as <b>Alias Domain</b> the domain name from Mailgun
+	    </li>
+	  </ul>
+	  Save the changes.
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_odoo_general.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Setup mailgun API credentials in <em>Settings &rarr; Parameters &rarr; System Parameters</em> menu. Create new parameter:
+	  <ul>
+	    <li>
+	      <b>Key</b> - mailgun.apikey
+	    </li>
+	    <li>
+	      <b>Value</b> - key-12345...
+	    </li>
+	  </ul>
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_odoo_sys_param.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Now you can configure mail aliases for users. Go to <em>Settings &rarr; Users</em> menu and open user form (e.g. for Administrator). Then switch to <em>Preferences</em> tab and select an existing alias or create new one in the <b>Alias</b> field.
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_odoo_mail_alias.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  Open the user's related partner and set <b>Email</b> - the email is used for replying on user messages
+	</font>
+      </p>		
+    </div>
+    <div class="oe_screenshot" align="center">
+      <img style="max-width: 80%" src="mailgun_odoo_partner_email.png"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container oe_dark">
+  <div class="oe_row oe_spaced">
+    <div class="oe_span12 text-center">
+      <p class="oe_mt32">
+ 	<font style="font-size: 120%;">
+	  <b>
+	    Everything is done! It's time to send/receive email messages now!
+	  </b>
+	</font>
+      </p>		
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <div class="oe_span8">
+            <h2>Need our service?</h2>
+            <p class="oe_mt32">Contact us by <a href="mailto:apps@it-projects.info">email</a> or fill out <a href="https://www.it-projects.info/page/website.contactus " target="_blank">request form</a></p>
+            <ul>
+                <li><a href="mailto:apps@it-projects.info">apps@it-projects.info <i class="fa fa-envelope-o"></i></a></li>
+                <li><a href="https://www.it-projects.info/page/website.contactus " target="_blank">https://www.it-projects.info/page/website.contactus <i class="fa fa-list-alt"></i></a></li>
+                <li><a href="https://m.me/itprojectsllc" target="_blank">https://m.me/itprojectsllc <i class="fa fa-facebook-square"></i></a></li>
+                <li>skype@it-projects.info <i class="fa fa-skype"></i></li>
+            </ul>
+        </div>
+        <div class="oe_span4">
+            <div class="stamp" style="width:200px;">
+                <div style="margin-top: 15px;
+                            position: relative;
+                            font-family:'Vollkorn', serif;
+                            font-size: 16px;
+                            line-height: 25px;
+                            text-transform: uppercase;
+                            font-weight: bold;
+                            color: #75526b;
+                            border: 3px dashed #75526b;
+                            float: left;
+                            padding: 4px 12px;
+                            -webkit-transform: rotate(6deg);
+                            -o-transform: rotate(6deg);
+                            -moz-transform: rotate(6deg);
+                            -ms-transform: rotate(6deg);">
+                    Tested on Odoo<br/>11.0 community
+                </div>
+                <div style="margin-top: 15px;
+			    position: relative;
+			    font-family:'Vollkorn', serif;
+			    font-size: 16px;
+			    line-height: 25px;
+			    text-transform: uppercase;
+			    font-weight: bold;
+			    color: #75526b;
+			    border: 3px dashed #75526b;
+			    float: left;
+			    padding: 4px 12px;
+			    -webkit-transform: rotate(-7deg);
+			    -o-transform: rotate(-7deg);
+			    -moz-transform: rotate(-7deg);
+			    -ms-transform: rotate(-7deg);">
+                  Tested on Odoo<br/>11.0 enterprise
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
