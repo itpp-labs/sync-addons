@@ -5,7 +5,12 @@
 
 :heavy_check_mark: [alipay](https://apps.odoo.com/apps/modules/11.0/alipay/)
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/11.0/base_automation_webhook/)
+<br/>:heavy_check_mark: [ir_attachment_s3](https://apps.odoo.com/apps/modules/11.0/ir_attachment_s3/)
+<br/>:heavy_check_mark: [ir_attachment_url](https://apps.odoo.com/apps/modules/11.0/ir_attachment_url/)
 <br/>:heavy_check_mark: [mailgun](https://apps.odoo.com/apps/modules/11.0/mailgun/)
+<br/>:heavy_check_mark: [odoo_backup_sh](https://apps.odoo.com/apps/modules/11.0/odoo_backup_sh/)
+<br/>:heavy_check_mark: [odoo_backup_sh_dropbox](https://apps.odoo.com/apps/modules/11.0/odoo_backup_sh_dropbox/)
+<br/>:heavy_check_mark: [odoo_backup_sh_google_disk](https://apps.odoo.com/apps/modules/11.0/odoo_backup_sh_google_disk/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/11.0/openapi/)
 <br/>:heavy_check_mark: [pos_alipay](https://apps.odoo.com/apps/modules/11.0/pos_alipay/)
 <br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/11.0/pos_longpolling/)
