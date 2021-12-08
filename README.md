@@ -5,10 +5,17 @@
 
 :heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/12.0/base_automation_webhook/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/12.0/openapi/)
+<br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/12.0/pos_longpolling/)
+<br/>:heavy_check_mark: [pos_qr_payments](https://apps.odoo.com/apps/modules/12.0/pos_qr_payments/)
+<br/>:heavy_check_mark: [pos_qr_scan](https://apps.odoo.com/apps/modules/12.0/pos_qr_scan/)
+<br/>:heavy_check_mark: [pos_qr_show](https://apps.odoo.com/apps/modules/12.0/pos_qr_show/)
+<br/>:heavy_check_mark: [pos_wechat](https://apps.odoo.com/apps/modules/12.0/pos_wechat/)
+<br/>:heavy_check_mark: [qr_payments](https://apps.odoo.com/apps/modules/12.0/qr_payments/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/12.0/sync/)
 <br/>:heavy_check_mark: [sync_1c](https://apps.odoo.com/apps/modules/12.0/sync_1c/)
 <br/>:heavy_check_mark: [sync_woo](https://apps.odoo.com/apps/modules/12.0/sync_woo/)
 <br/>:heavy_check_mark: [telegram_leads](https://apps.odoo.com/apps/modules/12.0/telegram_leads/)
+<br/>:heavy_check_mark: [wechat](https://apps.odoo.com/apps/modules/12.0/wechat/)
 
 :star: Star this repo if you **like** it!
 
