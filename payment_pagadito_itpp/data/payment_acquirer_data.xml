@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT).-->
+<odoo noupdate="1">
+    <record id="payment_acquirer_pagadito" model="payment.acquirer">
+        <field name="name">Pagadito</field>
+        <field
+            name="image"
+            type="base64"
+            file="payment_pagadito/static/src/img/pagadito_icon.jpg"
+        />
+        <field name="provider">pagadito</field>
+        <field name="company_id" ref="base.main_company" />
+        <field name="view_template_id" ref="pagadito_acquirer_button" />
+        <field name="environment">test</field>
+        <field
+            name="pre_msg"
+        ><![CDATA[
+        <p>You will be redirected to the Pagadito website after clicking on the payment button.</p>]]></field>
+        <field name="pagadito_uid">dummy</field>
+        <field name="pagadito_wsk">dummy</field>
+    </record>
+</odoo>

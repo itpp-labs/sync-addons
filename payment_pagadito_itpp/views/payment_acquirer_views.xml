@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT).-->
+<odoo>
+    <record id="acquirer_form_pagadito" model="ir.ui.view">
+        <field name="name">acquirer.form.pagadito</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form" />
+        <field name="arch" type="xml">
+            <xpath expr='//group[@name="acquirer"]' position='after'>
+                <group attrs="{'invisible': [('provider', '!=', 'pagadito')]}">
+                    <field name="pagadito_uid" />
+                    <field name="pagadito_wsk" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <!--
+    <record id="transaction_form_pagadito" model="ir.ui.view">
+        <field name="name">acquirer.transaction.form.pagadito</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//notebook' position='inside'>
+                <page string="Pagadito TX Details">
+                    <group>
+                        <field name="pagadito_txn_type"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    -->
+</odoo>

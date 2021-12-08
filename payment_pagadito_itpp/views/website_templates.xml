@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+    Copyright 2019 Artem Rafailov <https://it-projects.info/team/Ommo73>
+    License MIT (https://opensource.org/licenses/MIT).-->
+<odoo>
+    <template
+        id="payment_confirmation_status"
+        inherit_id="website_sale.payment_confirmation_status"
+    >
+        <xpath expr="." position="inside">
+            <t
+                t-if="order.authorized_transaction_ids.acquirer_id.provider == 'pagadito'"
+            >
+                <div class="alert alert-success" role="alert">
+                    Payment confirmation codes: NAP=<t
+                        t-raw="order.payment_tx_id.acquirer_reference"
+                    />, ERN=<t t-raw="order.payment_tx_id.reference" />
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>
