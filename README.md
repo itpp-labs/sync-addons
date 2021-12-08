@@ -8,6 +8,7 @@
 <br/>:heavy_check_mark: [ir_attachment_url](https://apps.odoo.com/apps/modules/10.0/ir_attachment_url/)
 <br/>:heavy_check_mark: [mailgun](https://apps.odoo.com/apps/modules/10.0/mailgun/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/10.0/openapi/)
+<br/>:heavy_check_mark: [payment_pagadito_itpp](https://apps.odoo.com/apps/modules/10.0/payment_pagadito_itpp/)
 <br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/10.0/pos_longpolling/)
 <br/>:heavy_check_mark: [sms_sg](https://apps.odoo.com/apps/modules/10.0/sms_sg/)
 <br/>:heavy_check_mark: [telegram_leads](https://apps.odoo.com/apps/modules/10.0/telegram_leads/)
