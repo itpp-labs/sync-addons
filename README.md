@@ -10,6 +10,7 @@
 <br/>:heavy_check_mark: [odoo_backup_sh_dropbox](https://apps.odoo.com/apps/modules/12.0/odoo_backup_sh_dropbox/)
 <br/>:heavy_check_mark: [odoo_backup_sh_google_disk](https://apps.odoo.com/apps/modules/12.0/odoo_backup_sh_google_disk/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/12.0/openapi/)
+<br/>:heavy_check_mark: [payment_pagadito_itpp](https://apps.odoo.com/apps/modules/12.0/payment_pagadito_itpp/)
 <br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/12.0/pos_longpolling/)
 <br/>:heavy_check_mark: [pos_qr_payments](https://apps.odoo.com/apps/modules/12.0/pos_qr_payments/)
 <br/>:heavy_check_mark: [pos_qr_scan](https://apps.odoo.com/apps/modules/12.0/pos_qr_scan/)
