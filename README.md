@@ -5,7 +5,12 @@
 
 :heavy_check_mark: [base_api](https://apps.odoo.com/apps/modules/13.0/base_api/)
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/13.0/base_automation_webhook/)
+<br/>:heavy_check_mark: [ir_attachment_s3](https://apps.odoo.com/apps/modules/13.0/ir_attachment_s3/)
+<br/>:heavy_check_mark: [ir_attachment_url](https://apps.odoo.com/apps/modules/13.0/ir_attachment_url/)
 <br/>:heavy_check_mark: [multi_livechat](https://apps.odoo.com/apps/modules/13.0/multi_livechat/)
+<br/>:heavy_check_mark: [odoo_backup_sh](https://apps.odoo.com/apps/modules/13.0/odoo_backup_sh/)
+<br/>:heavy_check_mark: [odoo_backup_sh_dropbox](https://apps.odoo.com/apps/modules/13.0/odoo_backup_sh_dropbox/)
+<br/>:heavy_check_mark: [odoo_backup_sh_google_disk](https://apps.odoo.com/apps/modules/13.0/odoo_backup_sh_google_disk/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/13.0/openapi/)
 <br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/13.0/pos_longpolling/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/13.0/sync/)
