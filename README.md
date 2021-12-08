@@ -7,6 +7,7 @@
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/13.0/base_automation_webhook/)
 <br/>:heavy_check_mark: [multi_livechat](https://apps.odoo.com/apps/modules/13.0/multi_livechat/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/13.0/openapi/)
+<br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/13.0/pos_longpolling/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/13.0/sync/)
 <br/>:heavy_check_mark: [sync_telegram](https://apps.odoo.com/apps/modules/13.0/sync_telegram/)
 
