@@ -4,9 +4,12 @@
 :open_file_folder: Get a **.zip** file with all needed dependencies:
 
 :heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/10.0/base_automation_webhook/)
+<br/>:heavy_check_mark: [ir_attachment_s3](https://apps.odoo.com/apps/modules/10.0/ir_attachment_s3/)
+<br/>:heavy_check_mark: [ir_attachment_url](https://apps.odoo.com/apps/modules/10.0/ir_attachment_url/)
 <br/>:heavy_check_mark: [mailgun](https://apps.odoo.com/apps/modules/10.0/mailgun/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/10.0/openapi/)
 <br/>:heavy_check_mark: [pos_longpolling](https://apps.odoo.com/apps/modules/10.0/pos_longpolling/)
+<br/>:heavy_check_mark: [sms_sg](https://apps.odoo.com/apps/modules/10.0/sms_sg/)
 <br/>:heavy_check_mark: [telegram_leads](https://apps.odoo.com/apps/modules/10.0/telegram_leads/)
 
 :star: Star this repo if you **like** it!
