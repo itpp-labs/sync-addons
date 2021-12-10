@@ -189,7 +189,7 @@ def handle_webhook(httprequest):
 
 
     channel.message_post(body=odoo_message_text, attachments=[file_bin_data], author_id=partner_link.odoo.id,
-    message_type="comment", subtype_xmlid="mail.mt_comment")
+    message_type="comment", subtype_xmlid="mail.mt_comment", channel_ids=channel.ids)
 
 
 

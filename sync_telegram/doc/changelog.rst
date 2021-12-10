@@ -1,3 +1,8 @@
+`4.1.2`
+-------
+
+- **Fix:** message from telegram to odoo was not attached to channel
+
 `4.1.1`
 -------
 
