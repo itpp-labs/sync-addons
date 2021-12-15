@@ -63,6 +63,11 @@ class SyncJob(models.Model):
         compute="_compute_state",
     )
 
+    def unlink(self):
+        self.mapped("job_ids").unlink()
+        self.mapped("log_ids").unlink()
+        return super().unlink()
+
     @api.depends("queue_job_id.max_retries")
     def _compute_max_retries_str(self):
         for r in self:
