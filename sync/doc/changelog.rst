@@ -1,3 +1,10 @@
+`4.1.0`
+-------
+
+- **Improvement:** add more eval context functions (`get_lang`, `url2base64`, `html2plaintext`) (backported from 14.0.4.1.0)
+- **Improvement:** add development tools (`LogExternalQuery`), add new type for `ir.logging` (backported from 14.0.4.1.0)
+- **Improvement:** move code checker above in task form to make it more visible (backported from 14.0.4.1.0)
+
 `4.0.0`
 -------
 
