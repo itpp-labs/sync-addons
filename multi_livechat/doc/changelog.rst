@@ -1,3 +1,8 @@
+`1.1.2`
+-------
+
+- **Fix:** post_channel_message did not post message on channel
+
 `1.1.1`
 -------
 

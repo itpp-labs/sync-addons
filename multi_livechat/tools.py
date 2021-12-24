@@ -77,7 +77,7 @@ def get_multi_livechat_eval_context(env, channel_type, eval_context):
             body=message,
             author_id=author or odoobot_id,
             message_type="comment",
-            subtype_xmlid="mail.mt_comment",
+            subtype="mail.mt_comment",
         )
 
     return {
