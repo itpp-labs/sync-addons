@@ -29,6 +29,7 @@ Contributors
 
 * `Ivan Yelizariev <https://twitter.com/yelizariev>`__
 * `Ilya Ilchenko <https://github.com/mentalko>`__
+* `Victor Bykov <https://github.com/BykovVik>`__
 
 Further information
 ===================
