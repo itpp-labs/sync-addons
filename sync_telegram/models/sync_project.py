@@ -12,9 +12,11 @@ from telegram import (  # pylint: disable=missing-manifest-dependency; disabled 
     Bot,
     Update,
 )
+from telegram.error import Unauthorized  # pylint: disable=missing-manifest-dependency;
 
 from odoo import api, fields, models
 
+from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
 
 _logger = logging.getLogger(__name__)
@@ -75,15 +77,38 @@ class SyncProjectTelegram(models.Model):
 
         def sendMessage(chat_id, html, *args, **kwargs):
             log_transmission("%s@telegram" % chat_id, "Message: %s" % html)
-            bot.sendMessage(chat_id, _html_sanitize_telegram(html), *args, **kwargs)
+            channel = kwargs.pop("channel", None)
+            try:
+                bot.sendMessage(chat_id, _html_sanitize_telegram(html), *args, **kwargs)
+            except Unauthorized as e:
+                if channel is not None:
+                    multi_livechat_context.post_channel_message(channel, str(e))
+                else:
+                    raise
 
-        def sendPhoto(chat_id, datas):
+        def sendPhoto(chat_id, datas, *args, **kwargs):
             log_transmission("%s@telegram" % chat_id, "Photo sent")
-            bot.sendPhoto(chat_id, photo=base64.b64decode(datas))
+            channel = kwargs.pop("channel", None)
+            try:
+                bot.sendPhoto(chat_id, photo=base64.b64decode(datas))
+            except Unauthorized as e:
+                if channel is not None:
+                    multi_livechat_context.post_channel_message(channel, str(e))
+                else:
+                    raise
 
-        def sendDocument(chat_id, name, datas):
+        def sendDocument(chat_id, name, datas, *args, **kwargs):
             log_transmission("%s@telegram" % chat_id, "Document sent")
-            bot.sendDocument(chat_id, filename=name, document=base64.b64decode(datas))
+            channel = kwargs.pop("channel", None)
+            try:
+                bot.sendDocument(
+                    chat_id, filename=name, document=base64.b64decode(datas)
+                )
+            except Unauthorized as e:
+                if channel is not None:
+                    multi_livechat_context.post_channel_message(channel, str(e))
+                else:
+                    raise
 
         def getDocumentFile(chat_id, file_data):
             file_name = file_data.file_name
@@ -121,6 +146,12 @@ class SyncProjectTelegram(models.Model):
 
         def parse_data(data):
             return Update.de_json(data, bot)
+
+        multi_livechat_context = AttrDict(
+            get_multi_livechat_eval_context(
+                self.env, "multi_livechat_telegram", eval_context
+            )
+        )
 
         telegram = AttrDict(
             {
