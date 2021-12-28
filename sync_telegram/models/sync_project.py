@@ -42,6 +42,8 @@ class SyncProjectTelegram(models.Model):
         * telegram.sendMessage
         * telegram.setWebhook
         * telegram.parse_data
+
+        * multi_livechat.*
         """
 
         log_transmission = eval_context["log_transmission"]
@@ -173,4 +175,5 @@ class SyncProjectTelegram(models.Model):
         return {
             "telegram": telegram,
             "Cleaner": Cleaner,
+            "multi_livechat": multi_livechat_context,
         }
