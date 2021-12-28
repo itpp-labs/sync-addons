@@ -1,3 +1,8 @@
+`1.2.0`
+-------
+
+- **Improvement:** allow extra keyword arguments for post_channel_message
+
 `1.1.2`
 -------
 
