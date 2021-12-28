@@ -1,3 +1,8 @@
+`4.2.0`
+-------
+
+- **Improvement:** refactor to use common method to post messages on channel
+
 `4.1.2`
 -------
 
