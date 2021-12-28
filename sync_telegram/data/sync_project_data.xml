@@ -151,11 +151,11 @@ def handle_webhook(httprequest):
         record_model = env[params.CHAT_MODEL].with_user(main_operator).create({"name": record_name, "partner_id": partner_link.odoo.id})
         record_model.set_link(model_rel, telegram_user_ref, sync_date=None, allow_many2many=False)
 
-        record_model.message_post(body="""<b><a href="/web#action=%s&active_id=mail.channel_%s">Chat with partner is created. </a></b>""" %
-        (env.ref("mail.action_discuss").id, channel.id), author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+        multi_livechat.post_channel_message(channel, """<b><a href="/web#action=%s&active_id=mail.channel_%s">Chat with partner is created. </a></b>""" %
+        (env.ref("mail.action_discuss").id, channel.id))
 
-        channel.message_post(body="""<b><a href="/web#id=%s&model=%s">Record is created. </a></b>""" %
-        (record_model.id, record_model._name), author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+        multi_livechat.post_channel_message(channel, """<b><a href="/web#id=%s&model=%s">Record is created. </a></b>""" %
+        (record_model.id, record_model._name))
 
     file_bin_data = []
     telegram_document = update.message.document
@@ -178,18 +178,15 @@ def handle_webhook(httprequest):
             file_bin_data = telegram.getDocumentFile(telegram_user_ref, telegram_document)
 
         elif telegram_photo or telegram_media or telegram_document:
-            channel.message_post(body="Incoming file is too big and cannot be downloaded due to Telegram API restirctions",
-            author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+            multi_livechat.post_channel_message(channel, "Incoming file is too big and cannot be downloaded due to Telegram API restirctions")
             telegram.sendMessage(telegram_user_ref, "File is too big, file size must not exceed 20 MB.")
 
         if telegram_sticker:
             log("telegram_sticker: %s" % telegram_sticker, LOG_INFO)
-            channel.message_post(body=telegram_sticker.emoji, author_id=partner_link.odoo.id,
-            message_type="comment", subtype_xmlid="mail.mt_comment")
+            multi_livechat.post_channel_message(channel, telegram_sticker.emoji, author=partner_link.odoo.id)
 
 
-    channel.message_post(body=odoo_message_text, attachments=[file_bin_data], author_id=partner_link.odoo.id,
-    message_type="comment", subtype_xmlid="mail.mt_comment", channel_ids=channel.ids)
+    multi_livechat.post_channel_message(channel, odoo_message_text, attachments=[file_bin_data], author=partner_link.odoo.id)
 
 
 

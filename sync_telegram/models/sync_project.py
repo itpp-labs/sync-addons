@@ -15,6 +15,7 @@ from telegram import (  # pylint: disable=missing-manifest-dependency; disabled 
 
 from odoo import api, fields, models
 
+from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
 
 _logger = logging.getLogger(__name__)
@@ -39,6 +40,8 @@ class SyncProjectTelegram(models.Model):
         * telegram.sendMessage
         * telegram.setWebhook
         * telegram.parse_data
+
+        * multi_livechat.*
         """
 
         log_transmission = eval_context["log_transmission"]
@@ -121,6 +124,11 @@ class SyncProjectTelegram(models.Model):
         def parse_data(data):
             return Update.de_json(data, bot)
 
+        multi_livechat_context = AttrDict(
+            get_multi_livechat_eval_context(
+                self.env, "multi_livechat_telegram", eval_context
+            )
+        )
         telegram = AttrDict(
             {
                 "sendMessage": sendMessage,
@@ -141,4 +149,5 @@ class SyncProjectTelegram(models.Model):
         return {
             "telegram": telegram,
             "Cleaner": Cleaner,
+            "multi_livechat": multi_livechat_context,
         }
