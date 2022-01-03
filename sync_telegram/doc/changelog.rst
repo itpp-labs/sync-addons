@@ -1,3 +1,8 @@
+`4.1.2`
+-------
+
+- **Improvement:** handle case, where user blocked bot
+
 `4.1.1`
 -------
 

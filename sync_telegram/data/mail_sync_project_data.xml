@@ -28,7 +28,7 @@ def handle_db(records):
 
                 if mail_message.body:
                     message_html = "%s\n\n<i>%s</i>" % (mail_message.body, mail_message.author_id.name)
-                    telegram.sendMessage(telegram_user_ref, message_html, parse_mode='HTML')
+                    telegram.sendMessage(telegram_user_ref, message_html, parse_mode='HTML', channel=channel)
 
                 if mail_message.attachment_ids:
                     for attach in mail_message.attachment_ids:
@@ -36,13 +36,13 @@ def handle_db(records):
 
                         if attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "image":
                             if  attach.file_size < telegram.MAX_SIZE_IMAGE:
-                                telegram.sendPhoto(telegram_user_ref, attach.datas)
+                                telegram.sendPhoto(telegram_user_ref, attach.datas, channel=channel)
                             else:
                                 channel.message_post(body="You cannot send more than 10 MB for photos.",
                                     author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
                         else:
                             if  attach.file_size < telegram.MAX_SIZE_DOCUMENT:
-                                telegram.sendDocument(telegram_user_ref, attach.name, attach.datas)
+                                telegram.sendDocument(telegram_user_ref, attach.name, attach.datas, channel=channel)
                             else:
                                 channel.message_post(body="You cannot send more than 50 MB for documents.",
                                     author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
