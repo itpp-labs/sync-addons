@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Eugene Molotov <https://github.com/em230418>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="whatsapp-chatapi-integration--sync-project" model="sync.project">
+        <field name="name">Whatsapp (Chat API) Integration</field>
+        <field name="eval_context">whatsapp_chatapi</field>
+        <field
+            name="common_code"
+        ><![CDATA[WHATSAPP_CHATAPI_PARTNER="WHATSAPP_CHATAPI_PARTNER"
+WHATSAPP_CHATAPI_CHANNEL="WHATSAPP_CHATAPI_CHANNEL"
+WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
+]]></field>
+    </record>
+    <record
+        id="whatsapp-chatapi-service-endpoint--project-secret-parameter"
+        model="sync.project.param"
+    >
+        <field name="key">WHATSAPP_CHATAPI_API_URL</field>
+        <field name="value">https://api.chat-api.com/instance389038/</field>
+        <field name="description" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record
+        id="whatsapp-chatapi-service-api-key--project-secret-parameter"
+        model="sync.project.secret"
+    >
+        <field name="key">WHATSAPP_CHATAPI_TOKEN</field>
+        <field name="description" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record id="chat-model--project-parameter" model="sync.project.param">
+        <field name="key">CHAT_MODEL</field>
+        <field name="value">crm.lead</field>
+        <field name="description">
+            Record of which model is created on incoming message from new Whatsapp user
+            (e.g. crm.lead, project.task, etc). The model must have fields name and
+            partner_id
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record id="webhook-chat--project-parameter" model="sync.project.param">
+        <field name="key">WEBHOOK_CHAT</field>
+        <field name="value">yes</field>
+        <field name="description">
+            Set to "no" to disable redirecting whatsapp messages to odoo chat
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record id="operator-ids--project-parameter" model="sync.project.param">
+        <field name="key">OPERATOR_IDS</field>
+        <field name="value">2</field>
+        <field name="description">
+            Comma-separated list of user ids that will added to Discuss chat on getting
+            message from new whatsapp user
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record id="setup-webhook--sync-task" model="sync.task">
+        <field name="name">Setup webook</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_button():
+    whatsapp_service_api.set_webhook(webhooks.WHATSAPP)
+        ]]></field>
+    </record>
+    <record id="setup-webhook--manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_WEBHOOK</field>
+        <field name="name" />
+        <field name="sync_task_id" ref="setup-webhook--sync-task" />
+    </record>
+    <record id="process-whatsapp-events--sync-task" model="sync.task">
+        <field name="name">Process Whatsapp Events</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_webhook(httprequest):
+  data = json.loads(httprequest.data.decode("utf-8"))
+  log("Raw data: %s" % data, LOG_DEBUG)
+
+  def partner_vals(message):
+    return {
+      "name": message["senderName"],
+      "phone": "+" + message["author"].split("@")[0],
+      "comment": str(message),
+    }
+
+  messages = whatsapp_webhook_parse(httprequest)
+  for message in messages:
+    if message["fromMe"]:
+      continue
+
+    whatsapp_user_ref = message["author"]
+
+     # TODO: parse avatar from "profilePicThumObj"
+
+    partner_kwargs = dict(message=message)
+    partner, is_new_partner = multi_livechat.get_partner(WHATSAPP_CHATAPI_PARTNER, whatsapp_user_ref, partner_vals, partner_kwargs)
+
+    if params.WEBHOOK_CHAT != "no":
+      channel_name = partner.name
+      operators_user_ids = list(map(int, params.OPERATOR_IDS.split(",")))
+      operators_partner_ids = env.user.browse(operators_user_ids).mapped("partner_id").ids
+      partner_ids = [partner.id] + operators_partner_ids
+      channel, is_new_channel = multi_livechat.get_channel(WHATSAPP_CHATAPI_CHANNEL, whatsapp_user_ref, channel_name, partner_ids)
+
+      if params.CHAT_MODEL != "res.partner":
+        def thread_vals(partner):
+          return {
+            "name": partner.name,
+          }
+        thread_kwargs = dict(partner=partner)
+        record_message = """<b><a href="channel_url">Chat with partner is created.</a></b>""".format(
+          channel_url=multi_livechat.get_channel_url(channel)
+        )
+        thread, is_new_thread = multi_livechat.get_thread(
+          "%s:%s" % (WHATSAPP_CHATAPI_THREAD, params.CHAT_MODEL),
+          message["chatId"],
+          thread_vals,
+          thread_kwargs,
+          params.CHAT_MODEL,
+          record_message,
+        )
+        if is_new_thread:
+          multi_livechat.post_channel_message(channel,
+          """<b><a href="{record_url}">Record is created. </a></b>""".format(
+            record_url=multi_livechat.get_record_url(thread)
+            ))
+
+      odoo_message_text = message["body"]
+      if message.get("caption"):
+          odoo_message_text = message["caption"] + "<br />" + (odoo_message_text or "")
+
+      # Chat API sends files as links
+      if odoo_message_text:
+          multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
+]]></field>
+    </record>
+    <record id="whatsapp-chatapi--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">WHATSAPP</field>
+        <field name="active" eval="True" />
+        <field name="name">Webhook</field>
+        <field name="sync_task_id" ref="process-whatsapp-events--sync-task" />
+        <field name="webhook_type">json</field>
+    </record>
+    <record id="send-response-via-odoo--sync-task" model="sync.task">
+        <field name="name">Send Response via Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def send_whatsapp_message(external_chat_ref, text):
+    whatsapp_service_api.send_message(external_chat_ref, text)
+
+def send_whatsapp_file(external_chat_ref, attachment):
+    whatsapp_service_api.send_file(external_chat_ref, attachment)
+
+def handle_db(records):
+    # records are instances of mail.message
+    for mail_message in records:
+        if mail_message.author_id.id == multi_livechat.odoobot_id or mail_message.author_id.search_links(WHATSAPP_CHATAPI_PARTNER):
+            log("Message from external chat. No need to send back. Ignore")
+            continue
+
+        for channel in mail_message.channel_ids:
+            if channel.channel_type != multi_livechat.channel_type:
+                log("channel type is not %s" % multi_livechat.channel_type, LOG_DEBUG)
+                continue
+            channel_link = channel.search_links(WHATSAPP_CHATAPI_CHANNEL)
+            if not channel_link:
+                log("channel link not found")
+                continue
+
+            log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (mail_message.res_id, mail_message.author_id.id, mail_message.attachment_ids, mail_message.body), LOG_DEBUG)
+            external_chat_ref = channel_link.external
+
+            if mail_message.body:
+                text = "%s\n\n%s" % (html2plaintext(mail_message.body), mail_message.author_id.name)
+                add_job(send_whatsapp_message)(external_chat_ref, text)
+
+            if mail_message.attachment_ids:
+                for attach in mail_message.attachment_ids:
+                    log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+
+                    add_job(send_whatsapp_file)(external_chat_ref, attach)
+]]></field>
+    </record>
+    <record id="on-message-posted--db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ON_MESSAGE_POSTED</field>
+        <field name="active" eval="True" />
+        <field name="sync_task_id" ref="send-response-via-odoo--sync-task" />
+        <field name="model_id" ref="mail.model_mail_message" />
+        <field name="trigger">on_write</field>
+        <field name="filter_pre_domain">[["channel_ids","=",False]]</field>
+        <field name="filter_domain">[["channel_ids","!=",False]]</field>
+    </record>
+</odoo>
