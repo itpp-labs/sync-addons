@@ -14,7 +14,6 @@
     ],
     "data": [
         "security/ir.model.access.csv",
-        "views/sync_project_views.xml",
         "views/assets.xml",
         "wizard/sync_record_mapping_wizard.xml"
     ],

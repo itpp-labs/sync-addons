@@ -37,6 +37,7 @@ class SyncRecordMappingWizard(models.TransientModel):
         record_mapping_ids = self.env['sync.link'].search(
             self.record_mapping_domain(self.res_id, self.res_model)
         )
+        # TODO: Could this possibly cause a race condition?
         record_mapping_ids_to_delete = record_mapping_ids - self.record_mapping_ids
         if record_mapping_ids_to_delete:
             record_mapping_ids_to_delete.unlink()
@@ -47,6 +48,3 @@ class SyncRecordMappingWizard(models.TransientModel):
         inverse='_inverse_record_mapping_ids',
         store=True
     )
-
-    def action_done(self):
-        return {}

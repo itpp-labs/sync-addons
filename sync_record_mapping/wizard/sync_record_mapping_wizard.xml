@@ -17,6 +17,7 @@
                             domain="[
                                 '&amp;',
                                 '&amp;',
+                                ('system1', '=', '__external__'),
                                 ('system2', '=', '__odoo__'),
                                 ('ref2', '=', str(res_id)),
                                 ('model', '=', res_model),
@@ -24,16 +25,13 @@
                             context="{
                                 'tree_view_ref':'sync_record_mapping.view_record_mapping_ids_tree',
                                 'form_view_ref':'sync_record_mapping.view_record_mapping_ids_form',
+                                'default_system1': '__external__',
                                 'default_system2': '__odoo__',
                                 'default_model': res_model,
                                 'default_ref2': res_id
                             }"
                     />
                 </group>
-                <footer>
-                    <button name="action_done" string="Confirm" type="object" class="oe_highlight"/>
-                    <button string="Cancel" class="btn btn-default" special="cancel"/>
-                </footer>
             </form>
         </field>
     </record>
@@ -43,13 +41,8 @@
         <field name="mode">primary</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="relation" invisible="1"/>
-                <field
-                        name="sync_project_id"
-                        options="{'no_open': True, 'no_create_edit': True}"
-                        domain="[('active', 'in', [True, False])]"
-                />
-                <field name="system1" string="External Field"/>
+                <field name="relation"/>
+                <field name="system1" invisible="1"/>
                 <field name="ref1" string="External Reference"/>
                 <field name="model" invisible="1"/>
                 <field name="ref2" invisible="1"/>
@@ -65,13 +58,8 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="relation" invisible="1"/>
-                    <field
-                            name="sync_project_id"
-                            options="{'no_open': True, 'no_create_edit': True}"
-                            domain="[('active', 'in', [True, False])]"
-                    />
-                    <field name="system1" string="External Field"/>
+                    <field name="relation"/>
+                    <field name="system1" invisible="1"/>
                     <field name="ref1" string="External Reference"/>
                     <field name="model" invisible="1"/>
                     <field name="ref2" invisible="1"/>
