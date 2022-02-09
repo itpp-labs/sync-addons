@@ -5,7 +5,7 @@
         <field name="model">sync.record.mapping.wizard</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form>
+            <form create="0">
                 <field name="res_model" invisible="1"/>
                 <field name="res_id" invisible="1"/>
                 <group>
