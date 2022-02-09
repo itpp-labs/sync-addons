@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="sync_project_view_form_inherit_record_mapping" model="ir.ui.view">
+        <field name="name">sync.project.form.inherit.record.mapping</field>
+        <field name="model">sync.project</field>
+        <field name="inherit_id" ref="sync.sync_project_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='params']" position="after">
+                <page name="record_mappings" string="Record Mappings">
+                    <p attrs="{'invisible': [('id', '!=', False)]}">
+                        <em>
+                            You can create record mappings once you save the form.
+                        </em>
+                    </p>
+                    <field name="record_mapping_relation" invisible="1"/>
+                    <field
+                            name="record_mapping_ids"
+                            attrs="{'readonly': [('id', '=', False)]}"
+                            domain="[('relation', '=', record_mapping_relation)]"
+                            context="{
+                                'default_relation': record_mapping_relation,
+                                'default_system2': '__odoo__',
+                                'default_sync_project_id': id
+                            }"
+                            no_create="1" no_open="1"
+                    >
+                        <tree>
+                            <field name="relation" invisible="1"/>
+                            <field name="sync_project_id" invisible="1"/>
+                            <field name="system1" string="External Field"/>
+                            <field name="ref1" string="External Reference"/>
+                            <field name="model"/>
+                            <field name="ref2" string="Odoo Record"/>
+                            <field name="system2" invisible="1"/>
+                            <field name="date" invisible="1"/>
+                        </tree>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="relation" invisible="1"/>
+                                        <field name="sync_project_id" invisible="1"/>
+                                        <field name="system1" string="External Field"/>
+                                        <field name="ref1" string="External Reference"/>
+                                        <field name="model"/>
+                                        <field name="ref2" string="Odoo Record"/>
+                                        <field name="system2" invisible="1"/>
+                                        <field name="date" invisible="1"/>
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

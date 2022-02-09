@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sync_record_mapping_wizard_form" model="ir.ui.view">
+        <field name="name">sync.record.mapping.wizard.form</field>
+        <field name="model">sync.record.mapping.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="res_model" invisible="1"/>
+                <field name="res_id" invisible="1"/>
+                <group>
+                    <!-- Redundant domain definition, because using the domain argument in the field definition
+                         initially yields an empty domain, but it remains on the record selection popup. -->
+                    <field
+                            name="record_mapping_ids"
+                            nolabel="1"
+                            domain="[
+                                '&amp;',
+                                '&amp;',
+                                ('system2', '=', '__odoo__'),
+                                ('ref2', '=', str(res_id)),
+                                ('model', '=', res_model),
+                            ]"
+                            context="{
+                                'tree_view_ref':'sync_record_mapping.view_record_mapping_ids_tree',
+                                'form_view_ref':'sync_record_mapping.view_record_mapping_ids_form',
+                                'default_system2': '__odoo__',
+                                'default_model': res_model,
+                                'default_ref2': res_id
+                            }"
+                    />
+                </group>
+                <footer>
+                    <button name="action_done" string="Confirm" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_record_mapping_ids_tree" model="ir.ui.view">
+        <field name="name">sync.record.mapping.ids.tree</field>
+        <field name="model">sync.link</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="relation" invisible="1"/>
+                <field
+                        name="sync_project_id"
+                        options="{'no_open': True, 'no_create_edit': True}"
+                        domain="[('active', 'in', [True, False])]"
+                />
+                <field name="system1" string="External Field"/>
+                <field name="ref1" string="External Reference"/>
+                <field name="model" invisible="1"/>
+                <field name="ref2" invisible="1"/>
+                <field name="system2" invisible="1"/>
+                <field name="date" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_record_mapping_ids_form" model="ir.ui.view">
+        <field name="name">sync.record.mapping.ids.form</field>
+        <field name="model">sync.link</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="relation" invisible="1"/>
+                    <field
+                            name="sync_project_id"
+                            options="{'no_open': True, 'no_create_edit': True}"
+                            domain="[('active', 'in', [True, False])]"
+                    />
+                    <field name="system1" string="External Field"/>
+                    <field name="ref1" string="External Reference"/>
+                    <field name="model" invisible="1"/>
+                    <field name="ref2" invisible="1"/>
+                    <field name="system2" invisible="1"/>
+                    <field name="date" invisible="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+</odoo>
