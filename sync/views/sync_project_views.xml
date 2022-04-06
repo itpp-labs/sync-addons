@@ -145,7 +145,11 @@
                         </page>
                         <page name="code" string="Evaluation Context">
                             <group>
-                                <field name="eval_context" />
+                                <field
+                                    name="eval_context_ids"
+                                    widget="many2many_tags"
+                                    options="{'no_open': True,  'no_create_edit': True}"
+                                />
                             </group>
                             <field name="eval_context_description" />
                             <separator string="Common Code" />

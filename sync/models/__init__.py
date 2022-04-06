@@ -1,6 +1,7 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 from . import sync_project
+from . import sync_project_context
 from . import sync_project_demo
 from . import sync_task
 from . import sync_trigger_mixin
