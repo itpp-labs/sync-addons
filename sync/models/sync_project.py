@@ -507,5 +507,10 @@ class SyncProjectContext(models.Model):
             if not r.name:
                 r.description = ""
                 continue
-            method = getattr(sync_project, EVAL_CONTEXT_PREFIX + r.name)
+            try:
+                method = getattr(self, EVAL_CONTEXT_PREFIX + r.name)
+            except AttributeError:
+                # Deprecation notice:
+                # Please define evaluation context methods by inheriting sync.project.context instead of sync.project
+                method = getattr(sync_project, EVAL_CONTEXT_PREFIX + r.name)
             r.description = method.__doc__

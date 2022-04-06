@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <data noupdate="1">
+    <data>
         <record id="sync_project_context_odoo2odoo" model="sync.project.context" forcecreate="0">
             <field name="name">odoo2odoo</field>
             <field name="display_name">Odoo2odoo</field>
