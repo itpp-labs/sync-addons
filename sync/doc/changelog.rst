@@ -1,3 +1,8 @@
+`5.1.0`
+-------
+
+- **Improvement:** projects can now use multiple execution contexts.
+
 `5.0.2`
 -------
 

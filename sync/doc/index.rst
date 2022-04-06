@@ -397,6 +397,9 @@ Evaluation provides additional variables and methods for a project. For example,
            ("my_project", "My Project"),
        ])
 
+
+       # Deprecation notice:
+       # Please move execution context methods to sync.project.context instead of sync.project.
        @api.model
        def _eval_context_my_project(self, secrets, eval_context):
            """Additional function to make http request

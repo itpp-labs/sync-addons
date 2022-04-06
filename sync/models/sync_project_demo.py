@@ -27,8 +27,9 @@ except (ImportError, IOError) as err:
 
 class SyncProjectDemo(models.Model):
 
-    _inherit = "sync.project"
+    _inherit = "sync.project.context"
 
+    # Deprecation notice:
     # eval_context has been deprecated in favor of sync.project.context records
     # See data/sync_project_context.xml
 
@@ -40,6 +41,8 @@ class SyncProjectDemo(models.Model):
     #     ]
     # )
 
+    # Deprecation notice:
+    # Please move execution context methods to sync.project.context instead of sync.project.
     @api.model
     def _eval_context_odoo2odoo(self, secrets, eval_context):
         """
