@@ -30,4 +30,6 @@ access_sync_project_text_manager,sync.project.text manager,model_sync_project_te
 access_sync_project_secret_user,sync.project.secret user,model_sync_project_secret,sync_group_user,1,0,0,0
 access_sync_project_secret_dev,sync.project.secret dev,model_sync_project_secret,sync_group_dev,1,1,1,1
 access_sync_project_secret_manager,sync.project.secret manager,model_sync_project_secret,sync_group_manager,1,1,1,1
+access_sync_project_context_user,sync.project.context user,model_sync_project_context,sync_group_user,1,0,0,0
+access_sync_project_context_dev,sync.project.context dev,model_sync_project_context,sync_group_dev,1,1,1,1
 access_sync_make_module,access_sync_make_module,model_sync_make_module,base.group_user,1,1,1,1

@@ -7,7 +7,10 @@
     <!-- Odoo2odoo -->
     <record id="odoo2odoo_project" model="sync.project">
         <field name="name">Demo Odoo2odoo Integration</field>
-        <field name="eval_context">odoo2odoo</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync.sync_project_context_odoo2odoo'))]"
+        />
         <field name="common_code">
 <![CDATA[
 PARTNER_REL = "odoo2odoo_partner"

@@ -378,7 +378,19 @@ Exceptions
 Evaluation context
 ------------------
 
-Evaluation provides additional variables and methods for a project. For example, for telegram integration is could be method to send message to a telegram user. To make such additional context, you need to make a new module and make extension for ``sync.project`` model. Example:
+Evaluation provides additional variables and methods for a project. For example, for telegram integration is could be method to send message to a telegram user.
+To add a new context, create ``sync.project.context`` record and add method ``_eval_context_NAME``. Example:
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <odoo>
+        <record id="sync_project_context_odoo2odoo" model="sync.project.context">
+            <field name="name">my_project</field>
+            <field name="display_name">My Sync Project</field>
+        </record>
+    </odoo>
+
 
 .. code-block:: python
 
@@ -387,10 +399,7 @@ Evaluation provides additional variables and methods for a project. For example,
 
    class SyncProject(models.Model):
 
-       _inherit = "sync.project"
-       eval_context = fields.Selection(selection_add=[
-           ("my_project", "My Project"),
-       ])
+       _inherit = "sync.project.context"
 
        @api.model
        def _eval_context_my_project(self, secrets, eval_context):

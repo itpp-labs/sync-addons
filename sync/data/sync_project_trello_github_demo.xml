@@ -6,7 +6,10 @@
 <odoo>
     <record id="trello-github_project" model="sync.project">
         <field name="name">Demo Trello-Github Integration</field>
-        <field name="eval_context">trello_github</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync.sync_project_context_trello')), (4, ref('sync.sync_project_context_github')), (4, ref('sync.sync_project_context_math'))]"
+        />
         <field
             name="common_code"
         ><![CDATA[
