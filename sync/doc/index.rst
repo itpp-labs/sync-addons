@@ -388,6 +388,11 @@ Evaluation provides additional variables and methods for a project. For example,
    class SyncProject(models.Model):
 
        _inherit = "sync.project"
+
+       # Deprecation notice:
+       # eval_context is being deprecated in favor of the new Many2many eval_contexts
+       # Please use an XML data file to add a sync.project.context record instead.
+       # See data/sync_project_context.xml
        eval_context = fields.Selection(selection_add=[
            ("my_project", "My Project"),
        ])

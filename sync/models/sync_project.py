@@ -48,8 +48,9 @@ class SyncProject(models.Model):
         "Name", help="e.g. Legacy Migration or eCommerce Synchronization", required=True
     )
     active = fields.Boolean(default=False)
-    eval_context = fields.Selection([], string="Evaluation context")
-    eval_context_description = fields.Text(compute="_compute_eval_context_description")
+    eval_context = fields.Selection([], string="Evaluation context")  # Deprecated, please use eval_contexts
+    eval_contexts = fields.Many2many("sync.project.context", string="Evaluation contexts")
+    eval_contexts_description = fields.Text(compute="_compute_eval_contexts_description")
 
     common_code = fields.Text(
         "Common Code",
@@ -93,13 +94,12 @@ class SyncProject(models.Model):
         self.with_context(active_test=False).mapped("task_ids").unlink()
         return super().unlink()
 
-    def _compute_eval_context_description(self):
+    def _compute_eval_contexts_description(self):
         for r in self:
-            if not r.eval_context:
-                r.eval_context_description = ""
+            if not r.eval_contexts:
+                r.eval_contexts_description = ""
                 continue
-            method = getattr(self, EVAL_CONTEXT_PREFIX + r.eval_context)
-            r.eval_context_description = method.__doc__
+            r.eval_contexts_description = "\n".join(r.eval_contexts.mapped(lambda c: c.description))
 
     def _compute_network_access_readonly(self):
         for r in self:
@@ -284,15 +284,26 @@ class SyncProject(models.Model):
         reading_time = time.time() - start_time
 
         executing_custom_context = 0
-        if self.eval_context:
+        if self.eval_contexts:
             start_time = time.time()
 
             secrets = AttrDict()
             for p in self.sudo().secret_ids:
                 secrets[p.key] = p.value
             eval_context_frozen = frozendict(eval_context)
-            method = getattr(self, EVAL_CONTEXT_PREFIX + self.eval_context)
-            eval_context = dict(**eval_context, **method(secrets, eval_context_frozen))
+            for ec in self.eval_contexts:
+                try:
+                    method = getattr(ec, EVAL_CONTEXT_PREFIX + ec.name)
+                except AttributeError:
+                    # Deprecation notice:
+                    # Please define evaluation context methods by inheriting sync.project.context instead of sync.project
+                    method = getattr(self, EVAL_CONTEXT_PREFIX + ec.name)
+                    log(
+                        "Deprecation notice: Please move method %s to sync.project.context."
+                        % (EVAL_CONTEXT_PREFIX + ec.name),
+                        LOG_WARNING,
+                    )
+                eval_context = dict(**eval_context, **method(secrets, eval_context_frozen))
             cleanup_eval_context(eval_context)
 
             executing_custom_context = time.time() - start_time
@@ -475,3 +486,26 @@ class AttrDict(dict):
     def __init__(self, *args, **kwargs):
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
+
+class SyncProjectContext(models.Model):
+
+    _name = "sync.project.context"
+    _description = "Project Context"
+    _rec_name = "display_name"
+
+    # name is used to match an execution context method (e.g. trello_github -> _eval_context_trello_github)
+    name = fields.Char("Name", required=True)
+    display_name = fields.Char("Display name", required=True)
+    description = fields.Text(compute="_compute_eval_context_description")
+
+    _sql_constraints = [("name_uniq", "unique (name)", "Name must be unique.")]
+
+    def _compute_eval_context_description(self):
+        sync_project = self.env['sync.project']
+        for r in self:
+            if not r.name:
+                r.description = ""
+                continue
+            method = getattr(sync_project, EVAL_CONTEXT_PREFIX + r.name)
+            r.description = method.__doc__

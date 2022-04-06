@@ -28,13 +28,17 @@ except (ImportError, IOError) as err:
 class SyncProjectDemo(models.Model):
 
     _inherit = "sync.project"
-    eval_context = fields.Selection(
-        selection_add=[
-            ("odoo2odoo", "Odoo2odoo"),
-            ("telegram_demo", "Telegram (Demo)"),
-            ("trello_github", "Trello & Github"),
-        ]
-    )
+
+    # eval_context has been deprecated in favor of sync.project.context records
+    # See data/sync_project_context.xml
+
+    # eval_context = fields.Selection(
+    #     selection_add=[
+    #         ("odoo2odoo", "Odoo2odoo"),
+    #         ("telegram_demo", "Telegram (Demo)"),
+    #         ("trello_github", "Trello & Github"),
+    #     ]
+    # )
 
     @api.model
     def _eval_context_odoo2odoo(self, secrets, eval_context):

@@ -82,7 +82,7 @@ class SyncMakeModule(models.TransientModel):
         root = etree.Element("odoo")
         project = self.project_id.with_context(active_test=False)
         records = [
-            (project, ("name", "eval_context", "common_code")),
+            (project, ("name", "eval_contexts", "common_code")),
         ]
         for secret in project.secret_ids:
             records.append((secret, ("key", "description", "url", "project_id")))

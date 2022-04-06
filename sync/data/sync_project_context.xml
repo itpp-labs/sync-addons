@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="sync_project_context_odoo2odoo" model="sync.project.context">
+        <field name="name">odoo2odoo</field>
+        <field name="display_name">Odoo2odoo</field>
+    </record>
+    <record id="sync_project_context_telegram" model="sync.project.context">
+        <field name="name">telegram_demo</field>
+        <field name="display_name">Telegram (Demo)</field>
+    </record>
+    <record id="sync_project_context_trello_github" model="sync.project.context">
+        <field name="name">trello_github</field>
+        <field name="display_name">Trello &amp; Github</field>
+    </record>
+</odoo>
