@@ -711,7 +711,7 @@ def wrap__resource__get_report(
     report = request.env.ref(report_external_id)
 
     if isinstance(report, type(request.env["ir.ui.view"])):
-        report = request.env["report"]._get_report_from_name(report_external_id)
+        report = request.env["ir.actions.report"]._get_report_from_name(report_external_id)
 
     model = report.model
     report_name = report.report_name
