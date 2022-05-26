@@ -1,3 +1,8 @@
+`5.1.0`
+-------
+
+- **New:** add search filters for `sync.job` model
+
 `5.0.2`
 -------
 
