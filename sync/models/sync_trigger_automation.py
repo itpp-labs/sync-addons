@@ -21,6 +21,7 @@ class SyncTriggerAutomation(models.Model):
 
     def unlink(self):
         self.mapped("automation_id").unlink()
+        self.mapped("action_server_id").unlink()
         return super().unlink()
 
     def start(self, records):

@@ -30,11 +30,13 @@ class SyncJob(models.Model):
     trigger_automation_id = fields.Many2one("sync.trigger.automation", readonly=True)
     trigger_webhook_id = fields.Many2one("sync.trigger.webhook", readonly=True)
     trigger_button_id = fields.Many2one("sync.trigger.button", readonly=True)
-    task_id = fields.Many2one("sync.task", compute="_compute_sync_task_id", store=True)
+    task_id = fields.Many2one(
+        "sync.task", compute="_compute_sync_task_id", store=True, ondelete="cascade"
+    )
     project_id = fields.Many2one(
         "sync.project", related="task_id.project_id", readonly=True
     )
-    parent_job_id = fields.Many2one("sync.job", readonly=True)
+    parent_job_id = fields.Many2one("sync.job", readonly=True, ondelete="cascade")
     job_ids = fields.One2many("sync.job", "parent_job_id", "Sub jobs", readonly=True)
     log_ids = fields.One2many("ir.logging", "sync_job_id", readonly=True)
     log_count = fields.Integer(compute="_compute_log_count")
