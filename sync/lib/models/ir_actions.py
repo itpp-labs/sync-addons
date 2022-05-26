@@ -10,7 +10,7 @@ from odoo.tools.json import scriptsafe as json_scriptsafe
 
 
 class ServerAction(models.Model):
-    """ Add website option in server actions. """
+    """Add website option in server actions."""
 
     _inherit = "sync.trigger.webhook"
 
@@ -60,7 +60,7 @@ class ServerAction(models.Model):
 
     @api.model
     def _get_eval_context(self, action):
-        """ Override to add the request object in eval_context. """
+        """Override to add the request object in eval_context."""
         eval_context = self.action_server_id._get_eval_context(action)
         if action.state == "code":
             eval_context["request"] = request
