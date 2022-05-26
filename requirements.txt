@@ -1,6 +1,9 @@
 # generated from manifests external_dependencies
+boto3
+botocore
 bravado_core
 facebook_business
+pretty_bad_protocol
 python-telegram-bot
 swagger_spec_validator
 viberbot
