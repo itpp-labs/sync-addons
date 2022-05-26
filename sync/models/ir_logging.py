@@ -16,7 +16,7 @@ SHORT_MESSAGE_CHARS = 100
 class IrLogging(models.Model):
     _inherit = "ir.logging"
 
-    sync_job_id = fields.Many2one("sync.job")
+    sync_job_id = fields.Many2one("sync.job", ondelete="cascade")
     sync_task_id = fields.Many2one("sync.task", related="sync_job_id.task_id")
     sync_project_id = fields.Many2one(
         "sync.project", related="sync_job_id.task_id.project_id"
