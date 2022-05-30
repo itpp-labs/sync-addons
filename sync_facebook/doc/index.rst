@@ -19,10 +19,7 @@ Facebook Page
 -------------
 
 * `Select your page <https://www.facebook.com/pages/>`__ or `create new one <https://www.facebook.com/pages/creation>`__
-* Get **Page ID** from Page, that you want to connect your chat bot. Do do that, go to link ``https://www.facebook.com/your_page/about/``. 
-* (where your_page - real url of your page)  Scroll to the bottom of the page untill you would see "page ID" string. 
-* Copy the ID number given in **More info** section. Example: <https://prnt.sc/1xa09c6> Page ID is something like 123456789. This would be your ``PAGE_ID`` parametr.
-
+* Get **Page ID** from the Page, that you want to connect to your chat bot. In order to do that, go to link ``https://www.facebook.com/your_page/about/``, where your_page is real url of your page. Then scroll to the bottom until you see "page ID" string. Copy the ID number given in **More info** section. Page ID is something like 123456789. Use it as your ``PAGE_ID`` parameter.
 
 
 Facebook Page: Lead Ad
