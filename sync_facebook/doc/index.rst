@@ -13,7 +13,7 @@ Facebook App
   * **App type:** Business
   * **Apps Purpose:** Yourself or your own business
 
-* In Facebook App page open ``Settings >> Basic`` to get **App ID** and **App Secret** (``APP_ID`` &  ``APP_SECRET``)
+* In Facebook App page open ``Settings >> Basic`` to get **App ID** and **App Secret**
 
 Facebook Page
 -------------
