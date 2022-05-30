@@ -6,7 +6,7 @@
     "summary": """Send webhook on Odoo events: when record is created/updated/deleted""",
     "category": "Extra Tools",
     "images": ["images/base_automation_webhook.png"],
-    "version": "14.0.2.0.0",
+    "version": "15.0.2.0.0",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "help@itpp.dev",
