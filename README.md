@@ -4,6 +4,7 @@
 :open_file_folder: Get a **.zip** file with all needed dependencies:
 
 :heavy_check_mark: [base_api](https://apps.odoo.com/apps/modules/15.0/base_api/)
+<br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/15.0/base_automation_webhook/)
 
 :star: Star this repo if you **like** it!
 
