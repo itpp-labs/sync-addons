@@ -1,4 +1,4 @@
-# Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2019,2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
@@ -56,7 +56,7 @@ class Base(models.AbstractModel):
 
         def convert_external_2_inner_id(ext_id):
             try:
-                result = imd_env.xmlid_lookup(PREFIX + "." + ext_id)[2]
+                result = imd_env._xmlid_lookup(PREFIX + "." + ext_id)[2]
             except ValueError:
                 raise ValueError(
                     "No object with external id in field {}: {}".format(field, ext_id)
@@ -86,7 +86,7 @@ class Base(models.AbstractModel):
 
         # If external id exists...
         try:
-            inner_id = imd_env.xmlid_lookup(PREFIX + "." + ext_id)[2]
+            inner_id = imd_env._xmlid_lookup(PREFIX + "." + ext_id)[2]
         # No: Create record and register external_key
         except ValueError:
             is_new = True
