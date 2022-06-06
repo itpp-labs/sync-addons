@@ -107,7 +107,7 @@ class SyncLink(models.Model):
                         relation,
                         existing.system1,
                         existing.ref1,
-                        existing.system1,
+                        existing.system2,
                         existing.ref2,
                     )
                 )
