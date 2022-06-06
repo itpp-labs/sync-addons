@@ -5,6 +5,7 @@
 
 :heavy_check_mark: [base_api](https://apps.odoo.com/apps/modules/15.0/base_api/)
 <br/>:heavy_check_mark: [base_automation_webhook](https://apps.odoo.com/apps/modules/15.0/base_automation_webhook/)
+<br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/15.0/openapi/)
 
 :star: Star this repo if you **like** it!
 
