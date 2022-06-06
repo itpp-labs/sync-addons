@@ -1,3 +1,8 @@
+`5.1.1`
+-------
+
+- **Fix:** correct error message on link duplicates
+
 `5.1.0`
 -------
 
