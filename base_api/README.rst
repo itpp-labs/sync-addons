@@ -17,16 +17,10 @@ Questions?
 
 To get an assistance on this module contact us by email :arrow_right: help@itpp.dev
 
-Contributors
-============
-* `Anvar Kildebekov <https://it-projects.info/team/fedoranvar>`__:
-    - :one::three: init version of the module
-
-
 Further information
 ===================
 
-Odoo Apps Store: https://apps.odoo.com/apps/modules/14.0/base_api/
+Odoo Apps Store: https://apps.odoo.com/apps/modules/15.0/base_api/
 
 
 Notifications on updates: `via Atom
@@ -34,4 +28,4 @@ Notifications on updates: `via Atom
 `by Email
 <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/base_api.atom>`__
 
-Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/120366491f58a802deef68a17ebb26199ef829a2>`_
+Tested on `Odoo 15.0 <https://github.com/odoo/odoo/commit/39c1288575a49a41cc7a1c65af153894fb503e62>`_
