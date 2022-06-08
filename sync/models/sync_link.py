@@ -40,7 +40,7 @@ class SyncLink(models.Model):
             self._cr,
             "sync_link_refs_uniq_index",
             self._table,
-            ["relation", "system1", "system2", "ref1", "ref2"],
+            ["relation", "system1", "system2", "ref1", "ref2", "model"],
         )
         return res
 
@@ -126,8 +126,8 @@ class SyncLink(models.Model):
         return self.create(vals)
 
     @api.model
-    def _get_link_external(self, relation, external_refs):
-        links = self._search_links_external(relation, external_refs)
+    def _get_link_external(self, relation, external_refs, model=None):
+        links = self._search_links_external(relation, external_refs, model=model)
         if len(links) > 1:
             raise ValidationError(
                 _(
@@ -199,9 +199,9 @@ class SyncLink(models.Model):
             relation, refs, sync_date, allow_many2many, record._name
         )
 
-    def _get_link_odoo(self, relation, ref):
+    def _get_link_odoo(self, relation, ref, model=None):
         refs = {ODOO: None, EXTERNAL: ref}
-        return self._get_link_external(relation, refs)
+        return self._get_link_external(relation, refs, model=model)
 
     def _search_links_odoo(self, records, relation, refs=None):
         refs = {ODOO: records.ids, EXTERNAL: refs}
@@ -210,15 +210,15 @@ class SyncLink(models.Model):
         )
 
     # Common API
-    def _get_link(self, rel, ref_info):
+    def _get_link(self, rel, ref_info, model=None):
         if isinstance(ref_info, dict):
             # External link
             external_refs = ref_info
-            return self._get_link_external(rel, external_refs)
+            return self._get_link_external(rel, external_refs, model=model)
         else:
             # Odoo link
             ref = ref_info
-            return self._get_link_odoo(rel, ref)
+            return self._get_link_odoo(rel, ref, model=model)
 
     @property
     def sync_date(self):
@@ -241,10 +241,12 @@ class SyncLink(models.Model):
     def _get_eval_context(self):
         env = self.env
 
-        def set_link(rel, external_refs, sync_date=None, allow_many2many=False):
+        def set_link(
+            rel, external_refs, sync_date=None, allow_many2many=False, model=None
+        ):
             # Works for external links only
             return env["sync.link"]._set_link_external(
-                rel, external_refs, sync_date, allow_many2many
+                rel, external_refs, sync_date, allow_many2many, model
             )
 
         def search_links(rel, external_refs):
@@ -253,8 +255,8 @@ class SyncLink(models.Model):
                 rel, external_refs, make_logs=True
             )
 
-        def get_link(rel, ref_info):
-            return env["sync.link"]._get_link(rel, ref_info)
+        def get_link(rel, ref_info, model=None):
+            return env["sync.link"]._get_link(rel, ref_info, model=model)
 
         return {
             "set_link": set_link,

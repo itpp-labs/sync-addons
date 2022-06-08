@@ -1,3 +1,8 @@
+`6.0.0`
+-------
+
+- **New:** support links with the same relation + refs, but different models
+
 `5.1.1`
 -------
 

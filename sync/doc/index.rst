@@ -180,7 +180,7 @@ Links
     and ``external``;
 
 * ``<records>.search_links(relation_name) -> links``
-* ``get_link(relation_name, external_ref) -> link``
+* ``get_link(relation_name, external_ref, model=None) -> link``
 
 Odoo Link usage:
 
@@ -212,7 +212,7 @@ Odoo Link usage:
 
 You can also link external data with external data on syncing two different system (e.g. github and trello).
 
-* ``set_link(relation_name, {"github": github_issue_num, "trello": trello_card_num}, sync_date=None, allow_many2many=False) -> elink``
+* ``set_link(relation_name, {"github": github_issue_num, "trello": trello_card_num}, sync_date=None, allow_many2many=False, model=None) -> elink``
   * ``refs`` is a dictionary with system name and references pairs, e.g.
 
     .. code-block:: python
@@ -243,7 +243,7 @@ You can also link external data with external data on syncing two different syst
 
   * if references for both systems are passed, then elink is added to result
     only when its references are presented in both references lists
-* ``get_link(relation_name, refs) -> elink``
+* ``get_link(relation_name, refs, model=None) -> elink``
 
   * At least one of the reference should be not Falsy
   * ``get_link`` raise error, if there are few odoo records linked to the
