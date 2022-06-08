@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+     Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+     Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="telegram_project" model="sync.project">
+        <field name="name">Demo Telegram Integration</field>
+        <field name="eval_context">telegram_demo</field>
+        <field name="common_code">
+<![CDATA[
+def user2name(user):
+    if user.username:
+        return '@%s' % (user.username)
+
+    name = user.first_name
+    if user.last_name:
+        name += ' %s' % user.last_name
+
+    return name
+
+def html_sanitize_telegram(html):
+    allowed_tags = set({"b", "i", "u", "s", "a", "code", "pre"})
+    cleaner = Cleaner(safe_attrs_only=True, safe_attrs=set(), allow_tags=allowed_tags, remove_unknown_tags=False)
+    html = cleaner.clean_html(html)
+    # remove surrounding div
+    return html[5:-6]
+]]>
+        </field>
+    </record>
+    <record id="telegram_project_param_welcome" model="sync.project.text">
+        <field name="key">TELEGRAM_WELCOME_MESSAGE</field>
+        <field name="initial_value">Hello! How can I help you?</field>
+        <field name="description">
+            Message that is sent to a user on first bot usage
+        </field>
+        <field name="project_id" ref="sync.telegram_project" />
+    </record>
+    <record id="telegram_project_param_message_sent" model="sync.project.text">
+        <field name="key">TELEGRAM_MESSAGE_SENT</field>
+        <field name="initial_value">The message has sent in telegram</field>
+        <field name="description">
+            When Odoo Bot reports on successfully sent telegram message
+        </field>
+        <field name="project_id" ref="sync.telegram_project" />
+    </record>
+    <record id="telegram_project_param_prefix" model="sync.project.text">
+        <field name="key">PARTNER_NAME_PREFIX</field>
+        <field name="initial_value">Telegram:</field>
+        <field name="description">Prefix for new partner name</field>
+        <field name="project_id" ref="sync.telegram_project" />
+    </record>
+    <record id="telegram_project_secret" model="sync.project.secret">
+        <field name="key">TELEGRAM_BOT_TOKEN</field>
+        <field
+            name="description"
+            eval="'Authentication token provided by https://t.me/BotFather'"
+        />
+        <field name="project_id" ref="sync.telegram_project" />
+    </record>
+    <!-- telegram: task setup -->
+    <record id="telegram_task_setup" model="sync.task">
+        <field name="name">Setup</field>
+        <field name="project_id" ref="sync.telegram_project" />
+        <field name="code">
+<![CDATA[
+def handle_button():
+    telegram.setWebhook(webhooks.TELEGRAM, allowed_updates=["message", "edited_message"])
+]]>
+        </field>
+    </record>
+    <record id="telegram_trigger_button" model="sync.trigger.button">
+        <field name="sync_task_id" ref="sync.telegram_task_setup" />
+        <field name="trigger_name">SETUP_TELEGRAM</field>
+    </record>
+    <record id="telegram_task_tele2odoo" model="sync.task">
+        <field name="name">Process Telegram Messages</field>
+        <field name="project_id" ref="sync.telegram_project" />
+        <field name="code">
+<![CDATA[
+def handle_webhook(httprequest):
+    data = json.loads(httprequest.data.decode("utf-8"))
+    log("Raw data: %s" % data, LOG_DEBUG)
+
+    update = telegram.parse_data(data)
+    message = update.message or update.edited_message
+    is_edit = bool(update.edited_message)
+    user_ref = "%s@telegram" % message.from_user.id
+    partner = env["res.partner"].search([("ref", "=", user_ref)])
+    if not partner:
+        name = "%s%s" % (texts.PARTNER_NAME_PREFIX, user2name(message.from_user))
+        partner = env["res.partner"].create({"name": name, "ref": user_ref})
+
+    odoo_message_text = "From Telegram:"
+
+    if message.text == "/start":
+        telegram.sendMessage(message.chat.id, texts.TELEGRAM_WELCOME_MESSAGE)
+    elif is_edit:
+        odoo_message_text = "Contact has updated his message:"
+
+    odoo_message_text = "%s\n\n%s" % (odoo_message_text, message.text)
+
+    partner.message_post(body=odoo_message_text)
+]]>
+        </field>
+    </record>
+    <record id="telegram_trigger_webhook" model="sync.trigger.webhook">
+        <field name="name">Telegram updates</field>
+        <field name="sync_task_id" ref="sync.telegram_task_tele2odoo" />
+        <field name="trigger_name">TELEGRAM</field>
+    </record>
+    <record id="telegram_task_odoo2tele" model="sync.task">
+        <field name="name">Send response via Odoo</field>
+        <field name="project_id" ref="sync.telegram_project" />
+        <field name="code">
+<![CDATA[
+def handle_db(records):
+    # records are instances of mail.message
+    for r in records:
+        if not html2plaintext(r.body or "").startswith("/telegram"):
+            continue
+        partner = env["res.partner"].browse(r.res_id)
+        user_ref = partner.ref or ""
+        if not user_ref.endswith("@telegram"):
+            continue
+        telegram_user_id = user_ref.split("@telegram")[0]
+        telegram_message_html = html_sanitize_telegram(r.body)
+        telegram_message_html = telegram_message_html.replace("/telegram", "")
+        telegram.sendMessage(telegram_user_id, telegram_message_html)
+
+        odoo_message_text = "%s:\n\n%s" % (texts.TELEGRAM_MESSAGE_SENT, telegram_message_html)
+        partner.message_post(body=odoo_message_text)
+]]>
+        </field>
+    </record>
+    <record id="telegram_trigger_automation" model="sync.trigger.automation">
+        <field name="trigger_name">ON_MESSAGE_POSTED</field>
+        <field name="sync_task_id" ref="sync.telegram_task_odoo2tele" />
+        <field name="model_id" ref="mail.model_mail_message" />
+        <field name="trigger">on_create</field>
+        <field name="filter_domain">
+            [["model","=","res.partner"],["body","ilike","/telegram"]]
+        </field>
+    </record>
+</odoo>

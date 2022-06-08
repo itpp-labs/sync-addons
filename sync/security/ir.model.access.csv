@@ -1,0 +1,33 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sync_project_user,sync.project user,model_sync_project,sync_group_user,1,0,0,0
+access_sync_project_dev,sync.project dev,model_sync_project,sync_group_dev,1,1,0,1
+access_sync_project_manager,sync.project manager,model_sync_project,sync_group_manager,1,1,1,1
+access_sync_task_user,sync.task user,model_sync_task,sync_group_user,1,0,0,0
+access_sync_task_dev,sync.task dev,model_sync_task,sync_group_dev,1,1,1,1
+access_sync_task_manager,sync.task manager,model_sync_task,sync_group_manager,1,1,1,1
+access_sync_trigger_automation_user,sync.trigger.automation user,model_sync_trigger_automation,sync_group_user,1,0,0,0
+access_sync_trigger_automation_dev,sync.trigger.automation dev,model_sync_trigger_automation,sync_group_dev,1,1,1,1
+access_sync_trigger_automation_manager,sync.trigger.automation manager,model_sync_trigger_automation,sync_group_manager,1,1,1,1
+access_sync_trigger_button_user,sync.trigger.button user,model_sync_trigger_button,sync_group_user,1,0,0,0
+access_sync_trigger_button_dev,sync.trigger.button dev,model_sync_trigger_button,sync_group_dev,1,1,1,1
+access_sync_trigger_button_manager,sync.trigger.button manager,model_sync_trigger_button,sync_group_manager,1,1,1,1
+access_sync_trigger_cron_user,sync.trigger.cron user,model_sync_trigger_cron,sync_group_user,1,0,0,0
+access_sync_trigger_cron_dev,sync.trigger.cron dev,model_sync_trigger_cron,sync_group_dev,1,1,1,1
+access_sync_trigger_cron_manager,sync.trigger.cron manager,model_sync_trigger_cron,sync_group_manager,1,1,1,1
+access_sync_trigger_webhook_user,sync.trigger.webhook user,model_sync_trigger_webhook,sync_group_user,1,0,0,0
+access_sync_trigger_webhook_dev,sync.trigger.webhook dev,model_sync_trigger_webhook,sync_group_dev,1,1,1,1
+access_sync_trigger_webhook_manager,sync.trigger.webhook manager,model_sync_trigger_webhook,sync_group_manager,1,1,1,1
+access_sync_job_user,sync.job user,model_sync_job,sync_group_user,1,0,0,0
+access_sync_job_dev,sync.job dev,model_sync_job,sync_group_dev,1,0,0,0
+access_sync_job_manager,sync.job manager,model_sync_job,sync_group_manager,1,1,1,1
+access_sync_link_user,sync.link user,model_sync_link,sync_group_user,1,1,1,1
+access_sync_project_param_user,sync.project.param user,model_sync_project_param,sync_group_user,1,0,0,0
+access_sync_project_param_dev,sync.project.param dev,model_sync_project_param,sync_group_dev,1,1,1,1
+access_sync_project_param_manager,sync.project.param manager,model_sync_project_param,sync_group_manager,1,1,1,1
+access_sync_project_text_user,sync.project.text user,model_sync_project_text,sync_group_user,1,0,0,0
+access_sync_project_text_dev,sync.project.text dev,model_sync_project_text,sync_group_dev,1,1,1,1
+access_sync_project_text_manager,sync.project.text manager,model_sync_project_text,sync_group_manager,1,1,1,1
+access_sync_project_secret_user,sync.project.secret user,model_sync_project_secret,sync_group_user,1,0,0,0
+access_sync_project_secret_dev,sync.project.secret dev,model_sync_project_secret,sync_group_dev,1,1,1,1
+access_sync_project_secret_manager,sync.project.secret manager,model_sync_project_secret,sync_group_manager,1,1,1,1
+access_sync_make_module,access_sync_make_module,model_sync_make_module,base.group_user,1,1,1,1
