@@ -82,8 +82,6 @@ class SyncProjectDemo(models.Model):
         """
         from lxml.html.clean import Cleaner
 
-        from odoo.tools import html2plaintext
-
         log_transmission = eval_context["log_transmission"]
 
         if secrets.TELEGRAM_BOT_TOKEN:
@@ -114,7 +112,6 @@ class SyncProjectDemo(models.Model):
 
         return {
             "telegram": telegram,
-            "html2plaintext": html2plaintext,
             "Cleaner": Cleaner,
         }
 
