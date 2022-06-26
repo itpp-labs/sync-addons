@@ -1,3 +1,9 @@
+`6.0.0`
+-------
+
+- **New:** support links with the same relation + refs, but different models
+- **New:** projects can now use multiple execution contexts.
+
 `5.1.1`
 -------
 

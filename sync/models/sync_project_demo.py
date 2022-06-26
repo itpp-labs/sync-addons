@@ -7,7 +7,7 @@ import logging
 import xmlrpc.client as _client
 from math import sqrt
 
-from odoo import api, fields, models
+from odoo import api, models
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
 
@@ -27,14 +27,7 @@ except (ImportError, IOError) as err:
 
 class SyncProjectDemo(models.Model):
 
-    _inherit = "sync.project"
-    eval_context = fields.Selection(
-        selection_add=[
-            ("odoo2odoo", "Odoo2odoo"),
-            ("telegram_demo", "Telegram (Demo)"),
-            ("trello_github", "Trello & Github"),
-        ]
-    )
+    _inherit = "sync.project.context"
 
     @api.model
     def _eval_context_odoo2odoo(self, secrets, eval_context):
@@ -89,8 +82,6 @@ class SyncProjectDemo(models.Model):
         """
         from lxml.html.clean import Cleaner
 
-        from odoo.tools import html2plaintext
-
         log_transmission = eval_context["log_transmission"]
 
         if secrets.TELEGRAM_BOT_TOKEN:
@@ -121,27 +112,12 @@ class SyncProjectDemo(models.Model):
 
         return {
             "telegram": telegram,
-            "html2plaintext": html2plaintext,
             "Cleaner": Cleaner,
         }
 
     @api.model
-    def _eval_context_trello_github(self, secrets, eval_context):
-        """Adds trello and github object with set of available methods (see sync/models/sync_project_demo.py):
-        * trello
-        * github
-
-        It also adds two consts:
-
-        * GITHUB="github"
-        * TRELLO="trello"
-
-        And math function:
-
-        * sqrt
-
-        """
-        GITHUB = "github"
+    def _eval_context_trello(self, secrets, eval_context):
+        """Adds object `trello` with set of available methods (see sync/models/sync_project_demo.py). Adds string const TRELLO."""
         TRELLO = "trello"
         log_transmission = eval_context["log_transmission"]
         log = eval_context["log"]
@@ -285,7 +261,18 @@ class SyncProjectDemo(models.Model):
                 }
             )
 
-        # Github
+        return {
+            "trello": _trello(secrets),
+            "TRELLO": TRELLO,
+        }
+
+    # TODO: split into 2 or 3 separate contexts
+    @api.model
+    def _eval_context_github(self, secrets, eval_context):
+        """Adds object `github` with a set of available methods (see sync/models/sync_project_demo.py). Adds string const GITHUB."""
+        GITHUB = "github"
+        log_transmission = eval_context["log_transmission"]
+
         def _github(secrets):
             # https://pygithub.readthedocs.io/en/latest/
             from github import Github
@@ -386,8 +373,16 @@ class SyncProjectDemo(models.Model):
 
         return {
             "github": _github(secrets),
-            "trello": _trello(secrets),
             "GITHUB": GITHUB,
-            "TRELLO": TRELLO,
+        }
+
+    @api.model
+    def _eval_context_math(self, secrets, eval_context):
+        """Adds math function:
+
+        * sqrt
+
+        """
+        return {
             "sqrt": sqrt,
         }

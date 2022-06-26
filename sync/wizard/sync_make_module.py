@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -25,7 +25,7 @@ class SyncMakeModule(models.TransientModel):
     data = fields.Binary("File", readonly=True, attachment=False)
     data2 = fields.Binary("File Txt", related="data")
     module = fields.Char("Module Technical Name", required=True)
-    copyright_years = fields.Char("Copyright Year", default="2021", required=True)
+    copyright_years = fields.Char("Copyright Year", default="2022", required=True)
     author_name = fields.Char("Author Name", help="e.g. Ivan Yelizariev", required=True)
     author_url = fields.Char("Author URL", help="e.g. https://twitter.com/yelizariev")
     license_line = fields.Char(
@@ -82,8 +82,9 @@ class SyncMakeModule(models.TransientModel):
         root = etree.Element("odoo")
         project = self.project_id.with_context(active_test=False)
         records = [
-            (project, ("name", "eval_context", "common_code")),
+            (project, ("name", "eval_context_ids", "common_code")),
         ]
+
         for secret in project.secret_ids:
             records.append((secret, ("key", "description", "url", "project_id")))
 
@@ -201,6 +202,12 @@ class SyncMakeModule(models.TransientModel):
             xml.text = etree.CDATA(value or "")
         elif field.type == "many2one":
             xml.set("ref", self._record2id(value))
+        elif field.type == "many2many":
+            xml.set(
+                "eval",
+                "[%s]"
+                % ", ".join(["(4, ref('%s'))" % self._record2id(v) for v in value]),
+            )
         else:
             xml.text = str(value) if value else ""
         return xml

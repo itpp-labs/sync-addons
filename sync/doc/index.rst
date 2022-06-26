@@ -180,7 +180,7 @@ Links
     and ``external``;
 
 * ``<records>.search_links(relation_name) -> links``
-* ``get_link(relation_name, external_ref) -> link``
+* ``get_link(relation_name, external_ref, model=None) -> link``
 
 Odoo Link usage:
 
@@ -212,7 +212,7 @@ Odoo Link usage:
 
 You can also link external data with external data on syncing two different system (e.g. github and trello).
 
-* ``set_link(relation_name, {"github": github_issue_num, "trello": trello_card_num}, sync_date=None, allow_many2many=False) -> elink``
+* ``set_link(relation_name, {"github": github_issue_num, "trello": trello_card_num}, sync_date=None, allow_many2many=False, model=None) -> elink``
   * ``refs`` is a dictionary with system name and references pairs, e.g.
 
     .. code-block:: python
@@ -243,7 +243,7 @@ You can also link external data with external data on syncing two different syst
 
   * if references for both systems are passed, then elink is added to result
     only when its references are presented in both references lists
-* ``get_link(relation_name, refs) -> elink``
+* ``get_link(relation_name, refs, model=None) -> elink``
 
   * At least one of the reference should be not Falsy
   * ``get_link`` raise error, if there are few odoo records linked to the
@@ -378,7 +378,19 @@ Exceptions
 Evaluation context
 ------------------
 
-Evaluation provides additional variables and methods for a project. For example, for telegram integration is could be method to send message to a telegram user. To make such additional context, you need to make a new module and make extension for ``sync.project`` model. Example:
+Evaluation provides additional variables and methods for a project. For example, for telegram integration is could be method to send message to a telegram user.
+To add a new context, create ``sync.project.context`` record and add method ``_eval_context_NAME``. Example:
+
+.. code-block:: xml
+
+    <?xml version="1.0" encoding="UTF-8" ?>
+    <odoo>
+        <record id="sync_project_context_odoo2odoo" model="sync.project.context">
+            <field name="name">my_project</field>
+            <field name="display_name">My Sync Project</field>
+        </record>
+    </odoo>
+
 
 .. code-block:: python
 
@@ -387,10 +399,7 @@ Evaluation provides additional variables and methods for a project. For example,
 
    class SyncProject(models.Model):
 
-       _inherit = "sync.project"
-       eval_context = fields.Selection(selection_add=[
-           ("my_project", "My Project"),
-       ])
+       _inherit = "sync.project.context"
 
        @api.model
        def _eval_context_my_project(self, secrets, eval_context):
