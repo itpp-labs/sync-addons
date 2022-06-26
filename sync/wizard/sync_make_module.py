@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -25,7 +25,7 @@ class SyncMakeModule(models.TransientModel):
     data = fields.Binary("File", readonly=True, attachment=False)
     data2 = fields.Binary("File Txt", related="data")
     module = fields.Char("Module Technical Name", required=True)
-    copyright_years = fields.Char("Copyright Year", default="2021", required=True)
+    copyright_years = fields.Char("Copyright Year", default="2022", required=True)
     author_name = fields.Char("Author Name", help="e.g. Ivan Yelizariev", required=True)
     author_url = fields.Char("Author URL", help="e.g. https://twitter.com/yelizariev")
     license_line = fields.Char(
