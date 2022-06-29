@@ -1,3 +1,8 @@
+`6.0.1`
+-------
+- **Fix:** error on empty eval context in a project
+
+
 `6.0.0`
 -------
 
