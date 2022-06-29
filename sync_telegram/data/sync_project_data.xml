@@ -39,6 +39,7 @@ def user2name(user):
     </record>
     <record id="telegram_project_param_welcome" model="sync.project.text">
         <field name="key">TELEGRAM_WELCOME_MESSAGE</field>
+        <field name="initial_value">Hello! How can I help you?</field>
         <field name="description">
             Message that is sent to a user on first bot usage
         </field>
@@ -47,6 +48,7 @@ def user2name(user):
     </record>
     <record id="telegram_project_param_prefix" model="sync.project.param">
         <field name="key">PARTNER_NAME_TEMPLATE</field>
+        <field name="initial_value">%s [Telegram]</field>
         <field name="description">
             Template for new partner name. Must have single %s
         </field>
@@ -55,6 +57,7 @@ def user2name(user):
     </record>
     <record id="record-name-prefix_project-parameter" model="sync.project.param">
         <field name="key">CHAT_RECORD_NAME_TEMPLATE</field>
+        <field name="initial_value">%s [Telegram]</field>
         <field name="description">
             Template for new record name. Must have single %s
         </field>
@@ -63,6 +66,7 @@ def user2name(user):
     </record>
     <record id="telegram_project_param_model" model="sync.project.param">
         <field name="key">CHAT_MODEL</field>
+        <field name="initial_value">crm.lead</field>
         <field name="description">
             Record of which model is created on incoming message from new telegram user
             (e.g. crm.lead, project.task,
@@ -73,7 +77,7 @@ def user2name(user):
     </record>
     <record id="telegram_project_param_mail_chat" model="sync.project.param">
         <field name="key">WEBHOOK_CHAT</field>
-        <field name="value">yes</field>
+        <field name="initial_value">yes</field>
         <field name="description">
             Set to "no" to disable redirecting telegram messages to odoo chat
         </field>
@@ -82,6 +86,7 @@ def user2name(user):
     </record>
     <record id="telegram_project_param_operator_id" model="sync.project.param">
         <field name="key">OPERATOR_IDS</field>
+        <field name="initial_value">2</field>
         <field name="description">
             Comma-separated list of user ids that will added to Discuss chat on getting
             message from new telegram user

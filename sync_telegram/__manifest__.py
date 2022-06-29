@@ -16,9 +16,9 @@
     "depends": ["sync", "multi_livechat"],
     "external_dependencies": {"python": ["python-telegram-bot"], "bin": []},
     "data": [
+        "data/sync_project_context_data.xml",
         "data/sync_project_data.xml",
         "data/mail_sync_project_data.xml",
-        "data/sync_project_data_values.xml",
     ],
     "qweb": [],
     "post_load": None,
