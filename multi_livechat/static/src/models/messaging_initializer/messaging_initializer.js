@@ -1,7 +1,7 @@
 odoo.define(
     "multi_livechat/static/src/mail/models/messaging_initializer/messaging_initializer.js",
     function (require) {
-        "use strict";
+
 
         const ODOO_CHANNEL_GROUPS = [
             "channel_channel",
@@ -13,7 +13,7 @@ odoo.define(
         const {
             registerInstancePatchModel,
         } = require("mail/static/src/model/model_core.js");
-        const {executeGracefully} = require("mail/static/src/utils/utils.js");
+        const { executeGracefully } = require("mail/static/src/utils/utils.js");
 
         registerInstancePatchModel(
             "mail.messaging_initializer",

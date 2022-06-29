@@ -1,14 +1,14 @@
 odoo.define(
     "multi_livechat/static/src/mail/components/discuss_sidebar/discuss_sidebar.js",
     function (require) {
-        "use strict";
+
         const ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat"];
 
         const components = {
             DiscussSidebar: require("mail/static/src/components/discuss_sidebar/discuss_sidebar.js"),
         };
 
-        const {patch} = require("web.utils");
+        const { patch } = require("web.utils");
 
         patch(
             components.DiscussSidebar,
