@@ -14,7 +14,7 @@ from telegram import (  # pylint: disable=missing-manifest-dependency; disabled 
 )
 from telegram.error import Unauthorized  # pylint: disable=missing-manifest-dependency;
 
-from odoo import api, fields, models
+from odoo import api, models
 
 from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
@@ -28,13 +28,7 @@ MAX_SIZE_TO_DOWNLOAD = 20971520
 
 class SyncProjectTelegram(models.Model):
 
-    _inherit = "sync.project"
-    eval_context = fields.Selection(
-        selection_add=[
-            ("telegram", "Telegram"),
-        ],
-        ondelete={"telegram": "cascade"},
-    )
+    _inherit = "sync.project.context"
 
     @api.model
     def _eval_context_telegram(self, secrets, eval_context):
