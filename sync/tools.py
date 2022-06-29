@@ -47,10 +47,16 @@ class LogExternalQuery(object):
         return wrap
 
 
-# E.g. to download file and save into in an attachment or Binary field
-def url2base64(url):
+def url2bin(url):
     if not url:
         return None
     r = requests.get(url, timeout=42)
-    datas = base64.b64encode(r.content)
-    return datas
+    return r.content
+
+
+# E.g. to download file and save into in an attachment or Binary field
+def url2base64(url):
+    content = url2bin(url)
+    if not bin:
+        return None
+    return base64.b64encode(content)
