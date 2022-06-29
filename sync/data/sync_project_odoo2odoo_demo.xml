@@ -9,7 +9,7 @@
         <field name="name">Demo Odoo2odoo Integration</field>
         <field
             name="eval_context_ids"
-            eval="[(4, ref('sync.sync_project_context_odoo2odoo'))]"
+            eval="[(4, ref('sync.sync_project_context_odoo2odoo_demo'))]"
         />
         <field name="common_code">
 <![CDATA[

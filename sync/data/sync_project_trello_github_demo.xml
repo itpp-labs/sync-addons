@@ -8,7 +8,7 @@
         <field name="name">Demo Trello-Github Integration</field>
         <field
             name="eval_context_ids"
-            eval="[(4, ref('sync.sync_project_context_trello')), (4, ref('sync.sync_project_context_github')), (4, ref('sync.sync_project_context_math'))]"
+            eval="[(4, ref('sync.sync_project_context_trello_demo')), (4, ref('sync.sync_project_context_github_demo')), (4, ref('sync.sync_project_context_math_demo'))]"
         />
         <field
             name="common_code"
