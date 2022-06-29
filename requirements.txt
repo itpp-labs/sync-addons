@@ -1,4 +1,5 @@
 # generated from manifests external_dependencies
 bravado_core
 jsonschema<4
+python-telegram-bot
 swagger_spec_validator
