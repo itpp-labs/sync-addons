@@ -2,6 +2,7 @@
 -------
 - **Improvement:** use light telegram library in Telegram demo project (pyTelegramBotAPI)
 - **Fix:** add button to show secret parameter value
+- **Improvement:** add eval context function: `url2bin`
 
 `6.0.1`
 -------
