@@ -1,3 +1,8 @@
+`5.0.0`
+-------
+
+- **Improvement:** switch to another python package for telegram API (pyTelegramBotAPI)
+
 `4.2.0`
 -------
 

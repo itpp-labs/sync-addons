@@ -3,21 +3,16 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
-import json
 import logging
 
-import requests
+import telebot  # pylint: disable=missing-manifest-dependency; disabled because pre-commit cannot find external dependency in manifest. https://github.com/itpp-labs/DINAR/issues/91
 from lxml.html.clean import Cleaner
-from telegram import (  # pylint: disable=missing-manifest-dependency; disabled because pre-commit cannot find external dependency in manifest. https://github.com/itpp-labs/DINAR/issues/91
-    Bot,
-    Update,
-)
-from telegram.error import Unauthorized  # pylint: disable=missing-manifest-dependency;
 
 from odoo import api, models
 
 from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
+from odoo.addons.sync.tools import LogExternalQuery, url2base64, url2bin
 
 _logger = logging.getLogger(__name__)
 
@@ -39,12 +34,8 @@ class SyncProjectTelegram(models.Model):
 
         * multi_livechat.*
         """
-
-        log_transmission = eval_context["log_transmission"]
-        log = eval_context["log"]
-
         if secrets.TELEGRAM_BOT_TOKEN:
-            bot = Bot(token=secrets.TELEGRAM_BOT_TOKEN)
+            bot = telebot.TeleBot(token=secrets.TELEGRAM_BOT_TOKEN)
         else:
             raise Exception("Telegram bot token is not set")
 
@@ -60,10 +51,10 @@ class SyncProjectTelegram(models.Model):
             # remove surrounding div
             return html[5:-6]
 
-        def _url2base64(url):
-            r = requests.get(url)
-            datas = base64.b64encode(r.content)
-            return datas
+        def getFullPath(file_path):
+            return "https://api.telegram.org/file/bot{}/{}".format(
+                secrets.TELEGRAM_BOT_TOKEN, file_path
+            )
 
         def create_mail_сhannel(partners, channel_name):
             vals = self.env["mail.channel"]._prepare_multi_livechat_channel_vals(
@@ -71,77 +62,71 @@ class SyncProjectTelegram(models.Model):
             )
             return self.env["mail.channel"].sudo().create(vals)
 
+        @LogExternalQuery("Telegram->sendMessage", eval_context)
         def sendMessage(chat_id, html, *args, **kwargs):
-            log_transmission("%s@telegram" % chat_id, "Message: %s" % html)
             channel = kwargs.pop("channel", None)
             try:
-                bot.sendMessage(chat_id, _html_sanitize_telegram(html), *args, **kwargs)
-            except Unauthorized as e:
-                if channel is not None:
-                    multi_livechat_context.post_channel_message(channel, str(e))
-                else:
-                    raise
-
-        def sendPhoto(chat_id, datas, *args, **kwargs):
-            log_transmission("%s@telegram" % chat_id, "Photo sent")
-            channel = kwargs.pop("channel", None)
-            try:
-                bot.sendPhoto(chat_id, photo=base64.b64decode(datas))
-            except Unauthorized as e:
-                if channel is not None:
-                    multi_livechat_context.post_channel_message(channel, str(e))
-                else:
-                    raise
-
-        def sendDocument(chat_id, name, datas, *args, **kwargs):
-            log_transmission("%s@telegram" % chat_id, "Document sent")
-            channel = kwargs.pop("channel", None)
-            try:
-                bot.sendDocument(
-                    chat_id, filename=name, document=base64.b64decode(datas)
+                bot.send_message(
+                    chat_id, _html_sanitize_telegram(html), *args, **kwargs
                 )
-            except Unauthorized as e:
+            except Exception as e:
                 if channel is not None:
                     multi_livechat_context.post_channel_message(channel, str(e))
                 else:
                     raise
 
+        @LogExternalQuery("Telegram->sendPhoto", eval_context)
+        def sendPhoto(chat_id, datas, *args, **kwargs):
+            channel = kwargs.pop("channel", None)
+            try:
+                bot.send_photo(chat_id, photo=base64.b64decode(datas))
+            except Exception as e:
+                if channel is not None:
+                    multi_livechat_context.post_channel_message(channel, str(e))
+                else:
+                    raise
+
+        @LogExternalQuery("Telegram->sendDocument", eval_context)
+        def sendDocument(chat_id, name, datas, *args, **kwargs):
+            channel = kwargs.pop("channel", None)
+            try:
+                bot.send_document(
+                    chat_id, base64.b64decode(datas), visible_file_name=name
+                )
+            except Exception as e:
+                if channel is not None:
+                    multi_livechat_context.post_channel_message(channel, str(e))
+                else:
+                    raise
+
+        @LogExternalQuery("Telegram->getDocumentFile", eval_context)
         def getDocumentFile(chat_id, file_data):
             file_name = file_data.file_name
-            content = bot.getFile(file_data).download_as_bytearray()
-            log(
-                "Attachment from telegram received: %s" % file_name,
-                name="%s@telegram" % chat_id,
-            )
+            file_path = bot.get_file(file_data.file_id).file_path
+            content = url2bin(getFullPath(file_path))
             return [file_name, content]
 
+        @LogExternalQuery("Telegram->getMediaFile", eval_context)
         def getMediaFile(chat_id, file_data):
-            file_name = bot.getFile(file_data).file_path.split("/")[-1]
-            content = bot.getFile(file_data).download_as_bytearray()
-            log(
-                "Attachment from telegram received: %s" % file_name,
-                name="%s@telegram" % chat_id,
-            )
-            return [file_name, content]
+            file_path = bot.get_file(file_data.file_id).file_path
+            content = url2bin(getFullPath(file_path))
+            return [file_path.split("/")[-1], content]
 
+        @LogExternalQuery("Telegram->getUserPhoto", eval_context)
         def getUserPhoto(chat_id):
-            photo_list = bot.getUserProfilePhotos(chat_id).photos
+            photo_list = bot.get_user_profile_photos(chat_id).photos
             if not photo_list:
                 return None
             else:
-                photo_path = bot.getFile(photo_list[0][0]).file_path
-                log(
-                    "The user's photo has been added to the partner record.",
-                    name="%s@telegram" % chat_id,
-                )
-                return _url2base64(photo_path)
+                file_path = bot.get_file(photo_list[0][0].file_id).file_path
+                return url2base64(getFullPath(file_path))
 
+        @LogExternalQuery("Telegram-> setWebhook", eval_context)
         def setWebhook(*args, **kwargs):
-            log_transmission("Telegram->setWebhook", json.dumps([args, kwargs]))
-            bot.setWebhook(*args, **kwargs)
+            bot.set_webhook(*args, **kwargs)
 
         def parse_data(data):
-            return Update.de_json(data, bot)
+            return telebot.types.Update.de_json(data)
 
         multi_livechat_context = AttrDict(
             get_multi_livechat_eval_context(
