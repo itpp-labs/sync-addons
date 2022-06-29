@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.DiscussSidebar" t-inherit-mode="extension">
+        <xpath expr="//*[@name='root']" position="inside">
+            <t t-foreach="getMultiLivechatGroups()" t-as="livechat_group">
+                <t t-if="livechat_group.chats and livechat_group.chats.length">
+                    <div class="o_DiscussSidebar_group o_DiscussSidebar_groupLivechat">
+                        <div class="o_DiscussSidebar_groupHeader">
+                            <div
+                                class="o_DiscussSidebar_groupHeaderItem o_DiscussSidebar_groupTitle o-clickable"
+                                t-on-click.stop="_onClickLiveChatGroupTitle(livechat_group.channel_type)"
+                            >
+                                <t t-esc="livechat_group.name" />
+                            </div>
+                        </div>
+                        <div class="o_DiscussSidebar_list">
+                            <t
+                                t-foreach="livechat_group.chats"
+                                t-as="chat"
+                                t-key="chat.localId"
+                            >
+                                <DiscussSidebarItem
+                                    class="o_DiscussSidebar_item"
+                                    threadLocalId="chat.localId"
+                                />
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </t>
+</templates>
