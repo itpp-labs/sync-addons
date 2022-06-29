@@ -1,8 +1,6 @@
 odoo.define(
     "multi_livechat/static/src/mail/models/messaging_initializer/messaging_initializer.js",
     function (require) {
-
-
         const ODOO_CHANNEL_GROUPS = [
             "channel_channel",
             "channel_direct_message",
