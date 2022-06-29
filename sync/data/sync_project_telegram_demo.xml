@@ -8,7 +8,7 @@
         <field name="name">Demo Telegram Integration</field>
         <field
             name="eval_context_ids"
-            eval="[(4, ref('sync.sync_project_context_telegram'))]"
+            eval="[(4, ref('sync.sync_project_context_telegram_demo'))]"
         />
         <field name="common_code">
 <![CDATA[
