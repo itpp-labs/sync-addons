@@ -1,7 +1,6 @@
 odoo.define(
     "multi_livechat/static/src/mail/components/discuss_sidebar/discuss_sidebar.js",
     function (require) {
-
         const ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat"];
 
         const components = {
