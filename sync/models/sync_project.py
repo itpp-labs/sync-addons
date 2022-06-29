@@ -99,10 +99,14 @@ class SyncProject(models.Model):
 
     def _compute_eval_context_description(self):
         for r in self:
-            r.eval_context_description = "\n".join(
-                r.eval_context_ids.mapped(
-                    lambda c: "-= " + c.display_name + " =-\n\n" + c.description
+            r.eval_context_description = (
+                "\n".join(
+                    r.eval_context_ids.mapped(
+                        lambda c: "-= " + c.display_name + " =-\n\n" + c.description
+                    )
                 )
+                if r.eval_context_ids
+                else ""
             )
 
     def _compute_network_access_readonly(self):
