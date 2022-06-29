@@ -1,6 +1,7 @@
 `6.1.0`
 -------
 - **Improvement:** use light telegram library in Telegram demo project (pyTelegramBotAPI)
+- **Fix:** add button to show secret parameter value
 
 `6.0.1`
 -------

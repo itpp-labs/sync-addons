@@ -480,6 +480,17 @@ class SyncProjectSecret(models.Model):
 
     value = fields.Char(groups="sync.sync_group_manager")
 
+    def action_show_value(self):
+        self.ensure_one()
+        return {
+            "name": _("Secret Parameter"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "sync.project.secret",
+            "target": "new",
+            "res_id": self.id,
+        }
+
 
 # see https://stackoverflow.com/a/14620633/222675
 class AttrDict(dict):
