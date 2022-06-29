@@ -19,8 +19,8 @@ from .sync_project import AttrDict
 _logger = logging.getLogger(__name__)
 
 try:
-    # https://github.com/python-telegram-bot/python-telegram-bot
-    from telegram import Bot, Update  # pylint: disable=missing-manifest-dependency
+    # https://github.com/eternnoir/pyTelegramBotAPI
+    import telebot  # pylint: disable=missing-manifest-dependency
 except (ImportError, IOError) as err:
     _logger.debug(err)
 
@@ -85,7 +85,7 @@ class SyncProjectDemo(models.Model):
         log_transmission = eval_context["log_transmission"]
 
         if secrets.TELEGRAM_BOT_TOKEN:
-            bot = Bot(token=secrets.TELEGRAM_BOT_TOKEN)
+            bot = telebot.TeleBot(token=secrets.TELEGRAM_BOT_TOKEN)
         else:
             raise Exception("Telegram bot token is not set")
 
@@ -93,14 +93,14 @@ class SyncProjectDemo(models.Model):
             log_transmission(
                 "Message to %s@telegram" % chat_id, json.dumps([args, kwargs])
             )
-            bot.sendMessage(chat_id, *args, **kwargs)
+            bot.send_message(chat_id, *args, **kwargs)
 
         def setWebhook(*args, **kwargs):
             log_transmission("Telegram->setWebhook", json.dumps([args, kwargs]))
-            bot.setWebhook(*args, **kwargs)
+            bot.set_webhook(*args, **kwargs)
 
         def parse_data(data):
-            return Update.de_json(data, bot)
+            return telebot.types.Update.de_json(data)
 
         telegram = AttrDict(
             {

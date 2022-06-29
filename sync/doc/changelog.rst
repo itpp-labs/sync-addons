@@ -1,3 +1,7 @@
+`6.1.0`
+-------
+- **Improvement:** use light telegram library in Telegram demo project (pyTelegramBotAPI)
+
 `6.0.1`
 -------
 - **Fix:** error on empty eval context in a project
