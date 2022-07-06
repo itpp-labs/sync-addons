@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="base_automation_echo" model="base.automation">
+        <field name="name">Multi livechat demo: Echo channel</field>
+        <field name="state">code</field>
+        <field
+            name="code"
+        ><![CDATA[
+message = record
+echo_channel = env.ref("multi_livechat.mail_channel_echo_demo")
+channel = env["mail.channel"].browse(message.res_id)
+odoobot = env.ref("base.partner_root")
+if channel.channel_type == 'multi_livechat_echo_demo' and env.user != env.ref("base.user_root") and message.author_id != odoobot:
+    if "?" in message.body:
+        channel.message_post(body="<p>To talk with real people join <a href='https://t.me/sync_studio'>telegram group</a></p>", author_id=odoobot.id, message_type="comment", subtype_xmlid="mail.mt_comment")
+    else:
+        channel.message_post(body=message.body, author_id=odoobot.id, message_type="comment", subtype_xmlid="mail.mt_comment")
+        ]]></field>
+        <field name="trigger">on_create</field>
+        <field name="model_id" ref="mail.model_mail_message" />
+        <field name="filter_domain">[["model","=","mail.channel"]]</field>
+    </record>
+</odoo>

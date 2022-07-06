@@ -14,7 +14,7 @@ Configuration
 In Telegram
 -----------
 
-* Send message ``/newbot`` to @BotFather and follow further instructions to create a bot and get the bot token
+* Send message ``/newbot`` to `@BotFather` and follow further instructions to create a bot and get its token
 
 In Odoo
 -------
@@ -28,7 +28,7 @@ In Odoo
 * Go to ``Parameters`` tab
 * Set **Secrets**:
 
-  * TELEGRAM_BOT_TOKEN
+  * `TELEGRAM_BOT_TOKEN`
 
 * Unarchive the project
 * Open *Manual Triggers* Tab
@@ -61,9 +61,3 @@ The operator has the ability to send not just text messages, but also messages w
 The Telegram Bot API has a `limit <https://core.telegram.org/bots/api#inputfile>`__ on the files sent through the bot:
  - The operator cannot send to Telegram user more than **10 MB for photos** and **50 MB for other files**.
  - Also, the operator cannot receive **files larger than 20 MB** from a Telegram user.
-
-Subscribing telegram user to chatter
-------------------------------------
-After the bot has created a record, you can also send messages to telegram user directly from the record page (Lead, Task, etc.).
-In order to do that, subscribe corresponding channel to the record.
-Use button ``Show Followers -> Add Channels``.

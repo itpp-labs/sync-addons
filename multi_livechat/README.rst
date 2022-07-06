@@ -15,8 +15,51 @@ Base module to implement Live Chat through different channels (Telegram, WhatsAp
 Usage
 =====
 
-Add following code to your module:
+Add following code to your module. Replace MODULE and NAME for your custom values, e.g.
 
+* `MODULE` is `sync_telegram`
+* `NAME` is `telegram`
+
+
+MODULE/__manifest__.py
+----------------------
+
+.. code-block:: py
+
+    "depends": ["multi_livechat"],
+    "assets": {
+        "web.assets_backend": [
+            "MODULE/static/src/models/discuss/discuss.js",
+            "MODULE/static/src/models/discuss_sidebar_category/discuss_sidebar_category.js",
+        ],
+    },
+
+
+MODULE/models/__init__.py
+----------------------
+
+.. code-block:: py
+
+    from . import res_users_settings
+    from . import mail_channel
+
+
+MODULE/models/res_users_settings.py
+-----------------------------------
+
+.. code-block:: py
+
+    from odoo import fields, models
+
+    
+    class ResUsersSettings(models.Model):
+        _inherit = 'res.users.settings'
+    
+        is_discuss_sidebar_category_NAME_open = fields.Boolean("Is category NAME open", default=True)
+
+
+MODULE/models/mail_channel.py
+-----------------------------
 
 .. code-block:: py
 
@@ -31,6 +74,44 @@ Add following code to your module:
             ondelete={"multi_livechat_NAME": "cascade"}
         )
 
+MODULE/static/src/models/discuss/discuss.js
+-------------------------------------------
+
+.. code-block:: js
+
+    /** @odoo-module **/
+    
+    import { registerFieldPatchModel } from '@mail/model/model_core';
+    import { one2one } from '@mail/model/model_field';
+    
+    registerFieldPatchModel('mail.discuss', 'MODULE/static/src/models/discuss/discuss.js', {
+        categoryMLChat_NAME: one2one('mail.discuss_sidebar_category', {
+            inverse: 'discussAsMLChat_NAME',
+            isCausal: true,
+        }),
+    });
+
+
+MODULE/static/src/models/discuss_sidebar_category/discuss_sidebar_category.js
+-----------------------------------------------------------------------------
+
+.. code-block:: js
+
+    /** @odoo-module **/
+
+    import { registerFieldPatchModel, registerIdentifyingFieldsPatch } from '@mail/model/model_core';
+    import { one2one } from '@mail/model/model_field';
+
+    registerFieldPatchModel('mail.discuss_sidebar_category', 'MODULE', {
+        discussAsMLChat_NAME: one2one('mail.discuss', {
+            inverse: 'categoryMLChat_NAME',
+            readonly: true,
+        }),
+    });
+
+    registerIdentifyingFieldsPatch('mail.discuss_sidebar_category', 'MODULE', identifyingFields => {
+        identifyingFields[0].push('discussAsMLChat_NAME');
+    });
 
 Questions?
 ==========

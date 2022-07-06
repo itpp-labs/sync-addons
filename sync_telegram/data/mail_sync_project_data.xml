@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2021 ilya ilchenko
-     Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     Copyright 2021-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="telegram_task_odoo2tele" model="sync.task">
@@ -11,41 +11,47 @@
             name="code"
         ><![CDATA[
 def handle_db(records):
-    # records are instances of mail.message
     for mail_message in records:
-        for channel in mail_message.channel_ids:
-            if channel.channel_type != 'multi_livechat_telegram':
-                continue
-            channel_link = channel.search_links(TG_CHAT_CHANNEL_REL)
-            if not channel_link:
-                continue
+        process_message(mail_message)
 
-            telegram_user_ref = channel_link.external
-            #channel_link = get_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
+def process_message(message):
+    channel = env["mail.channel"].browse(message.res_id)
+    if channel.channel_type != 'multi_livechat_telegram':
+        return
 
-            if not mail_message.author_id.search_links(TG_PARTNER_REL) and mail_message.author_id.id != odoobot_id:
-                log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (mail_message.res_id, mail_message.author_id.id, mail_message.attachment_ids, mail_message.body), LOG_DEBUG)
+    channel_link = channel.search_links(TG_CHAT_CHANNEL_REL)
+    if not channel_link:
+        return
 
-                if mail_message.body:
-                    message_html = "%s\n\n<i>%s</i>" % (mail_message.body, mail_message.author_id.name)
-                    telegram.sendMessage(telegram_user_ref, message_html, parse_mode='HTML', channel=channel)
+    telegram_user_ref = channel_link.external
+    #channel_link = get_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
 
-                if mail_message.attachment_ids:
-                    for attach in mail_message.attachment_ids:
-                        log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+    if message.author_id.search_links(TG_PARTNER_REL) or message.author_id.id == odoobot_id:
+        # this message is from partner or odoo bot
+        return
 
-                        if attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "image":
-                            if  attach.file_size < telegram.MAX_SIZE_IMAGE:
-                                telegram.sendPhoto(telegram_user_ref, attach.datas, channel=channel)
-                            else:
-                                channel.message_post(body="You cannot send more than 10 MB for photos.",
-                                    author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
-                        else:
-                            if  attach.file_size < telegram.MAX_SIZE_DOCUMENT:
-                                telegram.sendDocument(telegram_user_ref, attach.name, attach.datas, channel=channel)
-                            else:
-                                channel.message_post(body="You cannot send more than 50 MB for documents.",
-                                    author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+    log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (message.res_id, message.author_id.id, message.attachment_ids, message.body), LOG_DEBUG)
+
+    if message.body:
+        message_html = "%s\n\n<i>%s</i>" % (message.body, message.author_id.name)
+        telegram.sendMessage(telegram_user_ref, message_html, parse_mode='HTML', channel=channel)
+
+    if message.attachment_ids:
+        for attach in message.attachment_ids:
+            log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+
+            if attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "image":
+                if  attach.file_size < telegram.MAX_SIZE_IMAGE:
+                    telegram.sendPhoto(telegram_user_ref, attach.datas, channel=channel)
+                else:
+                    channel.message_post(body="You cannot send more than 10 MB for photos.",
+                        author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+            else:
+                if  attach.file_size < telegram.MAX_SIZE_DOCUMENT:
+                    telegram.sendDocument(telegram_user_ref, attach.name, attach.datas, channel=channel)
+                else:
+                    channel.message_post(body="You cannot send more than 50 MB for documents.",
+                        author_id=odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
 
 
 
@@ -56,8 +62,8 @@ def handle_db(records):
         <field name="active" eval="True" />
         <field name="sync_task_id" ref="telegram_task_odoo2tele" />
         <field name="model_id" ref="mail.model_mail_message" />
-        <field name="trigger">on_write</field>
-        <field name="filter_pre_domain">[["channel_ids","=",False]]</field>
-        <field name="filter_domain">[["channel_ids","!=",False]]</field>
+        <field name="trigger">on_create</field>
+        <field name="filter_pre_domain" />
+        <field name="filter_domain">[["model","=","mail.channel"]]</field>
     </record>
 </odoo>

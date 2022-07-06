@@ -2,7 +2,7 @@
 # License MIT (https://opensource.org/licenses/MIT).
 from odoo import api, fields, models
 
-ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat"]
+ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat", "group"]
 
 
 class MailChannel(models.Model):
@@ -24,7 +24,6 @@ class MailChannel(models.Model):
             "public": "groups",
             "group_public_id": self.env.ref("base.group_user").id,
             "channel_type": channel_type,
-            "email_send": False,
             "name": channel_name,
         }
 
@@ -56,28 +55,6 @@ class MailChannel(models.Model):
         for record in self:
             if record.channel_type not in ODOO_CHANNEL_TYPES:
                 record.is_chat = True
-
-    @api.model
-    def channel_fetch_slot(self):
-        values = super(MailChannel, self).channel_fetch_slot()
-        domain = [("channel_type", "not in", ODOO_CHANNEL_TYPES)]
-        pinned_channels = (
-            self.env["mail.channel.partner"]
-            .search(
-                [
-                    ("partner_id", "=", self.env.user.partner_id.id),
-                    ("is_pinned", "=", True),
-                ]
-            )
-            .mapped("channel_id")
-        )
-        domain += [("id", "in", pinned_channels.ids)]
-        channel_infos = self.search(domain).channel_info()
-        for info in channel_infos:
-            key = info["channel_type"]
-            values.setdefault(key, [])
-            values[key].append(info)
-        return values
 
     @api.model
     def multi_livechat_info(self):
