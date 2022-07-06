@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="mail_channel_echo_demo" model="mail.channel">
+        <field name="name">Sync Studio Support</field>
+        <field name="channel_type">multi_livechat_echo_demo</field>
+        <field name="public">groups</field>
+        <field
+            name="channel_partner_ids"
+            eval="[(4, ref('base.partner_root')), (4, ref('base.partner_admin'))]"
+        />
+    </record>
+</odoo>
