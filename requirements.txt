@@ -3,3 +3,4 @@ bravado_core
 jsonschema<4
 pyTelegramBotAPI
 swagger_spec_validator
+viberbot
