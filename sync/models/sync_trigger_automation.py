@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 import logging
@@ -20,9 +20,12 @@ class SyncTriggerAutomation(models.Model):
     )
 
     def unlink(self):
-        self.mapped("automation_id").unlink()
-        self.mapped("action_server_id").unlink()
-        return super().unlink()
+        actions = self.mapped("action_server_id")
+        automations = self.mapped("automation_id")
+        super().unlink()
+        automations.unlink()
+        actions.unlink()
+        return True
 
     def start(self, records):
         if self.active:
