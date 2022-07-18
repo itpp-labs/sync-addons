@@ -8,6 +8,7 @@
 <br/>:heavy_check_mark: [multi_livechat](https://apps.odoo.com/apps/modules/15.0/multi_livechat/)
 <br/>:heavy_check_mark: [openapi](https://apps.odoo.com/apps/modules/15.0/openapi/)
 <br/>:heavy_check_mark: [sync](https://apps.odoo.com/apps/modules/15.0/sync/)
+<br/>:heavy_check_mark: [sync_telegram](https://apps.odoo.com/apps/modules/15.0/sync_telegram/)
 
 :star: Star this repo if you **like** it!
 
