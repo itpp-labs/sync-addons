@@ -4,6 +4,7 @@
 - **Fix:** add button to show secret parameter value
 - **Improvement:** add eval context function: `url2bin`
 - **Fix:** Project export tool: add records of `sync.project.context`
+- **Fix:** properly cleanup `base.automation` and action records
 
 `6.0.1`
 -------
