@@ -1,49 +1,31 @@
-odoo.define(
-    "multi_livechat/static/src/mail/models/messaging_initializer/messaging_initializer.js",
-    function (require) {
-        const ODOO_CHANNEL_GROUPS = [
-            "channel_channel",
-            "channel_direct_message",
-            "channel_private_group",
-            "channel_livechat",
-        ];
+/** @odoo-module **/
 
-        const {
-            registerInstancePatchModel,
-        } = require("mail/static/src/model/model_core.js");
-        const { executeGracefully } = require("mail/static/src/utils/utils.js");
+import { insertAndReplace } from "@mail/model/model_field_command";
+import { registerInstancePatchModel } from "@mail/model/model_core";
 
-        registerInstancePatchModel(
-            "mail.messaging_initializer",
-            "multi_livechat/static/src/mail/models/messaging_initializer/messaging_initializer.js",
-            {
-                async _init(data) {
-                    await this.async(() => this._super(data));
-                    // TODO: find a better way
-                    this.env.messaging.multi_livechat = data.multi_livechat;
-                },
-                async _initChannels(initMessagingData) {
-                    await this.async(() => this._super(initMessagingData));
-                    let channel_list = [];
-                    for (const key in initMessagingData) {
-                        const startsWith = key.lastIndexOf("multi_livechat_") === 0;
-                        if (startsWith && !(key in ODOO_CHANNEL_GROUPS)) {
-                            channel_list = channel_list.concat(initMessagingData[key]);
-                        }
-                    }
-                    // TODO: multi_livechat_types: channel_type -> Channel Name
-                    return executeGracefully(
-                        channel_list.map((data) => () => {
-                            const channel = this.env.models["mail.thread"].insert(
-                                this.env.models["mail.thread"].convertData(data)
-                            );
-                            if (!channel.isPinned) {
-                                channel.pin();
-                            }
-                        })
-                    );
-                },
-            }
-        );
+registerInstancePatchModel(
+    "mail.messaging_initializer",
+    "multi_livechat/static/src/models/messaging_initializer/messaging_initializer.js",
+    {
+        _initResUsersSettings(settings) {
+            const data = {};
+            _.each(this.messaging.discuss.getMLChatCategories(), (chat, field_name) => {
+                const NAME = field_name.split("categoryMLChat_")[1];
+                const display_name = (
+                    NAME.charAt(0).toUpperCase() + NAME.slice(1)
+                ).replace("_", " ");
+                const state_key = "is_discuss_sidebar_category_" + NAME + "_open";
+                data[field_name] = insertAndReplace({
+                    isServerOpen: settings[state_key],
+                    name: display_name,
+                    serverStateKey: state_key,
+                    sortComputeMethod: "last_action",
+                    supportedChannelTypes: [NAME],
+                });
+            });
+
+            this.messaging.discuss.update(data);
+            this._super(...arguments);
+        },
     }
 );

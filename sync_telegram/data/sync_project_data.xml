@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
+     Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+     Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="telegram_project" model="sync.project">
+        <field name="name">Telegram Integration</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync_project_context_telegram'))]"
+        />
+        <field
+            name="common_code"
+        ><![CDATA[
+TG_PARTNER_REL = "TG_PARTNER_REL"
+TG_CHAT_MODEL_REL = "TG_CHAT_MODEL_REL:"
+TG_CHAT_CHANNEL_REL = "TG_CHAT_CHANNEL_REL"
+
+operators_user_list = list(map(int, params.OPERATOR_IDS.split(",")))
+operators_partner_list = [env.user.browse(x).partner_id.id for x in operators_user_list]
+
+odoobot_id = env.user.browse(1).partner_id.id
+
+
+def user2name(user):
+    name = user.first_name
+    if user.last_name:
+        name += ' %s' % user.last_name
+    if user.username:
+        name += ' (@%s)' % user.username
+    return name
+        ]]></field>
+    </record>
+    <record id="telegram_project_secret" model="sync.project.secret">
+        <field name="key">TELEGRAM_BOT_TOKEN</field>
+        <field name="description">
+            Authentication token provided by https://t.me/BotFather
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_project_param_welcome" model="sync.project.text">
+        <field name="key">TELEGRAM_WELCOME_MESSAGE</field>
+        <field name="initial_value">Hello! How can I help you?</field>
+        <field name="description">
+            Message that is sent to a user on first bot usage
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_project_param_prefix" model="sync.project.param">
+        <field name="key">PARTNER_NAME_TEMPLATE</field>
+        <field name="initial_value">%s [Telegram]</field>
+        <field name="description">
+            Template for new partner name. Must have single %s
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="record-name-prefix_project-parameter" model="sync.project.param">
+        <field name="key">CHAT_RECORD_NAME_TEMPLATE</field>
+        <field name="initial_value">%s [Telegram]</field>
+        <field name="description">
+            Template for new record name. Must have single %s
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_project_param_model" model="sync.project.param">
+        <field name="key">CHAT_MODEL</field>
+        <field name="initial_value">crm.lead</field>
+        <field name="description">
+            Record of which model is created on incoming message from new telegram user
+            (e.g. crm.lead, project.task,
+            etc). The model must have field partner_id
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_project_param_mail_chat" model="sync.project.param">
+        <field name="key">WEBHOOK_CHAT</field>
+        <field name="initial_value">yes</field>
+        <field name="description">
+            Set to "no" to disable redirecting telegram messages to odoo chat
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_project_param_operator_id" model="sync.project.param">
+        <field name="key">OPERATOR_IDS</field>
+        <field name="initial_value">2</field>
+        <field name="description">
+            Comma-separated list of user ids that will added to Discuss chat on getting
+            message from new telegram user
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="telegram_project" />
+    </record>
+    <record id="telegram_task_setup" model="sync.task">
+        <field name="name">Setup</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="telegram_project" />
+        <field
+            name="code"
+        ><![CDATA[
+
+def handle_button():
+    telegram.setWebhook(webhooks.TELEGRAM, allowed_updates=["message", "edited_message"])
+
+        ]]></field>
+    </record>
+    <record id="telegram_task_tele2odoo" model="sync.task">
+        <field name="name">Process Telegram Messages</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="telegram_project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_webhook(httprequest):
+  data = json.loads(httprequest.data.decode("utf-8"))
+  log("Raw data: %s" % data, LOG_DEBUG)
+
+  update = telegram.parse_data(data)
+  message = update.message or update.edited_message
+  odoo_message_text = message.text or message.caption or ""
+  name = params.PARTNER_NAME_TEMPLATE % user2name(message.from_user)
+  record_name = params.CHAT_RECORD_NAME_TEMPLATE % user2name(message.from_user)
+  telegram_user_ref =  message.from_user.id
+  main_operator = env.user.browse(operators_user_list[0])
+
+  partner_link = get_link(TG_PARTNER_REL, telegram_user_ref)
+
+  if not partner_link:
+    partner_image =  telegram.getUserPhoto(telegram_user_ref)
+    partner = env["res.partner"].with_user(main_operator).create({"name": name, "image_1920": partner_image})
+    partner.set_link(TG_PARTNER_REL, telegram_user_ref, sync_date=None, allow_many2many=False)
+    partner_link = get_link(TG_PARTNER_REL, telegram_user_ref)
+
+  if params.WEBHOOK_CHAT != "no":
+    if message.text == "/start":
+      telegram.sendMessage(telegram_user_ref, texts.TELEGRAM_WELCOME_MESSAGE)
+    elif bool(update.edited_message):
+      odoo_message_text = "Contact has edited the message:"
+
+    channel_link = get_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
+    if channel_link:
+      channel = channel_link.odoo
+    else:
+      partners = [partner_link.odoo.id] + operators_partner_list
+      channel = telegram.create_mail_сhannel(partners, record_name)
+      channel.set_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
+
+    model_rel = TG_CHAT_MODEL_REL + params.CHAT_MODEL
+    if params.CHAT_MODEL != "res.partner":
+      record_model_link = get_link(model_rel, telegram_user_ref)
+
+      if not record_model_link:
+        record_model = env[params.CHAT_MODEL].with_user(main_operator).create({"name": record_name, "partner_id": partner_link.odoo.id})
+        record_model.set_link(model_rel, telegram_user_ref, sync_date=None, allow_many2many=False)
+
+        multi_livechat.post_channel_message(channel, """<b><a href="/web#action=%s&active_id=mail.channel_%s">Chat with partner is created. </a></b>""" %
+        (env.ref("mail.action_discuss").id, channel.id))
+
+        multi_livechat.post_channel_message(channel, """<b><a href="/web#id=%s&model=%s">Record is created. </a></b>""" %
+        (record_model.id, record_model._name))
+
+    file_bin_data = []
+    telegram_document = update.message.document
+    telegram_photo = update.message.photo
+    telegram_media = update.message.video or update.message.voice or update.message.video_note
+    telegram_sticker = update.message.sticker
+
+
+    if not update.message.text:
+        if telegram_photo and telegram_photo[-1].file_size < telegram.MAX_SIZE_TO_DOWNLOAD:
+            log("telegram_photo: %s" % telegram_photo, LOG_INFO)
+            file_bin_data = telegram.getMediaFile(telegram_user_ref, telegram_photo[-1])
+
+        elif telegram_media and telegram_media.file_size < telegram.MAX_SIZE_TO_DOWNLOAD:
+            log("telegram_media: %s" % telegram_media, LOG_INFO)
+            file_bin_data = telegram.getMediaFile(telegram_user_ref, telegram_media)
+
+        elif telegram_document and telegram_document.file_size < telegram.MAX_SIZE_TO_DOWNLOAD:
+            log("telegram_document: %s" % telegram_document, LOG_INFO)
+            file_bin_data = telegram.getDocumentFile(telegram_user_ref, telegram_document)
+
+        elif telegram_photo or telegram_media or telegram_document:
+            multi_livechat.post_channel_message(channel, "Incoming file is too big and cannot be downloaded due to Telegram API restirctions")
+            telegram.sendMessage(telegram_user_ref, "File is too big, file size must not exceed 20 MB.")
+
+        if telegram_sticker:
+            log("telegram_sticker: %s" % telegram_sticker, LOG_INFO)
+            multi_livechat.post_channel_message(channel, telegram_sticker.emoji, author=partner_link.odoo.id)
+
+
+    multi_livechat.post_channel_message(channel, odoo_message_text, attachments=[file_bin_data], author=partner_link.odoo.id)
+
+
+
+        ]]></field>
+    </record>
+    <record id="telegram_trigger_button" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_TELEGRAM</field>
+        <field name="name">Setup webhooks</field>
+        <field name="sync_task_id" ref="telegram_task_setup" />
+    </record>
+    <record id="telegram_trigger_webhook" model="sync.trigger.webhook">
+        <field name="trigger_name">TELEGRAM</field>
+        <field name="active" eval="True" />
+        <field name="name">Telegram updates</field>
+        <field name="sync_task_id" ref="telegram_task_tele2odoo" />
+        <field name="webhook_type">json</field>
+    </record>
+</odoo>

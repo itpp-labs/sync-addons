@@ -99,10 +99,14 @@ class SyncProject(models.Model):
 
     def _compute_eval_context_description(self):
         for r in self:
-            r.eval_context_description = "\n".join(
-                r.eval_context_ids.mapped(
-                    lambda c: "-= " + c.display_name + " =-\n\n" + c.description
+            r.eval_context_description = (
+                "\n".join(
+                    r.eval_context_ids.mapped(
+                        lambda c: "-= " + c.display_name + " =-\n\n" + c.description
+                    )
                 )
+                if r.eval_context_ids
+                else ""
             )
 
     def _compute_network_access_readonly(self):
@@ -475,6 +479,17 @@ class SyncProjectSecret(models.Model):
     _inherit = "sync.project.param.mixin"
 
     value = fields.Char(groups="sync.sync_group_manager")
+
+    def action_show_value(self):
+        self.ensure_one()
+        return {
+            "name": _("Secret Parameter"),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "sync.project.secret",
+            "target": "new",
+            "res_id": self.id,
+        }
 
 
 # see https://stackoverflow.com/a/14620633/222675
