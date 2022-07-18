@@ -5,7 +5,7 @@
     "summary": """Viber integration powered by Sync Studio""",
     "category": "Marketing",
     "images": ["images/sync_viber.jpg"],
-    "version": "14.0.1.0.0",
+    "version": "15.0.1.0.0",
     "application": False,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
