@@ -19,9 +19,7 @@
     "data": [
         "data/sync_project_data.xml",
     ],
-    "demo": [
-        "data/sync_project_data_demo.xml",
-    ],
+    "demo": [],
     "post_load": None,
     "pre_init_hook": None,
     "post_init_hook": None,

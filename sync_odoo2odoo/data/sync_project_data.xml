@@ -1,17 +1,27 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
+     Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-    <!-- Odoo2odoo -->
+    <!-- TODO: install, update, export -->
     <record id="odoo2odoo_project" model="sync.project">
         <field name="name">Odoo2odoo Integration</field>
-        <field name="eval_context">odoo2odoo</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync.sync_project_context_odoo2odoo_demo'))]"
+        />
         <field name="active" eval="False" />
         <field name="common_code">
 <![CDATA[
-model_name = 'res.partner'
-domain=[('name', 'ilike', 'test')]
-fields=['name', 'phone', 'image_1920']
+
+MODEL2FIELDS={
+    "res.partner": ["name", "phone", "image_1920"],
+    "product.product": ["name", "barcode", "image_1920"],
+}
+MODEL2DOMAIN={
+    "res.partner": [("name", "ilike", "test")],
+    "product.product": [("name", "ilike", "test")],
+}
 ]]>
         </field>
     </record>
@@ -36,20 +46,16 @@ fields=['name', 'phone', 'image_1920']
         <field name="key">PASSWORD</field>
         <field name="project_id" ref="sync_odoo2odoo.odoo2odoo_project" />
     </record>
-    <!-- TODO: split tasks:
-         * Local Odoo to Remote Odoo
-         * Remote Odoo to Local Odoo
-    -->
     <record id="odoo2odoo_task_local2remote" model="sync.task">
         <field name="name">Sync Local Models To Remote Odoo</field>
         <field name="project_id" ref="sync_odoo2odoo.odoo2odoo_project" />
         <field name="code">
 <![CDATA[
 def handle_cron():
-    sync_odoo2odoo_push(model_name, domain=domain, fields=fields,  create=True, update=True)
+    sync_odoo2odoo_push(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
 
 def handle_button():
-     sync_odoo2odoo_push(model_name, domain=domain, fields=fields,  create=True, update=True)
+     sync_odoo2odoo_push(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
 
 
 ]]>
@@ -61,10 +67,10 @@ def handle_button():
         <field name="code">
 <![CDATA[
 def handle_cron():
-    sync_odoo2odoo_pull(model_name, domain=domain, fields=fields,  create=True, update=True)
+    sync_odoo2odoo_pull(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
 
 def handle_button():
-     sync_odoo2odoo_pull(model_name, domain=domain, fields=fields,  create=True, update=True)
+     sync_odoo2odoo_pull(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
 
 ]]>
         </field>
@@ -75,13 +81,6 @@ def handle_button():
         <field name="model_id" ref="base.model_res_partner" />
         <field name="trigger">on_create</field>
     </record>
-    <!--<record id="odoo2odoo_trigger_cron" model="sync.trigger.cron">
-        <field name="trigger_name">CHECK_EXTERNAL_ODOO</field>
-        <field name="sync_task_id" ref="sync_odoo2odoo.odoo2odoo_task_local2remote" />
-        <field name="interval_number">15</field>
-        <field name="interval_type">minutes</field>
-    </record>-->
-    >
     <record id="odoo2odoo_trigger_cron" model="sync.trigger.cron">
         <field name="trigger_name">CHECK_EXTERNAL_ODOO</field>
         <field name="sync_task_id" ref="sync_odoo2odoo.odoo2odoo_task_remote2local" />

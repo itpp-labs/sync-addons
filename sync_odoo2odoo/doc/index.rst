@@ -2,23 +2,30 @@
  Odoo2odoo Integration
 =======================
 
-In this project we push partners to external Odoo and sync back changes.
+This module adds new *Evaluation Context* with helpers for odoo2odoo
+integration:
+
+* `record2dict(record, fields)`
+* `odoo_execute_kw(model, method, *args, **kwargs)`
+* `sync_odoo2odoo_push(model_name, domain=None, fields=None, active_test=True, create=False, update=False, records=None)`
+* `sync_odoo2odoo_pull(model_name, domain=None, fields=None, active_test=True, create=False, update=False)`
+
+The module is packaged with a draft Sync Project that implements one2one syncronization of listed models and specified fields. By default it syncs Partner and Product records that contains `test` in their names.
 
 Installation
 ============
 
-* Install this module in according to `Sync Studio <https://apps.odoo.com/apps/modules/14.0/sync/>`__ Documentation
+* Install this module in according to `Sync Studio <https://apps.odoo.com/apps/modules/15.0/sync/>`__ Documentation
 
 
 Configuration
--------------
+=============
 
-* Install ``Contacts`` module and create sevreal contacts just for test
 * Open menu ``[[ Sync Studio ]] >> Sync Projects``
 * Select *Odoo2odoo integration* project
 * Go to ``Parameters`` tab
 * Click ``[Edit]``
-* Set **Parameters** and **Secrets**:
+* Set **Parameters** and **Secrets** for remote database:
   * URL, e.g. ``https://3674665-12-0.runbot41.odoo.com``
   * DB, e.g. ``3674665-12-0``
   * USERNAME, e.g. ``admin``
@@ -27,7 +34,12 @@ Configuration
 Usage
 =====
 
-In this example we run local server, that synchronize data with main server to solve connection issues
+On remote database:
+
+* Create some partners with word *test* in the name field
+* Create some products with word *test* in the name field
+
+On local database (the one with Sync Studio installed)
 
 * Open menu ``[[ Sync Studio ]] >> Sync Projects``
 * Select *Odoo2odoo integration* project
@@ -40,39 +52,12 @@ In this example we run local server, that synchronize data with main server to s
 * Make trigger Active on the upper right corner
 * Click ``[Save]``
 
-* Then you can trigger synchronization in some of the following ways:
+* Then you can trigger synchronization in one of the following ways:
 
   1. Click ``[Run Manually]`` inside the trigger
 
   2. Simply wait up to cron job will start on a schedule :)
 
+RESULT: contacts and products are synced to local database
 
-**Uploading all existing partners.**
-
-* Open menu ``[[ Sync Studio ]] >> Sync Projects``
-* Select *Demo Odoo2odoo Integration* project
-* Choose Sync Task *Sync Local Models To Remote Odoo*
-* Click button ``[Run Now]``
-* Open the external Odoo
-* Make sure contacts created or changed in the external Odoo
-
-  * RESULT: copies of all our partners are in the external Odoo; they have a comment *by Sync Studio:* in Internal Notes of a partner
-
-
-
-
-
-
-
-старый сценарий использования
-
-* Open menu ``[[ Sync Studio ]] >> Sync Projects``
-* Select *Odoo2odoo integration* project
-* Unarchive the project
-* Go to ``Manual Triggers`` tab
-* Click ``[Run Now]`` button in ``PUSH_LOCAL_DATA``
-* Make sure contacts appear in  the external Odoo
-* Change name or avatar of the external contact
-* Get back to Sync Studio
-* Click ``[Run Now]`` button in ``PULL_EXTERNAL_DATA``
-* Make sure this contact changed in the local Odoo
+Local to remote syncronization works in the same way, but with additional feature: on creating a new local record, it's pushed to remote server immediately (depending on DB triggers configuration)
