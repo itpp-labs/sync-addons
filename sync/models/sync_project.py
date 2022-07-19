@@ -24,7 +24,7 @@ from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
 
-from ..tools import url2base64
+from ..tools import url2base64, url2bin
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
 
 _logger = logging.getLogger(__name__)
@@ -277,6 +277,7 @@ class SyncProject(models.Model):
                 "setattr": safe_setattr,
                 "get_lang": get_lang,
                 "url2base64": url2base64,
+                "url2bin": url2bin,
                 "html2plaintext": html2plaintext,
                 "time": time,
                 "datetime": datetime,

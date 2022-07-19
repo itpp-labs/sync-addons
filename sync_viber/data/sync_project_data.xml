@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2021-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_project_context_viber" model="sync.project.context">
+        <field name="name">viber</field>
+        <field name="display_name">Viber</field>
+    </record>
+    <record id="viber-integration--sync-project" model="sync.project">
+        <field name="name">Viber Integration</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync_project_context_viber'))]"
+        />
+        <field
+            name="common_code"
+        ><![CDATA[VIBER_PARTNER="VIBER_PARTNER"
+VIBER_CHANNEL="VIBER_CHANNEL"
+VIBER_THREAD="VIBER_THREAD"
+]]></field>
+    </record>
+    <record id="viber-bot-token--project-secret-parameter" model="sync.project.secret">
+        <field name="key">VIBER_BOT_TOKEN</field>
+        <field name="description" />
+        <field
+            name="url"
+            eval="'https://partners.viber.com/account/create-bot-account'"
+        />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="bot-name--project-parameter" model="sync.project.param">
+        <field name="key">BOT_NAME</field>
+        <field name="value">Odoo</field>
+        <field name="description" />
+        <field name="url" eval="" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="bot-avatar-url--project-parameter" model="sync.project.param">
+        <field name="key">BOT_AVATAR_URL</field>
+        <field name="value" />
+        <field name="description">Keep empty to use Company logo</field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="chat-model--project-parameter" model="sync.project.param">
+        <field name="key">CHAT_MODEL</field>
+        <field name="value">crm.lead</field>
+        <field name="description">
+            Record of which model is created on incoming message from new Viber user
+            (e.g. crm.lead, project.task, etc). The model must have fields name and
+            partner_id
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="webhook-chat--project-parameter" model="sync.project.param">
+        <field name="key">WEBHOOK_CHAT</field>
+        <field name="value">yes</field>
+        <field name="description">
+            Set to "no" to disable redirecting viber messages to odoo chat
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="operator-ids--project-parameter" model="sync.project.param">
+        <field name="key">OPERATOR_IDS</field>
+        <field name="value">2</field>
+        <field name="description">
+            Comma-separated list of user ids that will added to Discuss chat on getting
+            message from new viber user
+        </field>
+        <field name="url" eval="" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+    </record>
+    <record id="setup--sync-task" model="sync.task">
+        <field name="name">Setup</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_button():
+    # viber_api.unset_webhook()
+    viber_api.set_webhook(webhooks.VIBER)
+
+        ]]></field>
+    </record>
+    <record id="setup-webhook--manual-trigger" model="sync.trigger.button">
+        <field name="trigger_name">SETUP_WEBHOOK</field>
+        <field name="sync_task_id" ref="setup--sync-task" />
+    </record>
+    <record id="process-viber-events--sync-task" model="sync.task">
+        <field name="name">Process Viber Events</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[def handle_webhook(httprequest):
+  data = json.loads(httprequest.data.decode("utf-8"))
+  log("Raw data: %s" % data, LOG_DEBUG)
+
+  if not viber_webhook_check(httprequest):
+    return "no, thanks", 403
+
+  viber_user_ref, vrequest = viber_webhook_parse(httprequest)
+
+  if not viber_user_ref:
+    return
+
+  def partner_vals(viber_api, viber_user_ref):
+    try:
+        data = viber_api.get_user_details(viber_user_ref)
+    except Exception as err:
+        return {
+          "name": "Viber user %s" % viber_user_ref,
+          "comment": str(err),
+        }
+    return {
+      "name": data["name"],
+      "lang": get_lang(env, data.get("language", "").replace("-", "_")).code,
+      "image_1920": url2base64(data.get("avatar")),
+      "comment": str(data),
+    }
+  partner_kwargs = dict(viber_api=viber_api, viber_user_ref=viber_user_ref)
+  partner, is_new_partner = multi_livechat.get_partner(VIBER_PARTNER, viber_user_ref, partner_vals, partner_kwargs)
+
+  if params.WEBHOOK_CHAT != "no":
+    channel_name = partner.name
+    operators_user_ids = list(map(int, params.OPERATOR_IDS.split(",")))
+    operators_partner_ids = env.user.browse(operators_user_ids).mapped("partner_id").ids
+    partner_ids = [partner.id] + operators_partner_ids
+    channel, is_new_channel = multi_livechat.get_channel(VIBER_CHANNEL, viber_user_ref, channel_name, partner_ids)
+
+    if params.CHAT_MODEL != "res.partner":
+      def thread_vals(partner):
+        return {
+          "name": partner.name,
+        }
+      thread_kwargs = dict(partner=partner)
+      record_message = """<b><a href="channel_url">Chat with partner is created.</a></b>""".format(
+        channel_url=multi_livechat.get_channel_url(channel)
+      )
+      thread, is_new_thread = multi_livechat.get_thread(
+        "%s:%s" % (VIBER_THREAD, params.CHAT_MODEL),
+        viber_user_ref,
+        thread_vals,
+        thread_kwargs,
+        params.CHAT_MODEL,
+        record_message,
+      )
+      if is_new_thread:
+        multi_livechat.post_channel_message(channel,
+        """<b><a href="{record_url}">Record is created. </a></b>""".format(
+          record_url=multi_livechat.get_record_url(thread)
+          ))
+
+    odoo_message_text = None
+    if isinstance(vrequest, viber_requests.ViberMessageRequest):
+      log("vrequest.message=%s" % vrequest.message)
+      if data['message']['type'] == 'text':
+        odoo_message_text = vrequest.message.text
+        multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
+
+      elif data['message']['type'] in ('picture', 'video', 'document'):
+        bin_data = url2bin(vrequest.message.media)
+        file_name = data['message']['file_name']
+        log("file_name=%s bin_data=%s" % (file_name, bin_data))
+        channel.message_post(body="", author_id=partner.id,
+            message_type="comment", subtype_xmlid="mail.mt_comment", attachments=[[file_name, bin_data]])
+
+    elif isinstance(vrequest, viber_requests.ViberDeliveredRequest):
+      # TODO
+      pass
+    elif isinstance(vrequest, viber_requests.ViberSeenRequest):
+      # TODO
+      pass
+    else:
+      odoo_message_text = str(data)
+    log("type=%s" % type2str(vrequest))
+]]></field>
+    </record>
+    <record id="viber--webhook-trigger" model="sync.trigger.webhook">
+        <field name="trigger_name">VIBER</field>
+        <field name="active" eval="True" />
+        <field name="sync_task_id" ref="process-viber-events--sync-task" />
+        <field name="webhook_type">json</field>
+    </record>
+    <record id="send-response-via-odoo--sync-task" model="sync.task">
+        <field name="name">Send Response via Odoo</field>
+        <field name="active" eval="True" />
+        <field name="project_id" ref="viber-integration--sync-project" />
+        <field
+            name="code"
+        ><![CDATA[
+def handle_db(records):
+    for mail_message in records:
+        process_message(mail_message)
+
+def process_message(message):
+    channel = env["mail.channel"].browse(message.res_id)
+    if channel.channel_type != 'multi_livechat_viber':
+        return
+
+    channel_link = channel.search_links(VIBER_CHANNEL)
+    if not channel_link:
+        return
+
+    external_user_ref = channel_link.external
+
+    if message.author_id.search_links(VIBER_PARTNER) or message.author_id.id == multi_livechat.odoobot_id:
+        # this message is from partner or odoo bot
+        return
+
+    log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (message.res_id, message.author_id.id, message.attachment_ids, message.body), LOG_DEBUG)
+    if message.body:
+        text = "%s\n\n%s" % (html2plaintext(message.body), message.author_id.name)
+        send_viber_message(external_user_ref, text)
+
+    for attach in message.attachment_ids:
+        attach_url = attach._public_url()
+        log("ATTACHMENT public url: %s" % attach_url, LOG_DEBUG)
+
+        if attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "image":
+            if attach.file_size < MAX_PHOTO_SIZE:
+                send_viber_photo(external_user_ref, attach_url)
+            else:
+                channel.message_post(body="You cannot send more than 1 MB for photos.",
+                    author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+
+        elif attach.mimetype and "/" in attach.mimetype and attach.mimetype.split("/")[0] == "video":
+            if attach.file_size < MAX_VIDEO_SIZE:
+                send_viber_file(external_user_ref, attach_url, attach.file_size, attach.name)
+            else:
+                channel.message_post(body="You cannot send more than 26 MB for videos.",
+                    author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+        else:
+            if attach.file_size < MAX_DOC_SIZE:
+                send_viber_file(external_user_ref, attach_url, attach.file_size, attach.name)
+            else:
+                channel.message_post(body="You cannot send more than 50 MB for documents.",
+                    author_id=multi_livechat.odoobot_id, message_type="comment", subtype_xmlid="mail.mt_comment")
+
+def send_viber_message(external_user_ref, text):
+    viber_api.send_messages(external_user_ref, [viber_messages.TextMessage(text=text)])
+
+def send_viber_photo(external_user_ref, media):
+    viber_api.send_messages(external_user_ref, [viber_messages.PictureMessage(media=media)])
+
+def send_viber_file(external_user_ref, media, size, file_name):
+    viber_api.send_messages(external_user_ref, [viber_messages.FileMessage(media=media, size=size, file_name=file_name)])
+
+]]></field>
+    </record>
+    <record id="on-message-posted--db-trigger" model="sync.trigger.automation">
+        <field name="trigger_name">ON_MESSAGE_POSTED</field>
+        <field name="active" eval="True" />
+        <field name="sync_task_id" ref="send-response-via-odoo--sync-task" />
+        <field name="model_id" ref="mail.model_mail_message" />
+        <field name="trigger">on_create</field>
+        <field name="filter_pre_domain" />
+        <field name="filter_domain">[["model","=","mail.channel"]]</field>
+    </record>
+</odoo>
