@@ -1,4 +1,4 @@
-# Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
@@ -7,7 +7,7 @@ from viberbot import Api
 from viberbot.api import messages as viber_messages, viber_requests
 from viberbot.api.bot_configuration import BotConfiguration
 
-from odoo import _, api, fields, models
+from odoo import _, api, models
 from odoo.tools.safe_eval import wrap_module
 
 from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
@@ -24,13 +24,7 @@ MAX_VIDEO_SIZE = 27_262_976
 
 class SyncProjectViber(models.Model):
 
-    _inherit = "sync.project"
-    eval_context = fields.Selection(
-        selection_add=[
-            ("viber", "Viber"),
-        ],
-        ondelete={"viber": "cascade"},
-    )
+    _inherit = "sync.project.context"
 
     @api.model
     def _eval_context_viber(self, secrets, eval_context):
