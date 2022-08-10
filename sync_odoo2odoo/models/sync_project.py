@@ -165,8 +165,8 @@ class SyncProjectOdoo2Odoo(models.Model):
                     r.set_link(RELATION, er)
 
                     log(
-                        "Odoo2odoo->Pull (Create)",
-                        json.dumps([model_name, r, fields_dict]),
+                        "Odoo2odoo->Pull (Create): %s"
+                        % json.dumps([str(r), fields_dict]),
                     )
 
             if update:
@@ -179,8 +179,8 @@ class SyncProjectOdoo2Odoo(models.Model):
                     r.write(fields_dict)
 
                     log(
-                        "Odoo2odoo->Pull (Update)",
-                        json.dumps([model_name, r, fields_dict]),
+                        "Odoo2odoo->Pull (Update): %s"
+                        % json.dumps([str(r), fields_dict]),
                     )
 
         return {

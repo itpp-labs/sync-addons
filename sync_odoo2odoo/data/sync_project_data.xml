@@ -3,12 +3,16 @@
      Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
+    <record id="sync_project_context_odoo2odoo" model="sync.project.context">
+        <field name="name">odoo2odoo</field>
+        <field name="display_name">Odoo2odoo</field>
+    </record>
     <!-- TODO: install, update, export -->
     <record id="odoo2odoo_project" model="sync.project">
         <field name="name">Odoo2odoo Integration</field>
         <field
             name="eval_context_ids"
-            eval="[(4, ref('sync.sync_project_context_odoo2odoo_demo'))]"
+            eval="[(4, ref('sync_odoo2odoo.sync_project_context_odoo2odoo'))]"
         />
         <field name="active" eval="False" />
         <field name="common_code">
@@ -51,12 +55,24 @@ MODEL2DOMAIN={
         <field name="project_id" ref="sync_odoo2odoo.odoo2odoo_project" />
         <field name="code">
 <![CDATA[
+def push():
+    for model, fields in MODEL2FIELDS.items():
+        domain = MODEL2DOMAIN[model]
+        sync_odoo2odoo_push(model, domain=domain, fields=fields,  create=True, update=True)
+
 def handle_cron():
-    sync_odoo2odoo_push(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
+    push()
 
 def handle_button():
-     sync_odoo2odoo_push(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
+    push()
 
+def handle_db(records):
+    model = records._name
+    fields = MODEL2FIELDS.get(model)
+    if not fields:
+        log("Fields are not specified for model %s. Ignore" % model)
+        return
+    sync_odoo2odoo_push(model, fields=fields,  create=True, update=True, records=records)
 
 ]]>
         </field>
@@ -66,11 +82,16 @@ def handle_button():
         <field name="project_id" ref="sync_odoo2odoo.odoo2odoo_project" />
         <field name="code">
 <![CDATA[
+def pull():
+    for model, fields in MODEL2FIELDS.items():
+        domain = MODEL2DOMAIN[model]
+        sync_odoo2odoo_pull(model, domain=domain, fields=fields,  create=True, update=True)
+
 def handle_cron():
-    sync_odoo2odoo_pull(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
+    pull()
 
 def handle_button():
-     sync_odoo2odoo_pull(MODEL, domain=DOMAIN, fields=fields,  create=True, update=True)
+    pull()
 
 ]]>
         </field>
