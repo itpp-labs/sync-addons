@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="sync_project_context_odoo2odoo_demo" model="sync.project.context">
-            <field name="name">odoo2odoo</field>
+            <field name="name">odoo2odoo_demo</field>
             <field name="display_name">Odoo2odoo (Demo)</field>
         </record>
         <record id="sync_project_context_telegram_demo" model="sync.project.context">
