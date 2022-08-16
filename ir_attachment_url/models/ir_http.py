@@ -64,7 +64,7 @@ class IrHttp(models.AbstractModel):
         access_token=None,
         env=None,
     ):  # pylint: disable=redefined-builtin
-        """ Get file, attachment or downloadable content
+        """Get file, attachment or downloadable content
 
         If the ``xmlid`` and ``id`` parameter is omitted, fetches the default value for the
         binary field (via ``default_get``), otherwise fetches the field for

@@ -20,7 +20,9 @@ class TestAlipayOrder(TestPointOfSaleCommon):
 
         # create alipay journals
         self.pos_config.init_pos_alipay_journals()
-        context = dict(app_private_key_string=DUMMY_RSA_KEY,)
+        context = dict(
+            app_private_key_string=DUMMY_RSA_KEY,
+        )
 
         self.Config = self.env["ir.config_parameter"].with_context(context)
         self.Order = self.env["alipay.order"].with_context(context)

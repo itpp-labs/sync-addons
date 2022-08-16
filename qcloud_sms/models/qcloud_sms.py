@@ -8,8 +8,8 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 try:
-    from qcloudsms_py.httpclient import HTTPError
     import phonenumbers
+    from qcloudsms_py.httpclient import HTTPError
 except ImportError as err:
     _logger.debug(err)
 

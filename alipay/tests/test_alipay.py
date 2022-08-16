@@ -31,7 +31,9 @@ class TestAlipayOrder(TransactionCase):
         self.requests_mock.start()
         self.addCleanup(self.requests_mock.stop)
 
-        context = dict(app_private_key_string=DUMMY_RSA_KEY,)
+        context = dict(
+            app_private_key_string=DUMMY_RSA_KEY,
+        )
 
         self.Config = self.env["ir.config_parameter"].with_context(context)
         self.Order = self.env["alipay.order"].with_context(context)

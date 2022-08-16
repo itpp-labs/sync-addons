@@ -72,8 +72,8 @@ def updated_image_resize_image_big(
     filetype=None,
     avoid_if_small=True,
 ):
-    """ copy-pasted from odoo/tools/image.py::image_resize_image_big
-        because we rewrite image_resize_image function.
+    """copy-pasted from odoo/tools/image.py::image_resize_image_big
+    because we rewrite image_resize_image function.
     """
     return updated_image_resize_image(
         base64_source, size, encoding, filetype, avoid_if_small
@@ -87,8 +87,8 @@ def updated_image_resize_image_medium(
     filetype=None,
     avoid_if_small=False,
 ):
-    """ copy-pasted from odoo/tools/image.py::image_resize_image_medium
-        because we rewrite image_resize_image function.
+    """copy-pasted from odoo/tools/image.py::image_resize_image_medium
+    because we rewrite image_resize_image function.
     """
     return updated_image_resize_image(
         base64_source, size, encoding, filetype, avoid_if_small
@@ -98,8 +98,8 @@ def updated_image_resize_image_medium(
 def updated_image_resize_image_small(
     base64_source, size=(64, 64), encoding="base64", filetype=None, avoid_if_small=False
 ):
-    """ copy-pasted from odoo/tools/image.py::image_resize_image_small
-        because we rewrite image_resize_image function.
+    """copy-pasted from odoo/tools/image.py::image_resize_image_small
+    because we rewrite image_resize_image function.
     """
     return updated_image_resize_image(
         base64_source, size, encoding, filetype, avoid_if_small
@@ -118,8 +118,8 @@ def updated_image_get_resized_images(
     avoid_resize_medium=False,
     avoid_resize_small=False,
 ):
-    """ copy-pasted from odoo/tools/image.py::image_get_resized_images
-        because we rewrite image_resize_image function.
+    """copy-pasted from odoo/tools/image.py::image_get_resized_images
+    because we rewrite image_resize_image function.
     """
     return_dict = dict()
     if isinstance(base64_source, tools.pycompat.text_type):
