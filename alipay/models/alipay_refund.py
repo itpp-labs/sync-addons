@@ -13,7 +13,7 @@ SUCCESS = "SUCCESS"
 class AlipayRefund(models.Model):
     """Records with refund information and payment status.
 
-    Can be used for different types of Payments. See description of trade_type field. """
+    Can be used for different types of Payments. See description of trade_type field."""
 
     _name = "alipay.refund"
     _description = "Unified Refund"
@@ -68,7 +68,10 @@ class AlipayRefund(models.Model):
         else:
             alipay = self.env["ir.config_parameter"].get_alipay_pay_object()
             result_raw = alipay.refund.apply(
-                record.total_fee, self.refund_fee, self.name, out_trade_no=record.name,
+                record.total_fee,
+                self.refund_fee,
+                self.name,
+                out_trade_no=record.name,
             )
 
         vals = {

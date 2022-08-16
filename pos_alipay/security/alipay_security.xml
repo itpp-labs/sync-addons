@@ -4,13 +4,13 @@
 <odoo noupdate="1">
     <!-- Rules -->
     <record model="ir.rule" id="miniprogram_user_rule">
-        <field
-            name="name"
-        >Mini-Program: mini-program user: read POS products only</field>
+        <field name="name">
+            Mini-Program: mini-program user: read POS products only
+        </field>
         <field name="model_id" ref="product.model_product_product" />
-        <field
-            name="domain_force"
-        >[('sale_ok', '=', True), ('available_in_pos', '=', True)]</field>
+        <field name="domain_force">
+            [('sale_ok', '=', True), ('available_in_pos', '=', True)]
+        </field>
         <field name="perm_unlink" eval="0" />
         <field name="perm_write" eval="0" />
         <field name="perm_read" eval="1" />

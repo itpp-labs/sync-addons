@@ -1,5 +1,4 @@
-odoo.define("pos_longpolling", function(require) {
-    "use strict";
+odoo.define("pos_longpolling", function (require) {
     var exports = {};
 
     var Backbone = window.Backbone;
@@ -18,7 +17,7 @@ odoo.define("pos_longpolling", function(require) {
     bus_bus.bus.activated = true;
 
     bus_bus.Bus.include({
-        init_bus: function(pos, sync_server) {
+        init_bus: function (pos, sync_server) {
             this.pos = pos;
             if (!this.channel_callbacks) {
                 this.channel_callbacks = {};
@@ -37,14 +36,14 @@ odoo.define("pos_longpolling", function(require) {
                 this.longpolling_connection
             );
         },
-        poll: function(address) {
+        poll: function (address) {
             var self = this;
             this.set_activated(true);
             var now = new Date().getTime();
             var options = _.extend({}, this.options, {
                 bus_inactivity: now - this.get_last_presence(),
             });
-            var data = {channels: this.channels, last: this.last, options: options};
+            var data = { channels: this.channels, last: this.last, options: options };
             // Function is copy-pasted from bus.js but the line below defines a custom server address
             var serv_adr = address ? address.serv : this.serv_adr || "";
             session
@@ -53,7 +52,7 @@ odoo.define("pos_longpolling", function(require) {
                     timeout: 60000,
                 })
                 .then(
-                    function(result) {
+                    function (result) {
                         self.on_notification(result);
                         if (!self.stop) {
                             self.poll();
@@ -63,7 +62,7 @@ odoo.define("pos_longpolling", function(require) {
                         poll_connection.set_waiting_poll_response(false);
                         poll_connection.network_is_on();
                     },
-                    function(unused, e) {
+                    function (unused, e) {
                         // Difference with original
                         self.longpolling_connection.network_is_off();
                         // No error popup if request is interrupted or fails for any reason
@@ -77,7 +76,7 @@ odoo.define("pos_longpolling", function(require) {
                     }
                 );
         },
-        check_sleep_mode: function() {
+        check_sleep_mode: function () {
             // Var hidden = "";
             var visibilityChange = "";
             var self = this;
@@ -104,7 +103,7 @@ odoo.define("pos_longpolling", function(require) {
                 document.addEventListener(visibilityChange, onVisibilityChange, false);
             }
         },
-        add_channel_callback: function(channel_name, callback, thisArg) {
+        add_channel_callback: function (channel_name, callback, thisArg) {
             if (thisArg) {
                 callback = _.bind(callback, thisArg);
             }
@@ -116,14 +115,14 @@ odoo.define("pos_longpolling", function(require) {
                 this.activate_channel(channel_name);
             }
         },
-        remove_channel: function(channel_name) {
+        remove_channel: function (channel_name) {
             if (channel_name in this.channels) {
                 delete this.channels[channel_name];
                 var channel = this.get_full_channel_name(channel_name);
                 this.delete_channel(channel);
             }
         },
-        start: function() {
+        start: function () {
             if (this.activated) {
                 return;
             }
@@ -131,11 +130,11 @@ odoo.define("pos_longpolling", function(require) {
             this.last = this.pos.db.load(this.bus_id_last(), 0);
             this.on("notification", this, this.on_notification_callback);
             this.stop_polling();
-            _.each(self.channel_callbacks, function(value, key) {
+            _.each(self.channel_callbacks, function (value, key) {
                 self.activate_channel(key);
             });
             this.lonpolling_activated = true;
-            this.longpolling_connection.send_ping({serv: this.serv_adr});
+            this.longpolling_connection.send_ping({ serv: this.serv_adr });
             // One tab per browser is_master but we need to be able to poll with several tabs with odoo opened
             // https://github.com/odoo/odoo/blob/10.0/addons/bus/static/src/js/bus.js#L134
             var is_master = this.is_master;
@@ -146,11 +145,11 @@ odoo.define("pos_longpolling", function(require) {
             this.set_activated(true);
             this.check_sleep_mode();
         },
-        activate_channel: function(channel_name) {
+        activate_channel: function (channel_name) {
             var channel = this.get_full_channel_name(channel_name);
             this.add_channel(channel);
         },
-        on_notification_callback: function(notification) {
+        on_notification_callback: function (notification) {
             for (var i = 0; i < notification.length; i++) {
                 var channel = notification[i][0];
                 var message = notification[i][1];
@@ -158,10 +157,10 @@ odoo.define("pos_longpolling", function(require) {
             }
             this.pos.db.save(this.bus_id_last(), this.last);
         },
-        bus_id_last: function() {
+        bus_id_last: function () {
             return "bus_" + this.bus_id + "last";
         },
-        on_notification_do: function(channel, message) {
+        on_notification_do: function (channel, message) {
             var self = this;
             if (_.isString(channel)) {
                 channel = JSON.parse(channel);
@@ -185,19 +184,19 @@ odoo.define("pos_longpolling", function(require) {
                     crash_manager.show_error({
                         type: _t("Longpolling Handling Error"),
                         message: _t("Longpolling Handling Error"),
-                        data: {debug: err.stack},
+                        data: { debug: err.stack },
                     });
                 }
             }
         },
-        get_full_channel_name: function(channel_name) {
+        get_full_channel_name: function (channel_name) {
             return JSON.stringify([
                 session.db,
                 channel_name,
                 String(this.pos.config.id),
             ]);
         },
-        set_activated: function(is_online) {
+        set_activated: function (is_online) {
             if (this.activated === is_online) {
                 return;
             }
@@ -208,7 +207,7 @@ odoo.define("pos_longpolling", function(require) {
 
     var PosModelSuper = models.PosModel;
     models.PosModel = models.PosModel.extend({
-        initialize: function() {
+        initialize: function () {
             var self = this;
             PosModelSuper.prototype.initialize.apply(this, arguments);
             this.buses = {};
@@ -216,19 +215,19 @@ odoo.define("pos_longpolling", function(require) {
             this.bus = bus_bus.bus;
             this.bus.lonpolling_activated = false;
             this.bus.name = "Default";
-            this.ready.then(function() {
+            this.ready.then(function () {
                 self.bus.init_bus(self);
                 if (self.config.autostart_longpolling) {
                     self.bus.start();
                 }
             });
         },
-        add_bus: function(key, sync_server) {
+        add_bus: function (key, sync_server) {
             this.buses[key] = new bus_bus.Bus();
             this.buses[key].init_bus(this, sync_server);
             this.buses[key].name = key;
         },
-        get_bus: function(key) {
+        get_bus: function (key) {
             if (key) {
                 return this.buses[key];
             }
@@ -236,7 +235,7 @@ odoo.define("pos_longpolling", function(require) {
         },
     });
     exports.LongpollingConnection = Backbone.Model.extend({
-        initialize: function(pos, bus) {
+        initialize: function (pos, bus) {
             this.pos = pos;
             this.timer = false;
             this.is_online = true;
@@ -245,7 +244,7 @@ odoo.define("pos_longpolling", function(require) {
             this.response_status = false;
             this.set_waiting_poll_response(true);
         },
-        network_is_on: function(message) {
+        network_is_on: function (message) {
             if (message) {
                 this.response_status = true;
             }
@@ -253,38 +252,38 @@ odoo.define("pos_longpolling", function(require) {
             this.set_is_online(true);
             this.bus.sleep = false;
         },
-        network_is_off: function() {
+        network_is_off: function () {
             this.update_timer();
             this.set_waiting_poll_response(true);
             this.set_is_online(false);
         },
-        set_is_online: function(is_online) {
+        set_is_online: function (is_online) {
             if (this.is_online === is_online) {
                 return;
             }
             this.is_online = is_online;
             this.trigger("change:poll_connection", is_online);
         },
-        set_waiting_poll_response: function(status) {
+        set_waiting_poll_response: function (status) {
             if (this.waiting_poll_response === status) {
                 return;
             }
             this.waiting_poll_response = status;
             this.trigger("change:poll_response", status);
         },
-        update_timer: function() {
+        update_timer: function () {
             this.stop_timer();
             this.start_timer(this.pos.config.longpolling_max_silence_timeout, "query");
         },
-        stop_timer: function() {
+        stop_timer: function () {
             if (this.timer) {
                 clearTimeout(this.timer);
                 this.timer = false;
             }
         },
-        start_timer: function(time, type) {
+        start_timer: function (time, type) {
             var self = this;
-            this.timer = setTimeout(function() {
+            this.timer = setTimeout(function () {
                 if (type === "query") {
                     self.send_ping();
                 } else if (type === "response") {
@@ -299,11 +298,11 @@ odoo.define("pos_longpolling", function(require) {
                 }
             }, time * 1000);
         },
-        response_timer: function() {
+        response_timer: function () {
             this.stop_timer();
             this.start_timer(this.pos.config.longpolling_pong_timeout, "response");
         },
-        send_ping: function(address) {
+        send_ping: function (address) {
             var self = this;
             this.response_status = false;
             var serv_adr = address ? address.serv : this.pos.config.sync_server || "";
@@ -318,11 +317,15 @@ odoo.define("pos_longpolling", function(require) {
             return session
                 .rpc(
                     serv_adr + "/pos_longpolling/update",
-                    {message: "PING", pos_id: self.pos.config.id, db_name: session.db},
-                    {timeout: 30000}
+                    {
+                        message: "PING",
+                        pos_id: self.pos.config.id,
+                        db_name: session.db,
+                    },
+                    { timeout: 30000 }
                 )
                 .then(
-                    function() {
+                    function () {
                         /* If the value "response_status" is true, then the poll message came earlier
                  if the value is false you need to start the response timer*/
                         self.set_is_online(true);
@@ -330,7 +333,7 @@ odoo.define("pos_longpolling", function(require) {
                             self.response_timer();
                         }
                     },
-                    function(error, e) {
+                    function (error, e) {
                         e.preventDefault();
                         if (self.pos.debug) {
                             console.log(
@@ -347,7 +350,7 @@ odoo.define("pos_longpolling", function(require) {
 
     var Status_Widget = chrome.StatusWidget;
     Status_Widget.include({
-        rerender_poll_status: function(current_bus) {
+        rerender_poll_status: function (current_bus) {
             var element = this.$el.find('div[bid="' + current_bus.bus_id + '"]');
             if (current_bus.activated) {
                 if (current_bus.longpolling_connection.is_online) {
@@ -363,12 +366,12 @@ odoo.define("pos_longpolling", function(require) {
                 this.set_icon_class(element, "oe_hidden");
             }
         },
-        set_icon_class: function(element, new_class) {
+        set_icon_class: function (element, new_class) {
             element
                 .removeClass("oe_hidden oe_red oe_green oe_orange")
                 .addClass(new_class);
         },
-        icon_rotating: function(element, status) {
+        icon_rotating: function (element, status) {
             element.find("i").removeClass("fa-spin");
             if (status) {
                 element.find("i").addClass("fa-spin");
@@ -377,36 +380,36 @@ odoo.define("pos_longpolling", function(require) {
     });
 
     chrome.SynchNotificationWidget.include({
-        start: function() {
+        start: function () {
             this._super();
             var element = this.$el.find(".serv_primary");
             this.start_bus(this.pos.bus, element);
             this.start_additional_buses();
         },
-        start_bus: function(bus, element) {
+        start_bus: function (bus, element) {
             var self = this;
             element.attr("bid", bus.bus_id);
             this.rerender_poll_status(bus);
             bus.longpolling_connection.on(
                 "change:poll_connection change:poll_response",
-                function(is_online) {
+                function (is_online) {
                     self.rerender_poll_status(bus);
                 }
             );
-            element.on("click", function(event) {
+            element.on("click", function (event) {
                 self.icon_rotating(element, true);
                 bus.longpolling_connection
-                    .send_ping({serv: bus.serv_adr})
-                    .always(function() {
+                    .send_ping({ serv: bus.serv_adr })
+                    .always(function () {
                         self.icon_rotating(element, false);
                     });
             });
         },
-        start_additional_buses: function() {
+        start_additional_buses: function () {
             var self = this;
             var sync_icon = QWeb.render("synch_icon", {});
             var div = false;
-            _.each(this.pos.buses, function(b) {
+            _.each(this.pos.buses, function (b) {
                 div = document.createElement("div");
                 div.innerHTML = sync_icon;
                 var element = $(div);

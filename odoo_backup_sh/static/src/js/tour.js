@@ -1,9 +1,7 @@
 // Copyright 2018 Stanislav Krotov <https://it-projects.info/team/ufaks>
 // License MIT (https://opensource.org/licenses/MIT).
 
-odoo.define("odoo_backup_sh.tour", function(require) {
-    "use strict";
-
+odoo.define("odoo_backup_sh.tour", function (require) {
     var core = require("web.core");
     var tour = require("web_tour.tour");
 
@@ -36,7 +34,7 @@ odoo.define("odoo_backup_sh.tour", function(require) {
             {
                 // Check that at least one button in dashboard is visible
                 trigger: ".o_backup_dashboard a",
-                run: function() {
+                run: function () {
                     // Empty
                 },
             },

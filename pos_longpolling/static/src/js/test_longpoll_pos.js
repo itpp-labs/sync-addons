@@ -1,6 +1,4 @@
-odoo.define("pos_longpolling.tour", function(require) {
-    "use strict";
-
+odoo.define("pos_longpolling.tour", function (require) {
     var tour = require("web_tour.tour");
     var core = require("web.core");
     var _t = core._t;
@@ -29,5 +27,5 @@ odoo.define("pos_longpolling.tour", function(require) {
         },
     ];
 
-    tour.register("longpoll_connection_tour", {test: true, url: "/web"}, steps);
+    tour.register("longpoll_connection_tour", { test: true, url: "/web" }, steps);
 });
