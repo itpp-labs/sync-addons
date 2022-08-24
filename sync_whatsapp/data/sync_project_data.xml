@@ -1,10 +1,18 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!-- Copyright 2021 Eugene Molotov <https://github.com/em230418>
+     Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
+    <record id="sync_project_context_whatsapp_chatapi" model="sync.project.context">
+        <field name="name">whatsapp_chatapi</field>
+        <field name="display_name">WhatsApp (Chat API)</field>
+    </record>
     <record id="whatsapp-chatapi-integration--sync-project" model="sync.project">
-        <field name="name">Whatsapp (Chat API) Integration</field>
-        <field name="eval_context">whatsapp_chatapi</field>
+        <field name="name">WhatsApp (Chat API) Integration</field>
+        <field
+            name="eval_context_ids"
+            eval="[(4, ref('sync_project_context_whatsapp_chatapi'))]"
+        />
         <field
             name="common_code"
         ><![CDATA[WHATSAPP_CHATAPI_PARTNER="WHATSAPP_CHATAPI_PARTNER"
@@ -17,8 +25,8 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
         model="sync.project.param"
     >
         <field name="key">WHATSAPP_CHATAPI_API_URL</field>
-        <field name="value">https://api.chat-api.com/instance389038/</field>
-        <field name="description" />
+        <field name="description">E.g. https://api.chat-api.com/instance123456</field>
+        <field name="url">https://app.chat-api.com/</field>
         <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
     </record>
     <record
@@ -27,6 +35,7 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
     >
         <field name="key">WHATSAPP_CHATAPI_TOKEN</field>
         <field name="description" />
+        <field name="url">https://app.chat-api.com/</field>
         <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
     </record>
     <record id="chat-model--project-parameter" model="sync.project.param">
@@ -54,7 +63,7 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
         <field name="value">2</field>
         <field name="description">
             Comma-separated list of user ids that will added to Discuss chat on getting
-            message from new whatsapp user
+            message from new WhatsApp user
         </field>
         <field name="url" eval="" />
         <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
@@ -162,33 +171,36 @@ def send_whatsapp_file(external_chat_ref, attachment):
     whatsapp_service_api.send_file(external_chat_ref, attachment)
 
 def handle_db(records):
-    # records are instances of mail.message
     for mail_message in records:
-        if mail_message.author_id.id == multi_livechat.odoobot_id or mail_message.author_id.search_links(WHATSAPP_CHATAPI_PARTNER):
-            log("Message from external chat. No need to send back. Ignore")
-            continue
+        process_message(mail_message)
 
-        for channel in mail_message.channel_ids:
-            if channel.channel_type != multi_livechat.channel_type:
-                log("channel type is not %s" % multi_livechat.channel_type, LOG_DEBUG)
-                continue
-            channel_link = channel.search_links(WHATSAPP_CHATAPI_CHANNEL)
-            if not channel_link:
-                log("channel link not found")
-                continue
+def process_message(mail_message):
+    if mail_message.author_id.id == multi_livechat.odoobot_id or mail_message.author_id.search_links(WHATSAPP_CHATAPI_PARTNER):
+        log("Message from external chat. No need to send back. Ignore")
+        return
 
-            log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (mail_message.res_id, mail_message.author_id.id, mail_message.attachment_ids, mail_message.body), LOG_DEBUG)
-            external_chat_ref = channel_link.external
+    channel = env["mail.channel"].browse(message.res_id)
+    if channel.channel_type != multi_livechat.channel_type:
+        log("channel type is not %s" % multi_livechat.channel_type, LOG_DEBUG)
+        continue
 
-            if mail_message.body:
-                text = "%s\n\n%s" % (html2plaintext(mail_message.body), mail_message.author_id.name)
-                add_job(send_whatsapp_message)(external_chat_ref, text)
+    channel_link = channel.search_links(WHATSAPP_CHATAPI_CHANNEL)
+    if not channel_link:
+        log("channel link not found")
+        return
 
-            if mail_message.attachment_ids:
-                for attach in mail_message.attachment_ids:
-                    log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+    external_user_ref = channel_link.external
 
-                    add_job(send_whatsapp_file)(external_chat_ref, attach)
+    log("MESSAGE from odoo: channel_id %s - author_id %s - attachment_ids: %s - message_text: %s" % (mail_message.res_id, mail_message.author_id.id, mail_message.attachment_ids, mail_message.body), LOG_DEBUG)
+    external_chat_ref = channel_link.external
+
+    if mail_message.body:
+        text = "%s\n\n%s" % (html2plaintext(mail_message.body), mail_message.author_id.name)
+        add_job(send_whatsapp_message)(external_chat_ref, text)
+
+    for attach in mail_message.attachment_ids:
+        log("ATTACHMENT from odoo: attach.id %s - name %s" % (attach.name, attach.id), LOG_INFO)
+        add_job(send_whatsapp_file)(external_chat_ref, attach)
 ]]></field>
     </record>
     <record id="on-message-posted--db-trigger" model="sync.trigger.automation">
@@ -196,8 +208,8 @@ def handle_db(records):
         <field name="active" eval="True" />
         <field name="sync_task_id" ref="send-response-via-odoo--sync-task" />
         <field name="model_id" ref="mail.model_mail_message" />
-        <field name="trigger">on_write</field>
-        <field name="filter_pre_domain">[["channel_ids","=",False]]</field>
-        <field name="filter_domain">[["channel_ids","!=",False]]</field>
+        <field name="trigger">on_create</field>
+        <field name="filter_pre_domain" />
+        <field name="filter_domain">[["model","=","mail.channel"]]</field>
     </record>
 </odoo>

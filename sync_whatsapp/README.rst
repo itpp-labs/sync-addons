@@ -14,10 +14,15 @@ The module allows creating a WhatsApp bot to communicate with people through Odo
 
 For each WhatsApp user, the module creates a partner with corresponding information (name, nickname, avatar).
 
-Docs
-====
+Free API
+========
 
-* WhatsApp lib https://github.com/itpp-labs/whatsapp-api
+There is a *free* alternative to the `Chat API <https://chat-api.com/>`_:
+
+* https://github.com/itpp-labs/whatsapp-api-service
+* https://github.com/itpp-labs/whatsapp-api
+
+It requires extra efforts on deploying as well as on development. Contact us if you want to try this game.
 
 Questions?
 ==========

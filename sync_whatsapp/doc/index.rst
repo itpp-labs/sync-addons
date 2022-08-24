@@ -1,14 +1,9 @@
-=================================
- WhatsApp (Chat API) Integration
-=================================
-
-In order to work with this module, you need to have one of following instance:
-
-* Chat API instance (you need to pay for subscription)
-* Replica Chat API instance (free, selfhosted)
-
-Chat API configuration
 ======================
+ WhatsApp Integration
+======================
+
+Chat API
+========
 
 * Register in Chat API: https://app.chat-api.com/
 * Choose WhatsApp project
@@ -16,10 +11,7 @@ Chat API configuration
 * Scan QR code using WhatsApp
 * Remember given "Your API URL" and "token"
 
-Replica Chat API instance
-=========================
-
-Follow instructions from https://github.com/itpp-labs/whatsapp-api-service
+Note. There is a *free* alternative to Chat API. Use it on your own risk: https://github.com/itpp-labs/whatsapp-api-service
 
 Installation
 ============
@@ -29,15 +21,15 @@ Installation
  Specific installation of queue_job
 -----------------------------------
 
-If messages from Odoo to WhatsApp Bot haven't been sent the problem may be in the wrong `queue_job` installation.
-You should check how to install this module in its `docs <https://github.com/OCA/queue/tree/14.0/queue_job#installation>`__
+If messages from Odoo to WhatsApp Bot haven't been sent, the problem may be in the wrong `queue_job` installation.
+You should check how to install this module in its `docs <https://github.com/OCA/queue/tree/15.0/queue_job#installation>`__.
 In particular, you need to add `queue_job` to `server_wide_modules`.
 
 Configuration
 =============
 
 * Open menu ``[[ Sync Studio ]] >> Sync Projects``
-* Choose ``WhatsApp (Chat API)`` project
+* Choose ``WhatsApp (Chat API) Integration`` project
 * Go to ``Parameters`` tab
 * Click ``[Edit]``
 * Set **Parameters** and **Secrets**:

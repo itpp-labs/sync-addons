@@ -1,4 +1,5 @@
 # Copyright 2021 Eugene Molotov <https://github.com/em230418>
+# Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import json
@@ -6,7 +7,7 @@ import logging
 
 from requests import request
 
-from odoo import _, api, fields, models
+from odoo import _, api, models
 
 from odoo.addons.multi_livechat.tools import get_multi_livechat_eval_context
 from odoo.addons.sync.models.sync_project import AttrDict
@@ -17,13 +18,7 @@ _logger = logging.getLogger(__name__)
 
 class SyncProjectWhatsApp(models.Model):
 
-    _inherit = "sync.project"
-    eval_context = fields.Selection(
-        selection_add=[
-            ("whatsapp_chatapi", "Whatsapp (Chat API)"),
-        ],
-        ondelete={"whatsapp_chatapi": "cascade"},
-    )
+    _inherit = "sync.project.context"
 
     @api.model
     def _eval_context_whatsapp_chatapi(self, secrets, eval_context):
