@@ -21,26 +21,26 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
 ]]></field>
     </record>
     <record
-        id="whatsapp-chatapi-service-endpoint--project-secret-parameter"
-        model="sync.project.param"
-    >
-        <field name="key">WHATSAPP_CHATAPI_API_URL</field>
-        <field name="description">E.g. https://api.chat-api.com/instance123456</field>
-        <field name="url">https://app.chat-api.com/</field>
-        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
-    </record>
-    <record
         id="whatsapp-chatapi-service-api-key--project-secret-parameter"
         model="sync.project.secret"
     >
         <field name="key">WHATSAPP_CHATAPI_TOKEN</field>
         <field name="description" />
-        <field name="url">https://app.chat-api.com/</field>
+        <field name="url" eval="'https://app.chat-api.com/'" />
+        <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
+    </record>
+    <record
+        id="whatsapp-chatapi-service-endpoint--project-secret-parameter"
+        model="sync.project.param"
+    >
+        <field name="key">WHATSAPP_CHATAPI_API_URL</field>
+        <field name="description">E.g. https://api.chat-api.com/instance123456</field>
+        <field name="url" eval="'https://app.chat-api.com/'" />
         <field name="project_id" ref="whatsapp-chatapi-integration--sync-project" />
     </record>
     <record id="chat-model--project-parameter" model="sync.project.param">
         <field name="key">CHAT_MODEL</field>
-        <field name="value">crm.lead</field>
+        <field name="initial_value">crm.lead</field>
         <field name="description">
             Record of which model is created on incoming message from new Whatsapp user
             (e.g. crm.lead, project.task, etc). The model must have fields name and
@@ -51,7 +51,7 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
     </record>
     <record id="webhook-chat--project-parameter" model="sync.project.param">
         <field name="key">WEBHOOK_CHAT</field>
-        <field name="value">yes</field>
+        <field name="initial_value">yes</field>
         <field name="description">
             Set to "no" to disable redirecting whatsapp messages to odoo chat
         </field>
@@ -60,7 +60,7 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
     </record>
     <record id="operator-ids--project-parameter" model="sync.project.param">
         <field name="key">OPERATOR_IDS</field>
-        <field name="value">2</field>
+        <field name="initial_value">2</field>
         <field name="description">
             Comma-separated list of user ids that will added to Discuss chat on getting
             message from new WhatsApp user
@@ -154,7 +154,6 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
     <record id="whatsapp-chatapi--webhook-trigger" model="sync.trigger.webhook">
         <field name="trigger_name">WHATSAPP</field>
         <field name="active" eval="True" />
-        <field name="name">Webhook</field>
         <field name="sync_task_id" ref="process-whatsapp-events--sync-task" />
         <field name="webhook_type">json</field>
     </record>
@@ -179,7 +178,7 @@ def process_message(mail_message):
         log("Message from external chat. No need to send back. Ignore")
         return
 
-    channel = env["mail.channel"].browse(message.res_id)
+    channel = env["mail.channel"].browse(mail_message.res_id)
     if channel.channel_type != multi_livechat.channel_type:
         log("channel type is not %s" % multi_livechat.channel_type, LOG_DEBUG)
         return
