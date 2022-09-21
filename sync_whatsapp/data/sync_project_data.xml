@@ -182,7 +182,7 @@ def process_message(mail_message):
     channel = env["mail.channel"].browse(message.res_id)
     if channel.channel_type != multi_livechat.channel_type:
         log("channel type is not %s" % multi_livechat.channel_type, LOG_DEBUG)
-        continue
+        return
 
     channel_link = channel.search_links(WHATSAPP_CHATAPI_CHANNEL)
     if not channel_link:

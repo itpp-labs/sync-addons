@@ -136,7 +136,7 @@ VIBER_THREAD="VIBER_THREAD"
           "name": partner.name,
         }
       thread_kwargs = dict(partner=partner)
-      record_message = """<b><a href="channel_url">Chat with partner is created.</a></b>""".format(
+      record_message = """<b><a href="{channel_url}">Chat with partner is created.</a></b>""".format(
         channel_url=multi_livechat.get_channel_url(channel)
       )
       thread, is_new_thread = multi_livechat.get_thread(

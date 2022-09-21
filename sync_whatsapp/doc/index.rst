@@ -30,12 +30,16 @@ Configuration
 
 * Open menu ``[[ Sync Studio ]] >> Sync Projects``
 * Choose ``WhatsApp (Chat API) Integration`` project
+* Unarchive the project: ``Action > Unarchive``
 * Go to ``Parameters`` tab
 * Click ``[Edit]``
 * Set **Parameters** and **Secrets**:
 
   * ``WHATSAPP_CHATAPI_API_URL``
   * ``WHATSAPP_CHATAPI_TOKEN``
+
+* Got to ``Manual Triggers`` tab
+* Click ``[Run now]`` button on the ``SETUP_WEBHOOK`` line
 
 Usage
 =====

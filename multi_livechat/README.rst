@@ -123,6 +123,6 @@ Further information
 
 Apps store: https://apps.odoo.com/apps/modules/14.0/multi_livechat/
 
-Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/14.0/multi_livechat.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/14.0/multi_livechat.atom>`_
+Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_
 
-Tested on `Odoo 14.0 <https://github.com/odoo/odoo/commit/3780fa2af5d5f6cac91e419bcab69a253db280bd>`_
+Tested on `Odoo 15.0 <https://github.com/odoo/odoo/commit/172359c4a72d4a02e74eb63c70f8776c1cae946b>`_
