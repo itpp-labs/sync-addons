@@ -1,0 +1,28 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* base_api
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-15 18:11+0000\n"
+"PO-Revision-Date: 2022-09-15 20:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: Alpis Traduction et Interprétation <info@alpis.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 2.0.4\n"
+
+#. module: base_api
+#: model:ir.model,name:base_api.model_base
+msgid "Base"
+msgstr "Base"
+
+#. module: base_api
+#: code:addons/base_api/lib/pinguin.py:0
+#, python-format
+msgid "The model \"%s\" has no such field: \"%s\"."
+msgstr "Le modèle \"%s\" n'a pas ce champ : \"%s\"."
