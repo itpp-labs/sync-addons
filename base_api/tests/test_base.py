@@ -1,4 +1,4 @@
-# Copyright 2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2019,2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 from odoo.tests import tagged
@@ -60,13 +60,6 @@ class TestBase(TransactionCase):
         # (2) this is the same record as in the Test #3
         self.assertFalse(is_new)
         self.assertEqual(record_ids3[0], record_ids4[0])
-        #
-        # unlink test objects
-        #
-        partner_obj.browse(record_ids[0]).unlink()
-        partner_obj.browse(record_ids2[0]).unlink()
-        partner_obj.browse(record_ids3[0]).unlink()
-        partner_obj.browse(record_ids4[0]).unlink()
 
     def test_search_read_nested(self):
         # Define test variables
@@ -74,8 +67,8 @@ class TestBase(TransactionCase):
         country_obj = self.env["res.country"]
         company_obj = self.env["res.company"]
         category_obj = self.env["res.partner.category"]
-        t_country_1 = country_obj.create({"name": "TestCountry1"})
-        t_country_2 = country_obj.create({"name": "TestCountry2"})
+        t_country_1 = country_obj.create({"name": "TestCountry1", "code": "xxx"})
+        t_country_2 = country_obj.create({"name": "TestCountry2", "code": "yyy"})
         t_company_1 = company_obj.create(
             {"name": "TestCompany1", "country_id": t_country_1.id}
         )
@@ -147,21 +140,6 @@ class TestBase(TransactionCase):
         )
         # (1) records has requested values
         self.assertEqual(correct_result, record_list)
-        #
-        # Unlink test objects
-        #
-        t_partner_1.unlink()
-        t_partner_2.unlink()
-        t_company_1.write({"country_id": [(5, 0, 0)]})
-        t_company_2.write({"country_id": [(5, 0, 0)]})
-        t_company_1.unlink()
-        t_company_2.unlink()
-        t_category_1.unlink()
-        t_category_2.unlink()
-        t_category_3.unlink()
-        t_category_4.unlink()
-        t_country_1.unlink()
-        t_country_2.unlink()
 
     def test_create_or_update_by_external_id(self):
         partner_obj = self.env["res.partner"]
@@ -235,12 +213,3 @@ class TestBase(TransactionCase):
         self.assertFalse(is_new)
         self.assertEqual(record_id2, record_id3)
         self.assertEqual(record.child_ids.ids, [t_child_1.id])
-        #
-        # Unlink test objects
-        #
-
-        partner_obj.browse(record_id2).unlink()
-        partner_obj.browse(record_id3).unlink()
-        t_company.unlink()
-        t_child_1.unlink()
-        t_child_2.unlink()
