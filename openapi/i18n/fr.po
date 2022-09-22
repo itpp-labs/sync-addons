@@ -1,0 +1,535 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* openapi
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-15 18:12+0000\n"
+"PO-Revision-Date: 2022-09-15 20:25+0200\n"
+"Last-Translator: \n"
+"Language-Team: Alpis Traduction et Interpétation <info@alpis.fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"X-Generator: Poedit 2.0.4\n"
+
+#. module: openapi
+#: model:ir.model.constraint,message:openapi.constraint_openapi_namespace_name_uniq
+msgid ""
+"A namespace already exists with this name. Namespace's name must be unique!"
+msgstr ""
+"Un espace de noms existe déjà avec ce préfixe. Le préfixe de l'espace de noms "
+"doit être unique !"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+msgid "Access"
+msgstr "Accès"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_ir_model__api_access_ids
+msgid "Access via API"
+msgstr "Accès via API"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_openapi_access
+msgid "Access via API "
+msgstr "Accès via API "
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Accessable Models"
+msgstr "Modèles accessibles"
+
+#. module: openapi
+#: model:ir.actions.act_window,name:openapi.ir_model_accesses_list_action
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__access_ids
+msgid "Accesses"
+msgstr "Accès"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__active
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__active
+msgid "Active"
+msgstr "Activer"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__private_methods
+msgid "Allow Private methods"
+msgstr "Autoriser les méthodes privées"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_res_users__namespace_ids
+msgid "Allowed Integrations"
+msgstr "Intégrations autorisées"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.res_users_view_form
+msgid "Allowed Intergrations"
+msgstr "Intégrations autorisées"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__user_ids
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Allowed Users"
+msgstr "Utilisateurs autorisés"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_access__private_methods
+msgid ""
+"Allowed private methods. Private methods are ones that start with underscore. "
+"Format: one method per line. When empty -- private methods are not allowed"
+msgstr ""
+"Méthodes privées autorisées. Les méthodes privées sont celles qui commencent "
+"par un souligné. Format : une méthode par ligne. Si vide -- les méthodes "
+"privées ne sont pas autorisées"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_access__public_methods
+msgid ""
+"Allowed public methods besides basic ones.\n"
+"Public methods are ones that don't start with underscore).\n"
+"Format: one method per line.\n"
+"When empty -- all public methods are allowed"
+msgstr ""
+"Méthodes publiques autorisées en plus des méthodes de base.\n"
+"Les méthodes publiques sont celles qui ne commencent pas par un souligné).\n"
+"Format : une méthode par ligne.\n"
+"Lorsque vide -- toutes les méthodes publiques sont autorisées"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_res_users__openapi_token
+msgid "Authentication token for access to API (/api)."
+msgstr "Jeton d'authentification pour l'accès à l'API (/api)."
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__api_public_methods
+msgid "Call Public methods via API"
+msgstr "Appeler les méthodes publiques via l'API"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_access__create_context_ids
+msgid "Can be used to pass default values or custom context"
+msgstr ""
+"Peut être utilisé pour passer des valeurs par défaut ou un contexte personnalisé"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__context
+msgid "Context"
+msgstr "Contexte"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid "Context must be jsonable."
+msgstr "Le contexte doit être jsonable."
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_openapi_access_create_context
+msgid "Context on creating via API "
+msgstr "Contexte de création via API "
+
+#. module: openapi
+#: model_terms:ir.actions.act_window,help:openapi.namespace_list_action
+msgid "Create and manage the namespaces."
+msgstr "Créez et gérez les espaces de noms."
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__api_create
+msgid "Create via API"
+msgstr "Créer via l'API"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__create_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__create_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__create_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__create_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__create_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__create_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__create_context_ids
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+msgid "Creation Context Presets"
+msgstr "Préréglages du contexte de création"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__api_delete
+msgid "Delete via API"
+msgstr "Supprimer via l'API"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__description
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__description
+msgid "Description"
+msgstr "Description"
+
+#. module: openapi
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_request__disabled
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_response__disabled
+msgid "Disabled"
+msgstr "Désactivé"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_ir_exports__display_name
+#: model:ir.model.fields,field_description:openapi.field_ir_model__display_name
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__display_name
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__display_name
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__display_name
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__display_name
+#: model:ir.model.fields,field_description:openapi.field_res_users__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+#: model_terms:ir.ui.view,arch_db:openapi.res_users_view_form
+msgid "Do you want to proceed reset token?"
+msgstr "Voulez-vous procéder à la réinitialisation du jeton ?"
+
+#. module: openapi
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_response__error
+msgid "Errors only"
+msgstr "Seulement les erreurs"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+#: model_terms:ir.ui.view,arch_db:openapi.ir_exports_form_view
+msgid "Export Fields"
+msgstr "Exporter les champs"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_ir_exports
+#: model_terms:ir.ui.view,arch_db:openapi.ir_exports_form_view
+msgid "Exports"
+msgstr "Exports"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_access__read_one_id
+msgid "Fields to return on reading one record, on creating a record"
+msgstr ""
+"Champs à retourner à la lecture d'un enregistrement, à la création d'un "
+"enregistrement"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_access__read_many_id
+msgid "Fields to return on reading via non one-record endpoint"
+msgstr ""
+"Champs à retourner à la lecture via un point de terminaison autre qu'un "
+"enregistrement"
+
+#. module: openapi
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_request__debug
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_response__debug
+msgid "Full"
+msgstr "Complet"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_ir_exports__id
+#: model:ir.model.fields,field_description:openapi.field_ir_model__id
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__id
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__id
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__id
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__id
+#: model:ir.model.fields,field_description:openapi.field_res_users__id
+msgid "ID"
+msgstr "Identifiant"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__token
+msgid "Identification token"
+msgstr "Jeton d'identification"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_openapi_namespace
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__namespace_id
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__namespace_id
+msgid "Integration"
+msgstr "Intégration"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_namespace__name
+msgid ""
+"Integration name, e.g. ebay, amazon, magento, etc.\n"
+"        The name is used in api endpoint"
+msgstr ""
+"Nom de l'intégration, par exemple ebay, amazon, magento, etc.\n"
+"        Le nom est utilisé dans le point de terminaison api"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Intergration"
+msgstr "Intégration"
+
+#. module: openapi
+#: model:ir.actions.act_window,name:openapi.namespace_list_action
+#: model:ir.ui.menu,name:openapi.namespaces_menu
+msgid "Intergrations"
+msgstr "Intégrations"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_ir_exports____last_update
+#: model:ir.model.fields,field_description:openapi.field_ir_model____last_update
+#: model:ir.model.fields,field_description:openapi.field_openapi_access____last_update
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context____last_update
+#: model:ir.model.fields,field_description:openapi.field_openapi_log____last_update
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace____last_update
+#: model:ir.model.fields,field_description:openapi.field_res_users____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__write_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__write_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__write_uid
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__write_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__write_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__write_date
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__write_date
+msgid "Last Updated on"
+msgstr "Dernière Mise à Jour le"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__last_log_date
+msgid "Latest usage"
+msgstr "Dernière utilisation"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.openapi_log_model_view_form
+msgid "Log"
+msgstr "Journal d'erreurs"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__log_request
+msgid "Log Requests"
+msgstr "Enregistrer des appels"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__log_response
+msgid "Log Responses"
+msgstr "Enregistrer les réponses"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__log_count
+msgid "Log count"
+msgstr "Nombre d’enregistrements"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__log_ids
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Logs"
+msgstr "Journaux"
+
+#. module: openapi
+#: model:res.groups,name:openapi.group_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid ""
+"Method %r is not part of the model's method list:\n"
+" %r"
+msgstr ""
+"La méthode %r ne fait pas partie de la liste de méthodes du modèle :\n"
+" %r"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__model_id
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__model_id
+msgid "Model"
+msgstr "Modèle"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__model
+msgid "Model Name"
+msgstr "Nom du modéle"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_ir_model
+msgid "Models"
+msgstr "Modèles"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access_create_context__name
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: openapi
+#: model:ir.module.category,name:openapi.module_management
+#: model:ir.ui.menu,name:openapi.main_openapi_menu
+#: model:ir.ui.menu,name:openapi.openapi_menu
+msgid "OpenAPI"
+msgstr "OpenAPI"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_res_users__openapi_token
+msgid "OpenAPI Token"
+msgstr "Jeton OpenAPI"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_openapi_log
+msgid "OpenAPI logs"
+msgstr "Journaux OpenAPI"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid "Private method (starting with \"_\" listed in public methods whitelist)"
+msgstr ""
+"Méthode privée (commençant par \"_\" répertorié dans la liste blanche des "
+"méthodes publiques)"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid "Public method (not starting with \"_\" listed in private methods whitelist"
+msgstr ""
+"Méthode publique (ne commençant pas par \"_\" répertoriée dans la liste blanche "
+"des méthodes privées"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__read_many_id
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+msgid "Read Many Fields"
+msgstr "Lire plusieurs champs"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__read_one_id
+#: model_terms:ir.ui.view,arch_db:openapi.access_form_view
+msgid "Read One Fields"
+msgstr "Lire un champ"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__api_read
+msgid "Read via API"
+msgstr "Lire via API"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.view_model_form
+msgid "Related openapi accesses"
+msgstr "Accès openapi kiés"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_ir_model__api_accesses_count
+msgid "Related openapi accesses count"
+msgstr "Nombre d'accès openapi liés"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__request
+msgid "Request"
+msgstr "Demande"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__request_data
+msgid "Request Data"
+msgstr "Demande de données"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.res_users_view_form
+msgid "Reset OpenAPI Token"
+msgstr "Réinitialiser le jeton OpenAPI"
+
+#. module: openapi
+#: model_terms:ir.ui.view,arch_db:openapi.namespace_form_view
+msgid "Reset Token"
+msgstr "Réinitialiser le jeton"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_log__response_data
+msgid "Response Data"
+msgstr "Données de réponse"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__public_methods
+msgid "Restric Public methods"
+msgstr "Restreindre les méthodes publiques"
+
+#. module: openapi
+#: model:ir.model.fields.selection,name:openapi.selection__openapi_namespace__log_request__info
+msgid "Short"
+msgstr "Court"
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_namespace__spec_url
+msgid "Specification Link"
+msgstr "Lien de spécification"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid "The model \"%s\" has no such field: \"%s\"."
+msgstr "Le modèle \"%s\" n'a pas ce champ : \"%s\"."
+
+#. module: openapi
+#: model:ir.model.constraint,message:openapi.constraint_openapi_access_create_context_context_model_name_uniq
+msgid "There is already a context with the same name for this Model"
+msgstr "Il existe déjà un contexte portant le même nom pour ce modèle"
+
+#. module: openapi
+#: model:ir.model.constraint,message:openapi.constraint_openapi_access_namespace_model_uniq
+msgid "There is already a record for this Model"
+msgstr "Il y a déjà un enregistrement pour ce modèle"
+
+#. module: openapi
+#: model:ir.model.fields,help:openapi.field_openapi_namespace__token
+msgid "Token passed by a query string parameter to access the specification."
+msgstr ""
+"Jeton passé par un paramètre de chaîne de requête pour accéder à la "
+"spécification."
+
+#. module: openapi
+#: model:ir.model.fields,field_description:openapi.field_openapi_access__api_update
+msgid "Update via API"
+msgstr "Mettre à jour via API"
+
+#. module: openapi
+#: model:res.groups,name:openapi.group_user
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: openapi
+#: model:ir.module.category,description:openapi.module_management
+msgid "User access level for OpenAPI"
+msgstr "Niveau d'accès utilisateur pour OpenAPI"
+
+#. module: openapi
+#: model:ir.model,name:openapi.model_res_users
+msgid "Users"
+msgstr "Utilisateurs"
+
+#. module: openapi
+#: code:addons/openapi/models/ir_exports.py:0
+#, python-format
+msgid "You must delete the \"%s\" field or \"%s\" field"
+msgstr "Vous devez supprimer le champ « %s » ou le champ « %s »"
+
+#. module: openapi
+#: code:addons/openapi/models/openapi_access.py:0
+#, python-format
+msgid "You must select at least one API method for \"%s\" model."
+msgstr "Vous devez sélectionner au moins une méthode API pour le modèle \"%s\"."
