@@ -6,9 +6,9 @@
    :target: https://opensource.org/licenses/MIT
    :alt: License: MIT
 
-========================
- Multichannel Live Chat
-========================
+===============
+ Customer Chat
+===============
 
 Base module to implement Live Chat through different channels (Telegram, WhatsApp, Instragram, etc.).
 
@@ -121,7 +121,7 @@ To get an assistance on this module contact us by email :arrow_right: help@itpp.
 Further information
 ===================
 
-Apps store: https://apps.odoo.com/apps/modules/14.0/multi_livechat/
+Apps store: https://apps.odoo.com/apps/modules/15.0/multi_livechat/
 
 Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_
 

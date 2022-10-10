@@ -9,7 +9,7 @@
     "application": False,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
-    "website": "https://apps.odoo.com/apps/modules/14.0/sync",
+    "website": "https://itpp.dev/",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["sync", "multi_livechat"],
     "external_dependencies": {"python": ["viberbot"], "bin": []},

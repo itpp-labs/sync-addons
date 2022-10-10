@@ -2,7 +2,7 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
-    "name": """Multichannel Live Chat""",
+    "name": """Customer Chat""",
     "summary": """Be in touch with your partners via any supported channels (Telegram, WhatsApp, Instragram, etc.)""",
     "category": "Marketing",
     "images": ["images/multi_livechat.jpg"],
