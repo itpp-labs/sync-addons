@@ -11,6 +11,7 @@
 <br/>:heavy_check_mark: [sync_odoo2odoo](https://apps.odoo.com/apps/modules/15.0/sync_odoo2odoo/)
 <br/>:heavy_check_mark: [sync_telegram](https://apps.odoo.com/apps/modules/15.0/sync_telegram/)
 <br/>:heavy_check_mark: [sync_viber](https://apps.odoo.com/apps/modules/15.0/sync_viber/)
+<br/>:heavy_check_mark: [sync_whatsapp](https://apps.odoo.com/apps/modules/15.0/sync_whatsapp/)
 
 :star: Star this repo if you **like** it!
 
