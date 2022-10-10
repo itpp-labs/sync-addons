@@ -10,7 +10,7 @@
  Sync Studio
 =============
 
-Synchronize anything with anything:
+Synchronize something with anything:
 
 * System X ↔ Odoo
 * Odoo 1 ↔ Odoo 2

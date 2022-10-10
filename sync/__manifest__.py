@@ -5,14 +5,14 @@
 
 {
     "name": """Sync Studio""",
-    "summary": """Synchronize anything with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY. ETL/ESB tool similar to OCA/connector, but more flexible""",
+    "summary": """Synchronize something with anything: SystemX↔Odoo, Odoo1↔Odoo2, SystemX↔SystemY. ETL/ESB tool similar to OCA/connector, but more flexible""",
     "category": "Extra Tools",
     "images": ["images/sync-studio.jpg"],
     "version": "15.0.6.2.0",
     "application": True,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
-    "website": "https://t.me/sync_studio",
+    "website": "https://sync_studio.t.me/",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["base_automation", "mail", "queue_job"],
     "external_dependencies": {"python": [], "bin": []},
