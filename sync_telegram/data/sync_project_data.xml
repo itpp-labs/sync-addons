@@ -144,9 +144,11 @@ def handle_webhook(httprequest):
       odoo_message_text = "Contact has edited the message:"
 
     channel_link = get_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
+    is_new = False
     if channel_link:
       channel = channel_link.odoo
     else:
+      is_new = True
       partners = [partner_link.odoo.id] + operators_partner_list
       channel = telegram.create_mail_сhannel(partners, record_name)
       channel.set_link(TG_CHAT_CHANNEL_REL, telegram_user_ref)
