@@ -1,3 +1,8 @@
+`2.0.0`
+-------
+
+- **Improvement:** rename `post_channel_message` to  `message_post`
+
 `1.2.0`
 -------
 

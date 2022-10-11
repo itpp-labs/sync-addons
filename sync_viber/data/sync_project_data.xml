@@ -148,7 +148,7 @@ VIBER_THREAD="VIBER_THREAD"
         record_message,
       )
       if is_new_thread:
-        multi_livechat.post_channel_message(channel,
+        multi_livechat.message_post(channel,
         """<b><a href="{record_url}">Record is created. </a></b>""".format(
           record_url=multi_livechat.get_record_url(thread)
           ))
@@ -158,7 +158,7 @@ VIBER_THREAD="VIBER_THREAD"
       log("vrequest.message=%s" % vrequest.message)
       if data['message']['type'] == 'text':
         odoo_message_text = vrequest.message.text
-        multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
+        multi_livechat.message_post(channel, odoo_message_text, author=partner.id)
 
       elif data['message']['type'] in ('picture', 'video', 'document'):
         bin_data = url2bin(vrequest.message.media)
