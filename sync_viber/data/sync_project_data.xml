@@ -158,12 +158,13 @@ VIBER_THREAD="VIBER_THREAD"
       log("vrequest.message=%s" % vrequest.message)
       if data['message']['type'] == 'text':
         odoo_message_text = vrequest.message.text
-        multi_livechat.message_post(channel, odoo_message_text, author=partner.id)
+        message_post(is_new_thread, channel, odoo_message_text, author=partner.id)
 
       elif data['message']['type'] in ('picture', 'video', 'document'):
         bin_data = url2bin(vrequest.message.media)
         file_name = data['message']['file_name']
         log("file_name=%s bin_data=%s" % (file_name, bin_data))
+        # TODO: use message_post
         channel.message_post(body="", author_id=partner.id,
             message_type="comment", subtype_xmlid="mail.mt_comment", attachments=[[file_name, bin_data]])
 
@@ -176,6 +177,17 @@ VIBER_THREAD="VIBER_THREAD"
     else:
       odoo_message_text = str(data)
     log("type=%s" % type2str(vrequest))
+
+
+def message_post(is_new, *args, **kwargs):
+    # TODO: move this code to main sync module
+    if is_new:
+      # post message Asynchronous to flush current pollings
+      args = (False,) + args
+      add_job('message_post')(*args, **kwargs)
+    else:
+      multi_livechat.message_post(*args, **kwargs)
+
 ]]></field>
     </record>
     <record id="viber--webhook-trigger" model="sync.trigger.webhook">

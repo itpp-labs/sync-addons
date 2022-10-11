@@ -194,9 +194,17 @@ def handle_webhook(httprequest):
             multi_livechat.message_post(channel, telegram_sticker.emoji, author=partner_link.odoo.id)
 
 
-    multi_livechat.message_post(channel, odoo_message_text, attachments=[file_bin_data], author=partner_link.odoo.id)
+    message_post(is_new, channel, odoo_message_text, attachments=[file_bin_data], author=partner_link.odoo.id)
 
 
+def message_post(is_new, *args, **kwargs):
+    # TODO: move this code to main sync module
+    if is_new:
+      # post message Asynchronous to flush current pollings
+      args = (False,) + args
+      add_job('message_post')(*args, **kwargs)
+    else:
+      multi_livechat.message_post(*args, **kwargs)
 
         ]]></field>
     </record>
