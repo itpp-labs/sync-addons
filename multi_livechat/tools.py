@@ -71,9 +71,9 @@ def get_multi_livechat_eval_context(env, channel_type, eval_context):
             record._name,
         )
 
-    def post_channel_message(channel, message, author=None, **kwargs):
-        log("Post message to %s:\n%s" % (channel, message), LOG_DEBUG)
-        channel.message_post(
+    def message_post(record, message, author=None, **kwargs):
+        log("Post message to %s:\n%s" % (record, message), LOG_DEBUG)
+        record.message_post(
             body=message,
             author_id=author or odoobot_id,
             message_type="comment",
@@ -87,7 +87,7 @@ def get_multi_livechat_eval_context(env, channel_type, eval_context):
         "get_thread": get_thread,
         "get_record_url": get_record_url,
         "get_channel_url": get_channel_url,
-        "post_channel_message": post_channel_message,
+        "message_post": message_post,
         "channel_type": channel_type,
         "odoobot_id": odoobot_id,
     }

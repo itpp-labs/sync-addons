@@ -5,10 +5,10 @@ import { one2one } from "@mail/model/model_field";
 
 registerFieldPatchModel(
     "mail.discuss",
-    "sync_whatsapp/static/src/models/discuss/discuss.js",
+    "sync_viber/static/src/models/discuss/discuss.js",
     {
-        categoryMLChat_whatsapp_chatapi: one2one("mail.discuss_sidebar_category", {
-            inverse: "discussAsMLChat_whatsapp_chatapi",
+        categoryMLChat_viber: one2one("mail.discuss_sidebar_category", {
+            inverse: "discussAsMLChat_viber",
             isCausal: true,
         }),
     }

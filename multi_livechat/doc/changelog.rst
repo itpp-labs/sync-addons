@@ -1,3 +1,9 @@
+`2.0.0`
+-------
+
+- **Improvement:** rename `post_channel_message` to  `message_post`
+- **Improvement:** always show Discuss sidebar category, i.e. even when there are no chats
+
 `1.2.0`
 -------
 

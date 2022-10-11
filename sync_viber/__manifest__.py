@@ -5,7 +5,7 @@
     "summary": """Viber integration powered by Sync Studio""",
     "category": "Marketing",
     "images": ["images/sync_viber.jpg"],
-    "version": "15.0.1.0.0",
+    "version": "15.0.2.0.0",
     "application": False,
     "author": "IT Projects Labs, Ivan Yelizariev",
     "support": "help@itpp.dev",
@@ -16,6 +16,12 @@
     "data": [
         "data/sync_project_data.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "sync_viber/static/src/models/discuss/discuss.js",
+            "sync_viber/static/src/models/discuss_sidebar_category/discuss_sidebar_category.js",
+        ],
+    },
     "demo": [],
     "qweb": [],
     "post_load": None,

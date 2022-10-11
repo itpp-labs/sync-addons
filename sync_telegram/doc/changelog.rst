@@ -1,3 +1,9 @@
+`6.0.0`
+-------
+
+- **Improvement:** Update to latest version of `multi_livechat` module
+- **Fix:** post message "Chat is created" to the record instead of channel
+
 `5.0.0`
 -------
 

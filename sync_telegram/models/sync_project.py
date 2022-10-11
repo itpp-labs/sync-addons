@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
@@ -71,7 +71,7 @@ class SyncProjectTelegram(models.Model):
                 )
             except Exception as e:
                 if channel is not None:
-                    multi_livechat_context.post_channel_message(channel, str(e))
+                    multi_livechat_context.message_post(channel, str(e))
                 else:
                     raise
 
@@ -82,7 +82,7 @@ class SyncProjectTelegram(models.Model):
                 bot.send_photo(chat_id, photo=base64.b64decode(datas))
             except Exception as e:
                 if channel is not None:
-                    multi_livechat_context.post_channel_message(channel, str(e))
+                    multi_livechat_context.message_post(channel, str(e))
                 else:
                     raise
 
@@ -95,7 +95,7 @@ class SyncProjectTelegram(models.Model):
                 )
             except Exception as e:
                 if channel is not None:
-                    multi_livechat_context.post_channel_message(channel, str(e))
+                    multi_livechat_context.message_post(channel, str(e))
                 else:
                     raise
 

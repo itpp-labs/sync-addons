@@ -6,17 +6,17 @@ import {
 } from "@mail/model/model_core";
 import { one2one } from "@mail/model/model_field";
 
-registerFieldPatchModel("mail.discuss_sidebar_category", "sync_whatsapp", {
-    discussAsMLChat_whatsapp_chatapi: one2one("mail.discuss", {
-        inverse: "categoryMLChat_whatsapp_chatapi",
+registerFieldPatchModel("mail.discuss_sidebar_category", "sync_viber", {
+    discussAsMLChat_viber: one2one("mail.discuss", {
+        inverse: "categoryMLChat_viber",
         readonly: true,
     }),
 });
 
 registerIdentifyingFieldsPatch(
     "mail.discuss_sidebar_category",
-    "sync_whatsapp",
+    "sync_viber",
     (identifyingFields) => {
-        identifyingFields[0].push("discussAsMLChat_whatsapp_chatapi");
+        identifyingFields[0].push("discussAsMLChat_viber");
     }
 );

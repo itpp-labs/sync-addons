@@ -137,7 +137,7 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
           record_message,
         )
         if is_new_thread:
-          multi_livechat.post_channel_message(channel,
+          multi_livechat.message_post(channel,
           """<b><a href="{record_url}">Record is created. </a></b>""".format(
             record_url=multi_livechat.get_record_url(thread)
             ))
@@ -148,7 +148,18 @@ WHATSAPP_CHATAPI_THREAD="WHATSAPP_CHATAPI_THREAD"
 
       # Chat API sends files as links
       if odoo_message_text:
-          multi_livechat.post_channel_message(channel, odoo_message_text, author=partner.id)
+          message_post(is_new_thread, channel, odoo_message_text, author=partner.id)
+
+
+def message_post(is_new, *args, **kwargs):
+    # TODO: move this code to main sync module
+    if is_new:
+      # post message Asynchronous to flush current pollings
+      args = (False,) + args
+      add_job('message_post')(*args, **kwargs)
+    else:
+      multi_livechat.message_post(*args, **kwargs)
+
 ]]></field>
     </record>
     <record id="whatsapp-chatapi--webhook-trigger" model="sync.trigger.webhook">

@@ -7,7 +7,7 @@
         >
             <t t-foreach="messaging.discuss.getMLChatCategories()" t-as="chat">
                 <t t-set="categoryLivechat" t-value="chat_value" />
-                <t t-if="categoryLivechat and categoryLivechat.categoryItems.length">
+                <t t-if="categoryLivechat">
                     <DiscussSidebarCategory
                         class="o_DiscussSidebar_category"
                         categoryLocalId="categoryLivechat.localId"
