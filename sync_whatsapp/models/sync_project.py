@@ -39,6 +39,7 @@ class SyncProjectWhatsApp(models.Model):
                 + "?token="
                 + secrets.WHATSAPP_CHATAPI_TOKEN,
                 json=data,
+                timeout=5,
             )
             r.raise_for_status()
             return r
