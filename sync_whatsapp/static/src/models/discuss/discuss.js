@@ -7,8 +7,8 @@ registerFieldPatchModel(
     "mail.discuss",
     "sync_whatsapp/static/src/models/discuss/discuss.js",
     {
-        categoryMLChat_whatsapp: one2one("mail.discuss_sidebar_category", {
-            inverse: "discussAsMLChat_whatsapp",
+        categoryMLChat_whatsapp_chatapi: one2one("mail.discuss_sidebar_category", {
+            inverse: "discussAsMLChat_whatsapp_chatapi",
             isCausal: true,
         }),
     }
