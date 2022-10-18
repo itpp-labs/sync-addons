@@ -11,8 +11,8 @@ exclude: |
   # You don't usually want a bot to modify your legal texts
   (LICENSE.*|COPYING.*)
 default_language_version:
-  python: python3.9
-  node: "14.13.0"
+  python: python3
+  node: "16.17.0"
 repos:
   - repo: https://github.com/myint/autoflake
     rev: v1.4
