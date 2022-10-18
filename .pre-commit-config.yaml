@@ -12,7 +12,7 @@ exclude: |
   (LICENSE.*|COPYING.*)
 default_language_version:
   python: python3
-  node: "16.17.0"
+  node: "14.13.0"
 repos:
   - repo: https://github.com/myint/autoflake
     rev: v1.4
@@ -78,6 +78,16 @@ repos:
     hooks:
       - id: pyupgrade
         args: ["--keep-percent-format"]
+  - repo: https://github.com/acsone/setuptools-odoo
+    rev: 3.1.5
+    hooks:
+      - id: setuptools-odoo-make-default
+      - id: setuptools-odoo-get-requirements
+        args:
+          - --output
+          - requirements.txt
+          - --header
+          - "# generated from manifests external_dependencies"
   - repo: https://gitlab.com/PyCQA/flake8
     rev: 3.9.2
     hooks:
