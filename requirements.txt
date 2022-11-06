@@ -1,4 +1,7 @@
-# generated from manifests external_dependencies
+# OpenAPI
 bravado_core
-jsonschema
+jsonschema<4
 swagger_spec_validator
+# Sync Studio
+pyTelegramBotAPI
+viberbot
