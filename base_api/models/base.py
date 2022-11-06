@@ -54,19 +54,19 @@ class Base(models.AbstractModel):
         # if x2x fields values are exist
         fields_2many = []
 
-        def convert_external_2_inner_id(ext_id):
+        def convert_external_2_inner_id(ext_id, field):
             try:
                 result = imd_env._xmlid_lookup(PREFIX + "." + ext_id)[2]
-            except ValueError:
+            except ValueError as e:
                 raise ValueError(
                     "No object with external id in field {}: {}".format(field, ext_id)
-                )
+                ) from e
             return result
 
         for field in vals:
             # for many2one fields
             if self._fields[field].type == "many2one" and isinstance(vals[field], str):
-                vals[field] = convert_external_2_inner_id(vals.get(field))
+                vals[field] = convert_external_2_inner_id(vals.get(field), field)
             elif self._fields[field].type.endswith("2many"):
                 fields_2many.append(field)
 
@@ -75,12 +75,12 @@ class Base(models.AbstractModel):
             for index, tuple_record in enumerate(vals[field]):
                 list_record = list(tuple_record)
                 if list_record[0] in [1, 2, 3, 4] and isinstance(list_record[1], str):
-                    list_record[1] = convert_external_2_inner_id(list_record[1])
+                    list_record[1] = convert_external_2_inner_id(list_record[1], field)
                 elif list_record[0] == 6:
                     for record_for_replace in list_record[2]:
                         if isinstance(record_for_replace, str):
                             record_for_replace = convert_external_2_inner_id(
-                                record_for_replace
+                                record_for_replace, field
                             )
                 vals[field][index] = tuple(list_record)
 

@@ -281,10 +281,10 @@ def get_model_for_read(model, ENV=False):
         cr._cnx.set_isolation_level(ISOLATION_LEVEL_READ_COMMITTED)
     try:
         return request.env(cr, uid)[model]
-    except KeyError:
+    except KeyError as e:
         err = list(CODE__obj_not_found)
         err[2] = 'The "%s" model is not available on this instance.' % model
-        raise werkzeug.exceptions.HTTPException(response=error_response(*err))
+        raise werkzeug.exceptions.HTTPException(response=error_response(*err)) from e
 
 
 # Python > 3.5
