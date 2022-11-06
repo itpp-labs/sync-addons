@@ -401,7 +401,7 @@ class Access(models.Model):
             )
         )
         if self.api_create or self.api_update:
-            all_fields = transform_strfields_to_dict(related_model.fields_get_keys())
+            all_fields = transform_strfields_to_dict(related_model._fields)
             definitions.update(
                 pinguin.get_OAS_definitions_part(related_model, all_fields)
             )
