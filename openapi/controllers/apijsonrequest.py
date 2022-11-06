@@ -75,10 +75,10 @@ class ApiJsonRequest(WebRequest):
         # Read POST content or POST Form Data named "request"
         try:
             self.ApiJsonRequest = json.loads(request)
-        except ValueError:
+        except ValueError as e:
             msg = "Invalid JSON data: {!r}".format(request)
             _logger.info("%s: %s", self.httprequest.path, msg)
-            raise werkzeug.exceptions.BadRequest(msg)
+            raise werkzeug.exceptions.BadRequest(msg) from e
 
         self.params = dict(self.ApiJsonRequest or {})
         self.context = self.params.pop("context", dict(self.session.context))

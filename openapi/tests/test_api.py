@@ -147,7 +147,7 @@ class TestAPI(HttpCase):
             {"groups_id": [(4, self.phantom_env.ref("openapi.group_user").id)]}
         )
         new_user.reset_openapi_token()
-        new_user.flush()
+        new_user.flush_recordset()
         self.assertTrue(new_user.id not in namespace.user_ids.ids)
         self.assertTrue(namespace.id not in new_user.namespace_ids.ids)
 

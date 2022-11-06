@@ -1,4 +1,4 @@
-# Copyright 2018-2019 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
+# Copyright 2018-2019,2022 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 {

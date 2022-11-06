@@ -475,8 +475,8 @@ class AccessCreateContext(models.Model):
         for record in self:
             try:
                 data = json.loads(record.context)
-            except ValueError:
-                raise exceptions.ValidationError(_("Context must be jsonable."))
+            except ValueError as e:
+                raise exceptions.ValidationError(_("Context must be jsonable.")) from e
 
             for k, _v in data.items():
                 if k.startswith("default_") and k[8:] not in fields:

@@ -194,12 +194,12 @@ def get_data_from_auth_header(header):
         decoded_token_parts = (
             base64.b64decode(normalized_token).decode("utf-8").split(":")
         )
-    except TypeError:
+    except TypeError as e:
         raise werkzeug.exceptions.HTTPException(
             response=error_response(
                 500, "Invalid header", "Basic auth header must be valid base64 string"
             )
-        )
+        ) from e
 
     if len(decoded_token_parts) == 1:
         db_name, user_token = None, decoded_token_parts[0]
@@ -694,7 +694,7 @@ def wrap__resource__call_method(modelname, ids, method, method_params, success_c
 
     if len(ids) <= 1 and len(results):
         results = results[0]
-    model_obj.flush()  # to recompute fields
+    model_obj.flush_model()  # to recompute fields
     return successful_response(success_code, data=results)
 
 
