@@ -1,0 +1,4 @@
+# generated from manifests external_dependencies
+bravado_core
+jsonschema
+swagger_spec_validator
