@@ -1,1 +1,7 @@
-# Python dependencies
+# OpenAPI
+bravado_core
+jsonschema<4
+swagger_spec_validator
+# Sync Studio
+pyTelegramBotAPI
+viberbot
