@@ -1,8 +1,8 @@
-# Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2021-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 from odoo import SUPERUSER_ID
 
-from odoo.addons.sync.models.ir_logging import LOG_DEBUG
+LOG_DEBUG = "debug"
 
 
 # Wrapped functions to safely pass as eval context.

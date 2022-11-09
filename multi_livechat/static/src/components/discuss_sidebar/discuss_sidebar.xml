@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
     <t t-inherit="mail.DiscussSidebar" t-inherit-mode="extension">
-        <xpath
-            expr="//DiscussSidebarCategory[contains(@class, 'o_DiscussSidebar_categoryChat')]"
-            position="before"
-        >
-            <t t-foreach="messaging.discuss.getMLChatCategories()" t-as="chat">
+        <xpath expr="//*[@name='beforeCategoryChat']" position="before">
+            <t
+                t-foreach="messaging.discuss.getMLChatCategories()"
+                t-as="chat"
+                t-key="chat_index"
+            >
                 <t t-set="categoryLivechat" t-value="chat_value" />
                 <t t-if="categoryLivechat">
                     <DiscussSidebarCategory
-                        class="o_DiscussSidebar_category"
-                        categoryLocalId="categoryLivechat.localId"
+                        className="'o_DiscussSidebar_category o_DiscussSidebar_categoryMLChat'"
+                        record="categoryLivechat"
                     />
                 </t>
             </t>

@@ -36,7 +36,7 @@ MODULE/__manifest__.py
 
 
 MODULE/models/__init__.py
-----------------------
+-------------------------
 
 .. code-block:: py
 
@@ -74,43 +74,101 @@ MODULE/models/mail_channel.py
             ondelete={"multi_livechat_NAME": "cascade"}
         )
 
-MODULE/static/src/models/discuss/discuss.js
--------------------------------------------
+MODULE/static/src/models/discuss.js
+-----------------------------------
 
 .. code-block:: js
 
     /** @odoo-module **/
     
-    import { registerFieldPatchModel } from '@mail/model/model_core';
-    import { one2one } from '@mail/model/model_field';
+    import { registerPatch } from '@mail/model/model_core';
+    import { one } from '@mail/model/model_field';
     
-    registerFieldPatchModel('mail.discuss', 'MODULE/static/src/models/discuss/discuss.js', {
-        categoryMLChat_NAME: one2one('mail.discuss_sidebar_category', {
-            inverse: 'discussAsMLChat_NAME',
-            isCausal: true,
-        }),
+    registerPatch({
+        name: 'Discuss',
+        fields: {
+            categoryMLChat_echo_demo: one('DiscussSidebarCategory', {
+                default: {},
+                inverse: 'discussAsMLChat_NAME',
+            }),
+        },
     });
 
 
-MODULE/static/src/models/discuss_sidebar_category/discuss_sidebar_category.js
------------------------------------------------------------------------------
+MODULE/static/src/models/discuss_sidebar_category.js
+----------------------------------------------------
 
 .. code-block:: js
 
     /** @odoo-module **/
-
-    import { registerFieldPatchModel, registerIdentifyingFieldsPatch } from '@mail/model/model_core';
-    import { one2one } from '@mail/model/model_field';
-
-    registerFieldPatchModel('mail.discuss_sidebar_category', 'MODULE', {
-        discussAsMLChat_NAME: one2one('mail.discuss', {
-            inverse: 'categoryMLChat_NAME',
-            readonly: true,
-        }),
-    });
-
-    registerIdentifyingFieldsPatch('mail.discuss_sidebar_category', 'MODULE', identifyingFields => {
-        identifyingFields[0].push('discussAsMLChat_NAME');
+    
+    import { registerPatch } from '@mail/model/model_core';
+    import { one } from '@mail/model/model_field';
+    import { clear } from '@mail/model/model_field_command';
+    
+    registerPatch({
+        name: 'DiscussSidebarCategory',
+        fields: {
+            categoryItemsOrderedByLastAction: {
+                compute() {
+                    if (this.discussAsMLChat_NAME) {
+                        return this.categoryItems;
+                    }
+                    return this._super();
+                },
+            },
+            discussAsMLChat_NAME: one('Discuss', {
+                identifying: true,
+                inverse: 'categoryMLChat_NAME',
+            }),
+            isServerOpen: {
+                compute() {
+                    // there is no server state for non-users (guests)
+                    if (!this.messaging.currentUser) {
+                        return clear();
+                    }
+                    if (!this.messaging.currentUser.res_users_settings_id) {
+                        return clear();
+                    }
+                    if (this.discussAsMLChat_NAME) {
+                        return this.messaging.currentUser.res_users_settings_id.is_discuss_sidebar_category_NAME_open;
+                    }
+                    return this._super();
+                },
+            },
+            name: {
+                compute() {
+                    if (this.discussAsMLChat_NAME) {
+                        return this.env._t("NAME");
+                    }
+                    return this._super();
+                },
+            },
+            orderedCategoryItems: {
+                compute() {
+                    if (this.discussAsMLChat_NAME) {
+                        return this.categoryItemsOrderedByLastAction;
+                    }
+                    return this._super();
+                },
+            },
+            serverStateKey: {
+                compute() {
+                    if (this.discussAsMLChat_NAME) {
+                        return 'is_discuss_sidebar_category_NAME_open';
+                    }
+                    return this._super();
+                },
+            },
+            supportedChannelTypes: {
+                compute() {
+                    if (this.discussAsMLChat_NAME) {
+                        return ['NAME'];
+                    }
+                    return this._super();
+                },
+            },
+        },
     });
 
 Questions?
@@ -121,8 +179,8 @@ To get an assistance on this module contact us by email :arrow_right: help@itpp.
 Further information
 ===================
 
-Apps store: https://apps.odoo.com/apps/modules/15.0/multi_livechat/
+Apps store: https://apps.odoo.com/apps/modules/16.0/multi_livechat/
 
-Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/15.0/multi_livechat.atom>`_
+Notifications on updates: `via Atom <https://github.com/itpp-labs/sync-addons/commits/16.0/multi_livechat.atom>`_, `by Email <https://blogtrottr.com/?subscribe=https://github.com/itpp-labs/sync-addons/commits/16.0/multi_livechat.atom>`_
 
-Tested on `Odoo 15.0 <https://github.com/odoo/odoo/commit/172359c4a72d4a02e74eb63c70f8776c1cae946b>`_
+Tested on `Odoo 16.0 <https://github.com/odoo/odoo/commit/9917d841fa38ccc1e6d67875a665494dc22ef92f>`_
