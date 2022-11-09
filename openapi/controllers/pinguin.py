@@ -3,6 +3,7 @@
 # Copyright 2019 Yan Chirino <https://xoe.solutions/>
 # Copyright 2019 Anvar Kildebekov <https://it-projects.info/team/fedoranvar>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+# Copyright 2022 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 # pylint: disable=redefined-builtin
 
@@ -29,7 +30,6 @@ import werkzeug.wrappers
 import odoo
 from odoo.http import request
 from odoo.service import security
-from odoo.tools import date_utils
 
 from odoo.addons.base_api.lib.pinguin import (
     error_response,
@@ -38,8 +38,6 @@ from odoo.addons.base_api.lib.pinguin import (
     get_model_for_read,
 )
 from odoo.addons.web.controllers.main import ReportController
-
-from .apijsonrequest import api_route
 
 try:
     import simplejson as json
@@ -111,15 +109,11 @@ def successful_response(status, data=None):
 
     """
     try:
-        response = json.dumps(data.ids)
+        data = data.ids
     except AttributeError:
-        response = json.dumps(data, default=date_utils.json_default) if data else None
+        pass
 
-    return werkzeug.wrappers.Response(
-        status=status,
-        content_type="application/json; charset=utf-8",
-        response=response,
-    )
+    return request.make_json_response(data, status=status)
 
 
 ##########################
@@ -146,9 +140,7 @@ def authenticate_token_for_user(token):
         request.session.session_token = user.id and security.compute_session_token(
             request.session, request.env
         )
-        request.uid = user.id
-        request.disable_db = False
-        request.session.get_context()
+        request.update_env(user=user.id)
 
         return user
     raise werkzeug.exceptions.HTTPException(
@@ -337,7 +329,7 @@ def _create_log_record(
 
 
 # Patched http route
-def route(*args, **kwargs):
+def route(controller_method):
     """Set up the environment for route handlers.
 
     Patches the framework and additionally authenticates
@@ -348,9 +340,8 @@ def route(*args, **kwargs):
 
     :returns: wrapped method
     """
+    if True:  # dummy if-block to keep original indent
 
-    def decorator(controller_method):
-        @api_route(*args, **kwargs)
         @functools.wraps(controller_method)
         def controller_method_wrapper(*iargs, **ikwargs):
 
@@ -358,7 +349,6 @@ def route(*args, **kwargs):
                 request.httprequest.headers, raise_exception=True
             )
             db_name, user_token = get_data_from_auth_header(auth_header)
-            setup_db(request.httprequest, db_name)
             authenticated_user = authenticate_token_for_user(user_token)
             namespace = get_namespace_by_name_from_users_namespaces(
                 authenticated_user, ikwargs["namespace"], raise_exception=True
@@ -394,8 +384,6 @@ def route(*args, **kwargs):
             return response
 
         return controller_method_wrapper
-
-    return decorator
 
 
 ############################

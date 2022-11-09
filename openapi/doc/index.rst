@@ -13,14 +13,6 @@ Installation
   ``python3 -m pip install bravado_core swagger_spec_validator``
 
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
-* Add ``openapi`` to `--load parameter <https://odoo-development.readthedocs.io/en/latest/admin/server_wide_modules.html>`__, e.g.::
-
-    ./odoo-bin --workers=2 --load openapi,base,web --config=/path/to/odoo.conf
-
-  + Note: Skipping this step may lead to error response::
-
-      werkzeug.exception.BadRequest: 400 Bad Request <..> :
-      Function declared as capable of handling request of type 'apijson' but called with a request of type 'json'
 
 Configuration
 =============
