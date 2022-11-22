@@ -1,3 +1,8 @@
+`1.2.5`
+-------
+
+- **Fix:** swagger specification didn't work on selection fields with empty list of possible values
+
 `1.2.4`
 -------
 

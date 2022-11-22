@@ -6,7 +6,7 @@
     "summary": """RESTful API to integrate Odoo with whatever system you need""",
     "category": "",
     "images": ["images/openapi-swagger.png"],
-    "version": "15.0.1.2.4",
+    "version": "15.0.1.2.5",
     "application": False,
     "author": "IT-Projects LLC, Ivan Yelizariev",
     "support": "help@itpp.dev",
