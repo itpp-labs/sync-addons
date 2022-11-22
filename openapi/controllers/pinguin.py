@@ -917,7 +917,8 @@ def get_OAS_definitions_part(
                 field_property.update(
                     {
                         "type": "integer"
-                        if isinstance(meta["selection"][0][0], int)
+                        if meta["selection"]
+                        and isinstance(meta["selection"][0][0], int)
                         else "string",
                         "enum": [i[0] for i in meta["selection"]],
                     }
