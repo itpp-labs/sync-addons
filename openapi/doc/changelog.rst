@@ -1,3 +1,8 @@
+`1.2.6`
+-------
+
+- **Fix:** error on saving export template
+
 `1.2.5`
 -------
 
