@@ -9,10 +9,16 @@ class IrExports(models.Model):
     @api.constrains("resource", "export_fields")
     def _check_fields(self):
         # this exports record used in openapi.access
-        if not self.env["openapi.access"].search_count(
-            ["|", ("read_one_id", "=", self.id), ("read_many_id", "=", self.id)]
+        if (
+            not self.env["openapi.access"]
+            .sudo()
+            .search_count(
+                ["|", ("read_one_id", "=", self.id), ("read_many_id", "=", self.id)]
+            )
         ):
             return True
+
+        # TODO: remove this constrain? It extends base functionality that is not related to openapi module
 
         fields = self.export_fields.mapped("name")
         for field in fields:
