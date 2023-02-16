@@ -2,9 +2,7 @@
 Copyright 2018 Ivan Yelizariev <https://it-projects.info/team/yelizariev>
 License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 */
-odoo.define("openapi.dashboard.tour", function(require) {
-    "use strict";
-
+odoo.define("openapi.dashboard.tour", function (require) {
     var tour = require("web_tour.tour");
     var base = require("web_editor.base");
 

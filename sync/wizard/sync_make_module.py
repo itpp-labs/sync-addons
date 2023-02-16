@@ -69,11 +69,13 @@ class SyncMakeModule(models.TransientModel):
             self.env["ir.config_parameter"].set_param(PARAM_URL, self.author_url)
 
         url = " <{}>".format(self.author_url) if self.author_url else ""
-        copyright_str = "<!-- Copyright {years} {name}{url}\n     {license_line}. -->".format(
-            years=self.copyright_years,
-            name=self.author_name,
-            url=url,
-            license_line=self.license_line,
+        copyright_str = (
+            "<!-- Copyright {years} {name}{url}\n     {license_line}. -->".format(
+                years=self.copyright_years,
+                name=self.author_name,
+                url=url,
+                license_line=self.license_line,
+            )
         )
         root = etree.Element("odoo")
         project = self.project_id.with_context(active_test=False)

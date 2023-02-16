@@ -1,13 +1,10 @@
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
-
 import json
+import logging
 import xmlrpc.client as _client
 from math import sqrt
-
-# https://github.com/python-telegram-bot/python-telegram-bot
-from telegram import Bot, Update
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -17,6 +14,13 @@ from odoo.addons.queue_job.exception import RetryableJobError
 
 from .ir_logging import LOG_WARNING
 from .sync_project import AttrDict
+
+_logger = logging.getLogger(__name__)
+# https://github.com/python-telegram-bot/python-telegram-bot
+try:
+    from telegram import Bot, Update  # pylint: disable=missing-manifest-dependency
+except ImportError as err:
+    _logger.debug(err)
 
 
 class SyncProjectDemo(models.Model):
@@ -81,8 +85,9 @@ class SyncProjectDemo(models.Model):
         * telegram.setWebhook
         * telegram.parse_data
         """
-        from odoo.tools import html2plaintext
         from lxml.html.clean import Cleaner
+
+        from odoo.tools import html2plaintext
 
         log_transmission = eval_context["log_transmission"]
 
@@ -151,7 +156,8 @@ class SyncProjectDemo(models.Model):
             from trello.exceptions import ResourceUnavailable
 
             client = TrelloClient(
-                api_key=secrets.TRELLO_KEY, api_secret=secrets.TRELLO_TOKEN,
+                api_key=secrets.TRELLO_KEY,
+                api_secret=secrets.TRELLO_TOKEN,
             )
             board = client.get_board(secrets.TRELLO_BOARD_ID)
 

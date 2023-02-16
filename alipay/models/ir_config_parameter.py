@@ -50,7 +50,10 @@ class Param(models.Model):
         notify_url = self.sudo().get_param("alipay.notify_url")
         if not notify_url:
             base = self.sudo().get_param("web.base.url")
-            notify_url = "{base}{path}".format(base=base, path=ALIPAY_NOTIFY_URL,)
+            notify_url = "{base}{path}".format(
+                base=base,
+                path=ALIPAY_NOTIFY_URL,
+            )
 
         options["app_notify_url"] = notify_url
 

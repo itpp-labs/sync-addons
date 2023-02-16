@@ -80,6 +80,7 @@ class SyncProject(models.Model):
         for r in self:
             if not r.eval_context:
                 r.eval_context_description = ""
+                continue
             method = getattr(self, EVAL_CONTEXT_PREFIX + r.eval_context)
             r.eval_context_description = method.__doc__
 

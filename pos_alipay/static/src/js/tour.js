@@ -3,9 +3,7 @@
 /* This file is not used until we make a CI tool, that can run it. Normal CI cannot use longpolling.
    See https://github.com/odoo/odoo/commit/673f4aa4a77161dc58e0e1bf97e8f713b1e88491
  */
-odoo.define("pos_alipay.tour", function(require) {
-    "use strict";
-
+odoo.define("pos_alipay.tour", function (require) {
     var DUMMY_AUTH_CODE = "134579302432164181";
     var tour = require("web_tour.tour");
     var core = require("web.core");
@@ -62,7 +60,7 @@ odoo.define("pos_alipay.tour", function(require) {
         {
             content: "Make dummy action and trigger scanning event",
             trigger: ".order-button.selected",
-            run: function() {
+            run: function () {
                 core.bus.trigger("qr_scanned", DUMMY_AUTH_CODE);
             },
         },
@@ -72,7 +70,7 @@ odoo.define("pos_alipay.tour", function(require) {
         {
             content: "Screen is changed to payment screen",
             trigger: ".button_next",
-            run: function() {
+            run: function () {
                 // No need to click on the button
             },
         },
@@ -82,5 +80,5 @@ odoo.define("pos_alipay.tour", function(require) {
             trigger: ".button_print,.order-button",
         },
     ]);
-    tour.register("tour_pos_debt_notebook", {test: true, url: "/web"}, steps);
+    tour.register("tour_pos_debt_notebook", { test: true, url: "/web" }, steps);
 });

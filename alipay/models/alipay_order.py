@@ -22,7 +22,7 @@ SUCCESS = "SUCCESS"
 class AlipayOrder(models.Model):
     """Records with order information and payment status.
 
-    Can be used for different types of Payments. See description of trade_type field. """
+    Can be used for different types of Payments. See description of trade_type field."""
 
     _name = "alipay.order"
     _description = "Unified Order"
@@ -77,7 +77,7 @@ class AlipayOrder(models.Model):
             )
 
     def _body(self):
-        """ Example of result:
+        """Example of result:
 
         {"goods_detail": [
             {
