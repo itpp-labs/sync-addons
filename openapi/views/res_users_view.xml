@@ -16,7 +16,7 @@
                 />
             </header>
             <notebook position="inside">
-                <page string="Allowed Intergrations">
+                <page string="Allowed Integrations">
                     <group>
                         <field name="openapi_token" />
                     </group>
