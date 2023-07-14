@@ -26,8 +26,6 @@ class MailChannel(models.Model):
     ):
         return {
             "channel_partner_ids": [(4, pid) for pid in partner_ids],
-            # "public": "groups", # V16 dropout public field
-            "group_public_id": False,  # V16 checks contrains with group_public_id self.env.ref("base.group_user").id,
             "channel_type": channel_type,
             "name": channel_name,
         }
@@ -35,7 +33,6 @@ class MailChannel(models.Model):
     def _compute_is_pinned(self):
         # TODO: make batch search via read_group
         for r in self:
-            # V16 change mail.channel.partner to mail.channel.member
             r.is_pinned = self.env["mail.channel.member"].search_count(
                 [
                     ("partner_id", "=", self.env.user.partner_id.id),
@@ -47,7 +44,6 @@ class MailChannel(models.Model):
     def _inverse_is_pinned(self):
         # TODO: make batch search via read_group
         for r in self:
-            # V16 change mail.channel.partner to mail.channel.member
             channel_partner = self.env["mail.channel.member"].search(
                 [
                     ("partner_id", "=", self.env.user.partner_id.id),

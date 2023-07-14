@@ -9,7 +9,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='description']" position="before">
                 <field name="is_pinned" />
-                <field name="channel_type" />
             </xpath>
         </field>
     </record>
