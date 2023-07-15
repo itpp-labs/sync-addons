@@ -1,11 +1,6 @@
 # Copyright 2021 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
-from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
-
-import logging
-
-_logger = logging.getLogger(__name__)
+from odoo import api, fields, models
 
 ODOO_CHANNEL_TYPES = ["chat", "channel", "livechat", "group"]
 
