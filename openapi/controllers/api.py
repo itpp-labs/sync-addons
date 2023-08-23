@@ -46,10 +46,10 @@ class ApiV1Controller(http.Controller):
         - `DELETE   .../<model>/<id>`          -> `UnlinkOne`
 
         Auxiliary Methods:
-        - `PATCH    .../<model>/<id>/<method>`               -> `Call Method on Singleton Record`
-        - `PATCH    .../<model>/<method>`                    -> `Call Method on RecordSet`
-        - `GET      .../report/pdf/<report_external_id>`     -> `Get Report as PDF`
-        - `GET      .../report/html/<report_external_id>`    -> `Get Report as HTML`
+        - `PATCH POST    .../<model>/<id>/<method>`                 -> `Call Method on Singleton Record`
+        - `PATCH POST    .../<model>/<method>`                      -> `Call Method on RecordSet`
+        - `GET           .../report/pdf/<report_external_id>`       -> `Get Report as PDF`
+        - `GET           .../report/html/<report_external_id>`      -> `Get Report as HTML`
     """
 
     _api_endpoint = API_ENDPOINT + API_ENDPOINT_V1
@@ -170,7 +170,7 @@ class ApiV1Controller(http.Controller):
     # Call Method on Singleton Record (optional: method parameters)
     @http.route(
         _api_endpoint_model_id_method,
-        methods=["PATCH"],
+        methods=["PATCH", "POST"],
         type="http",
         auth="none",
         csrf=False,
@@ -191,7 +191,7 @@ class ApiV1Controller(http.Controller):
     # Call Method on RecordSet (optional: method parameters)
     @http.route(
         [_api_endpoint_model_method, _api_endpoint_model_method_ids],
-        methods=["PATCH"],
+        methods=["PATCH", "POST"],
         type="http",
         auth="none",
         csrf=False,
