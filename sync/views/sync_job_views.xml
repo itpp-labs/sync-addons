@@ -48,18 +48,6 @@
                     />
                 </header>
                 <sheet>
-                    <!--
-                    <div class="oe_button_box" name="button_box">
-                        <button
-                            type="action"
-                            name="%(sync.ir_logging_action_from_job)d"
-                            class="oe_stat_button"
-                            icon="fa-tasks"
-                        >
-                            <field string="Logs" name="log_count" widget="statinfo" />
-                        </button>
-                    </div>
-                    -->
                     <div class="oe_title">
                         <h1>
                             <field name="trigger_name" />
@@ -101,49 +89,51 @@
                             </div>
                         </group>
                     </group>
-                    <group
-                        string="Sub Jobs"
-                        attrs="{'invisible': [('job_ids', '=', [])]}"
-                    >
-                        <field name="job_ids" nolabel="1">
-                            <tree
-                                decoration-danger="state == 'failed'"
-                                decoration-success="state == 'done'"
-                                decoration-warning="state == 'done_warning'"
-                                default_order="id"
+                    <notebook>
+                        <page string="Logs">
+                            <field
+                                name="log_ids"
+                                nolabel="1"
+                                readonly="1"
+                                editable="bottom"
                             >
-                                <field name="id" />
-                                <field name="create_date" />
-                                <field name="trigger_name" />
-                                <field name="state" />
-                                <field name="queue_job_id" />
-                            </tree>
-                        </field>
-                    </group>
-                    <group string="Logs">
-                        <field
-                            name="log_ids"
-                            nolabel="1"
-                            readonly="1"
-                            editable="bottom"
+                                <tree
+                                    decoration-muted="level == 'debug'"
+                                    decoration-danger="level in ['error', 'critical']"
+                                    decoration-warning="level == 'warning'"
+                                    default_order="id"
+                                >
+                                    <field name="id" />
+                                    <field name="create_date" />
+                                    <field name="level" />
+                                    <field name="name" />
+                                    <field name="message_short" />
+                                </tree>
+                                <form>
+                                    <field name="message" />
+                                </form>
+                            </field>
+                        </page>
+                        <page
+                            string="Sub Jobs"
+                            attrs="{'invisible': [('job_ids', '=', [])]}"
                         >
-                            <tree
-                                decoration-muted="level == 'debug'"
-                                decoration-danger="level in ['error', 'critical']"
-                                decoration-warning="level == 'warning'"
-                                default_order="id"
-                            >
-                                <field name="id" />
-                                <field name="create_date" />
-                                <field name="level" />
-                                <field name="name" />
-                                <field name="message_short" />
-                            </tree>
-                            <form>
-                                <field name="message" />
-                            </form>
-                        </field>
-                    </group>
+                            <field name="job_ids" nolabel="1">
+                                <tree
+                                    decoration-danger="state == 'failed'"
+                                    decoration-success="state == 'done'"
+                                    decoration-warning="state == 'done_warning'"
+                                    default_order="id"
+                                >
+                                    <field name="id" />
+                                    <field name="create_date" />
+                                    <field name="trigger_name" />
+                                    <field name="state" />
+                                    <field name="queue_job_id" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
