@@ -17,7 +17,7 @@ Installation
 * `Install <https://odoo-development.readthedocs.io/en/latest/odoo/usage/install-module.html>`__ this module in a usual way
 * Install python package that you need to use. For example, to try demo projects install following packages:
 
-    python3 -m pip install python-telegram-bot PyGithub py-trello
+    python3 -m pip install pyTelegramBotAPI PyGithub py-trello
 
 * If your Sync projects use webhooks (most likely), be sure that url opens correct database without asking to select one
 
