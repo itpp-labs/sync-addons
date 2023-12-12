@@ -60,8 +60,8 @@ class SyncProjectDemo(models.Model):
                     params.DB, secrets.USERNAME, secrets.PASSWORD, {}
                 )
                 models = _client.ServerProxy("{}/xmlrpc/2/object".format(params.URL))
-            except OSError:
-                raise RetryableJobError("Error on connecting to external Odoo")
+            except OSError as err:
+                raise RetryableJobError("Error on connecting to external Odoo") from err
             res = models.execute_kw(
                 params.DB, uid, secrets.PASSWORD, model, method, args, kwargs
             )

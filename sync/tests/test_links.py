@@ -180,10 +180,10 @@ class TestLink(TransactionCase):
 
         # one2many
         self.set_link(REL, {"github": 5, "trello": 105})
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             self.set_link(REL, {"github": 5, "trello": 1005})
         self.set_link(REL, {"github": 5, "trello": 1005}, allow_many2many=True)
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             glink = self.get_link(REL, {"github": 5, "trello": None})
         glinks = self.search_links(REL, {"github": 5, "trello": None})
         self.assertEqual(2, len(glinks))
