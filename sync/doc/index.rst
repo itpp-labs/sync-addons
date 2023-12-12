@@ -583,7 +583,7 @@ Configuration
 * Select *Demo Odoo2odoo integration* project
 * Go to ``Parameters`` tab
 * Set **Params**:
-  * URL, e.g. ``https://3674665-12-0.runbot41.odoo.com``
+  * URL, e.g. ``https://odoo.example``
   * DB, e.g. ``odoo``
 * Set **Secrets**:
 
