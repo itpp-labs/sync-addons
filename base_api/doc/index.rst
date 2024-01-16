@@ -10,7 +10,7 @@ Usage
 search_or_create
 ----------------
 
-*search_or_create(self, vals, active\_test=True)*
+*search_or_create(self, vals, active\_test=True, domain=None)*
 
 *– Purpose*:
   - To resolve “race conditions”, comparing to separated searching
@@ -36,14 +36,25 @@ search_or_create
 
                  active_test = False`  # to also search in *in-active* records
 
+  - `domain`-variable explicit search domain before creating 
 *– Notes*:
   - *many2one* fields in `vals`:
-      - type of integer
-      - e.g.
+      - integer or dictionary
+      - example for integer
             .. code-block::
 
                 vals = {
                         'company_id': 1
+                       }
+      - dictionary has same arguments as for `search_or_create` itself
+            .. code-block::
+
+                vals = {
+                        'company_id': {
+                            'vals': {
+                                'name': 'My Company'
+                            }
+                         }
                        }
 
   - *x2many* fields in `vals`:
@@ -89,7 +100,7 @@ search_or_create
 
 *– Algorithm*:
 
-1.  Creates *domain* out of `vals` for searching
+1.  If `domain` arg is not provided, create *domain* out of `vals` for searching
 
 2.  Searches for records satisfiy *domain* constraints (`is_new = False`)
 
