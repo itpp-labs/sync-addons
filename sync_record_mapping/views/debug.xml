@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-extend="WebClient.DebugManager.View">
+        <t t-jquery="a[data-action='get_metadata']" t-operation="after">
+            <a
+                    role="menuitem"
+                    href="#"
+                    data-action="getRecordMappings"
+                    class="dropdown-item"
+            >
+                Manage Record Mappings
+            </a>
+        </t>
+    </t>
+</templates>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sync_record_mapping_wizard_user,sync.record.mapping.wizard user,model_sync_record_mapping_wizard,sync.sync_group_user,1,1,1,1
+access_sync_record_mapping_wizard_dev,sync.record.mapping.wizard dev,model_sync_record_mapping_wizard,sync.sync_group_dev,1,1,1,1
