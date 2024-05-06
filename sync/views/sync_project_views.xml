@@ -123,6 +123,88 @@
                         </h1>
                     </div>
                     <notebook>
+                        <page name="readme" string="Documentation">
+                            <group>
+                                <group>
+                                    <field
+                                        name="source_url"
+                                        widget="url"
+                                        placeholder="E.g. https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2"
+                                    />
+                                    <field name="source_updated_at" />
+                                </group>
+                                <group>
+                                    <button
+                                        name="magic_upgrade"
+                                        string="Upgrade"
+                                        class="oe_highlight"
+                                        type="object"
+                                        confirm="ATTENTION! This action will override all project code. PROCEED?"
+                                    />
+                                </group>
+                            </group>
+                            <div class="html_field_container">
+                                <field name="description" nolabel="1" />
+                            </div>
+                        </page>
+                        <page name="tasks" string="🦋 Tasks">
+                            <field name="task_ids" context="{'active_test': False}">
+                                <tree decoration-muted="not active">
+                                    <field name="name" />
+                                    <field name="active" />
+                                    <field name="show_magic_button" invisible="1" />
+                                    <button
+                                        name="magic_button"
+                                        title="Magic ✨ Button"
+                                        type="object"
+                                        class="oe_highlight"
+                                        attrs="{'invisible': [('show_magic_button', '=', False)]}"
+                                    />
+                                    <field
+                                        name="active_cron_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_automation_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_webhook_ids"
+                                        widget="many2many_tags"
+                                    />
+                                </tree>
+                            </field>
+                            <p>
+                                <em>
+                                    Hint: Cron, Webhook and DB Triggers are not
+                                    executed
+                                    until both the Project and the Task are active (i.e.
+                                    not Archived)
+                                </em>
+                            </p>
+                        </page>
+                        <page name="core" string="CORE.🪬">
+                            <p>
+                                <em>
+                                    Hint: For security reasons, the
+                                    <b>Core 🪬 Code</b>
+                                    can be updated via gist page only.
+                                </em>
+                            </p>
+                            <field
+                                name="core_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                        </page>
+                        <page name="code" string="LIB.🦄">
+                            <field
+                                name="common_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                        </page>
+                        <!--
                         <page name="buttons" string="Manual Triggers">
                             <p class="oe_edit_only">
                                 <br />
@@ -143,80 +225,51 @@
                                 </tree>
                             </field>
                         </page>
-                        <page name="code" string="Evaluation Context">
-                            <group>
-                                <field
-                                    name="eval_context_ids"
-                                    widget="many2many_tags"
-                                    options="{'no_open': True,  'no_create_edit': True}"
-                                />
-                            </group>
-                            <field name="eval_context_description" />
-                            <separator string="Common Code" />
-                            <p>
-                                <em>
-                                    # Put here a code that will be accesable from any
-                                    task code
-                                </em>
-                            </p>
-                            <field
-                                name="common_code"
-                                widget="ace"
-                                options="{'mode': 'python'}"
-                            />
+                        -->
+                        <page name="params" string="PARAMS.🌹">
+                            <notebook>
+                                <page string=" ✏️ Templates 🌹">
+                                    <field name="text_param_ids">
+                                        <tree decoration-danger="not value">
+                                            <field name="key" />
+                                            <field name="value" />
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="key" />
+                                            </group>
+                                            <separator string="Value" />
+                                            <field name="value" />
+                                        </form>
+                                    </field>
+                                    <div class="html_field_container">
+                                        <field
+                                            name="text_param_description"
+                                            nolabel="1"
+                                        />
+                                    </div>
+                                </page>
+                                <page string=" 🔧 Settings 🌹">
+                                    <field name="param_ids">
+                                        <tree
+                                            editable="bottom"
+                                            decoration-danger="not value"
+                                        >
+                                            <field name="key" />
+                                            <field name="value" />
+                                        </tree>
+                                    </field>
+                                    <div class="html_field_container">
+                                        <field name="param_description" nolabel="1" />
+                                    </div>
+                                </page>
+                            </notebook>
                         </page>
-                        <page name="tasks" string="Available Tasks">
-                            <field name="task_ids" context="{'active_test': False}">
-                                <tree decoration-muted="not active">
-                                    <field name="name" />
-                                    <field name="active" />
-                                    <field
-                                        name="active_cron_ids"
-                                        widget="many2many_tags"
-                                    />
-                                    <field
-                                        name="active_automation_ids"
-                                        widget="many2many_tags"
-                                    />
-                                    <field
-                                        name="active_webhook_ids"
-                                        widget="many2many_tags"
-                                    />
-                                </tree>
-                            </field>
-                            <p>
-                                <em>
-                                    Hint: Cron, Webhooks and DB Triggers are not
-                                    executed
-                                    until both the Project and the Task are active (i.e.
-                                    not Archived)
-                                </em>
-                            </p>
-                        </page>
-                        <page name="params" string="Parameters">
-                            <separator string="Params" />
-                            <field name="param_ids">
-                                <tree editable="bottom" decoration-danger="not value">
-                                    <field name="key" />
-                                    <field name="value" />
-                                    <field name="description" />
-                                    <field name="url" widget="url" text="Open Link" />
-                                </tree>
-                            </field>
-                            <separator string="Texts" />
-                            <field name="text_param_ids">
-                                <tree editable="bottom" decoration-danger="not value">
-                                    <field name="key" />
-                                    <field name="value" />
-                                    <field name="description" />
-                                    <field name="url" widget="url" text="Open Link" />
-                                </tree>
-                            </field>
-                            <separator string="Secrets" />
+                        <page string="SECRETS.🔐">
                             <p class="oe_read_only">
                                 <em>
-                                    Secret parameters values are available for Sync
-                                    Administrators only
+                                    Secret parameter values are accessible only to
+                                    Administrators.
                                 </em>
                             </p>
                             <field name="secret_ids">
@@ -234,10 +287,11 @@
                                         type="object"
                                         options='{"warn": true}'
                                     />
-                                    <field name="description" />
-                                    <field name="url" widget="url" text="Open Link" />
                                 </tree>
                             </field>
+                            <div class="html_field_container">
+                                <field name="secret_description" nolabel="1" />
+                            </div>
                         </page>
                     </notebook>
                 </sheet>
@@ -280,9 +334,7 @@
                 <group>
                     <field name="key" />
                     <field name="value" />
-                    <field name="url" widget="url" />
                 </group>
-                <field name="description" />
             </form>
         </field>
     </record>

@@ -1,3 +1,8 @@
+`7.0.0`
+-------
+
+- **New:** Dramatic improvement on Sync Studio API
+
 `6.2.0`
 -------
 

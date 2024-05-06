@@ -5,15 +5,16 @@
 
 import base64
 import logging
+from datetime import datetime
 
 from pytz import timezone
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict, html2plaintext
 from odoo.tools.misc import get_lang
 from odoo.tools.safe_eval import (
-    datetime,
+    datetime as safe_datetime,
     dateutil,
     json,
     safe_eval,
@@ -24,7 +25,7 @@ from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
 
-from ..tools import url2base64, url2bin
+from ..tools import compile_markdown_to_html, fetch_gist_data, url2base64, url2bin
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
 
 _logger = logging.getLogger(__name__)
@@ -47,25 +48,30 @@ class SyncProject(models.Model):
         "Name", help="e.g. Legacy Migration or eCommerce Synchronization", required=True
     )
     active = fields.Boolean(default=False)
-    # Deprecated, please use eval_context_ids
-    # TODO: delete in v17 release
-    eval_context = fields.Selection([], string="Evaluation context")
-    eval_context_ids = fields.Many2many(
-        "sync.project.context", string="Evaluation contexts"
-    )
-    eval_context_description = fields.Text(compute="_compute_eval_context_description")
 
-    common_code = fields.Text(
-        "Common Code",
-        help="""
-        A place for helpers and constants.
-
-        You can add here a function or variable, that don't start with underscore and then reuse it in task's code.
-    """,
+    source_url = fields.Char(
+        "Source",
+        help="Paste link to gist page, e.g. https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2",
     )
-    param_ids = fields.One2many("sync.project.param", "project_id", copy=True)
-    text_param_ids = fields.One2many("sync.project.text", "project_id", copy=True)
+    source_updated_at = fields.Datetime("Version", readonly=True)
+    description = fields.Html(readonly=True)
+
+    core_code = fields.Text(string="Core Code", readonly=True)
+    common_code = fields.Text("Common Code")
+
+    param_ids = fields.One2many(
+        "sync.project.param", "project_id", copy=True, string="Parameters"
+    )
+    param_description = fields.Html(readonly=True)
+
+    text_param_ids = fields.One2many(
+        "sync.project.text", "project_id", copy=True, string="Templates"
+    )
+    text_param_description = fields.Html(readonly=True)
+
     secret_ids = fields.One2many("sync.project.secret", "project_id", copy=True)
+    secret_description = fields.Html(readonly=True)
+
     task_ids = fields.One2many("sync.task", "project_id", copy=True)
     task_count = fields.Integer(compute="_compute_task_count")
     trigger_cron_count = fields.Integer(
@@ -142,6 +148,14 @@ class SyncProject(models.Model):
             msg = test_python_expr(expr=(r.common_code or "").strip(), mode="exec")
             if msg:
                 raise ValidationError(msg)
+
+    def write(self, vals):
+        if "core_code" in vals and not self.env.user.has_group(
+            "sync.sync_group_manager"
+        ):
+            raise AccessError(_("Only Administrator can update the Core Code."))
+
+        return super().write(vals)
 
     def _get_log_function(self, job, function):
         self.ensure_one()
@@ -280,7 +294,7 @@ class SyncProject(models.Model):
                 "url2bin": url2bin,
                 "html2plaintext": html2plaintext,
                 "time": time,
-                "datetime": datetime,
+                "datetime": safe_datetime,
                 "dateutil": dateutil,
                 "timezone": timezone,
                 "b64encode": base64.b64encode,
@@ -427,6 +441,53 @@ class SyncProject(models.Model):
             "sync_external": sync_external,
         }
 
+    def magic_upgrade(self):
+        self.ensure_one()
+        if not self.source_url:
+            raise UserError(_("Please provide url to the gist page"))
+
+        gist_content = fetch_gist_data(self.source_url)
+        gist_files = {}
+        for file_name, file_info in gist_content["files"].items():
+            gist_files[file_name] = file_info["content"]
+
+        vals = {}
+
+        if not self.name:
+            vals["name"] = gist_content.get("description", "Sync 🪬 Studio")
+
+        vals["source_updated_at"] = datetime.strptime(
+            gist_content.get("updated_at"), "%Y-%m-%dT%H:%M:%SZ"
+        )
+
+        # [Documentation]
+        vals["description"] = (
+            compile_markdown_to_html(gist_files.get("README.md"))
+            if gist_files.get("README.md")
+            else "<h1>Please add README.md file to place some documentation here</h1>"
+        )
+
+        # [PARAMS] and [SECRETS]
+        for field_name, file_name in (
+            ("param_description", ".markdown"),
+            ("text_param_description", "settings.templates.markdown"),
+            ("secret_description", "settings.secrets.markdown"),
+        ):
+            if gist_files.get(file_name):
+                vals[field_name] = compile_markdown_to_html(gist_files[file_name])
+
+        # [CORE] and [LIB]
+        for field_name, file_name in (
+            ("core_code", "core.py"),
+            ("common_code", "library.py"),
+        ):
+            if gist_files.get(file_name):
+                vals[field_name] = gist_files[file_name]
+
+        # TODO: tasks
+
+        self.update(vals)
+
 
 class SyncProjectParamMixin(models.AbstractModel):
 
@@ -442,9 +503,11 @@ class SyncProjectParamMixin(models.AbstractModel):
         help="A virtual field that, during writing, stores the value in the value field, but only if it is empty. \
              It's used during module upgrade to prevent overwriting parameter values. ",
     )
+    project_id = fields.Many2one("sync.project", ondelete="cascade")
+
+    # Deprecated fields to be deleted in v17+
     description = fields.Char("Description", translate=True)
     url = fields.Char("Documentation")
-    project_id = fields.Many2one("sync.project", ondelete="cascade")
 
     _sql_constraints = [("key_uniq", "unique (project_id, key)", "Key must be unique.")]
 

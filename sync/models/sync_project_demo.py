@@ -1,3 +1,5 @@
+# WARNING: This file is obsolete and will be deleted soon
+
 # Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).

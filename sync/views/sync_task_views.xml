@@ -58,18 +58,6 @@
                     </group>
                     <notebook>
                         <page name="code" string="Code">
-                            <p>
-                                <em>
-                                    # The code may use functions and variables from
-                                    Project's Shared Code
-                                </em>
-                                <em class="oe_edit_only">
-                                    <br />
-                                    # Hint: if you miss some code editor features, just
-                                    copy the code to your lovely editor, update there
-                                    and paste here
-                                </em>
-                            </p>
                             <field name="code_check" />
                             <field
                                 name="code"
@@ -77,13 +65,7 @@
                                 options="{'mode': 'python'}"
                             />
                         </page>
-                        <page name="triggers" string="Available Triggers">
-                            <separator string="Cron" />
-                            <p>
-                                <em>
-                                    <code>handle_cron()</code>
-                                </em>
-                            </p>
+                        <page name="triggers_cron" string="Cron">
                             <field name="cron_ids" context="{'active_test': False}">
                                 <tree decoration-muted="not active">
                                     <field name="trigger_name" />
@@ -94,29 +76,13 @@
                                     <field name="numbercall" />
                                 </tree>
                             </field>
-                            <separator string="DB Triggers" />
                             <p>
                                 <em>
-                                    <code>handle_db(records)</code>
+                                    <code>def handle_cron():</code>
                                 </em>
                             </p>
-                            <field
-                                name="automation_ids"
-                                context="{'active_test': False}"
-                            >
-                                <tree decoration-muted="not active">
-                                    <field name="trigger_name" />
-                                    <field name="active" />
-                                    <field name="model_id" />
-                                    <field name="trigger" />
-                                </tree>
-                            </field>
-                            <separator string="Webhooks" />
-                            <p>
-                                <em>
-                                    <code>handle_webhook(httprequest)</code>
-                                </em>
-                            </p>
+                        </page>
+                        <page name="triggers_webhook" string="Webhook">
                             <field name="webhook_ids" context="{'active_test': False}">
                                 <tree editable="bottom" decoration-muted="not active">
                                     <field name="trigger_name" />
@@ -138,28 +104,29 @@
                                     <field name="action_server_id" invisible="1" />
                                 </tree>
                             </field>
-                            <separator
-                                string="Manual Triggers"
-                                context="{'active_test': False}"
-                            />
                             <p>
                                 <em>
-                                    <code>handle_button()</code>
+                                    <code>def handle_webhook(httprequest):</code>
                                 </em>
                             </p>
-                            <field name="button_ids">
-                                <tree editable="bottom" decoration-muted="not active">
+                        </page>
+                        <page name="triggers_db" string="DB Triggers">
+                            <field
+                                name="automation_ids"
+                                context="{'active_test': False}"
+                            >
+                                <tree decoration-muted="not active">
                                     <field name="trigger_name" />
-                                    <field name="active" invisible="1" />
-                                    <button
-                                        name="start_button"
-                                        string="Run Now"
-                                        class="oe_highlight"
-                                        type="object"
-                                    />
-                                    <field name="name" />
+                                    <field name="active" />
+                                    <field name="model_id" />
+                                    <field name="trigger" />
                                 </tree>
                             </field>
+                            <p>
+                                <em>
+                                    <code>def handle_db(records):</code>
+                                </em>
+                            </p>
                         </page>
                     </notebook>
                 </sheet>

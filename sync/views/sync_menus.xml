@@ -4,7 +4,7 @@
 <odoo>
     <menuitem
         id="sync_menu"
-        web_icon="sync,static/description/icon.png"
+        web_icon="sync,static/description/icon-menu.png"
         name="Sync Studio"
     />
 </odoo>
