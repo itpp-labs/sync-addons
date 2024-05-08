@@ -26,7 +26,7 @@ class SyncTask(models.Model):
     code = fields.Text("Code")
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
-    show_magic_button = fields.Boolean(default=False)
+    magic_button = fields.Char()
     cron_ids = fields.One2many("sync.trigger.cron", "sync_task_id", copy=True)
     automation_ids = fields.One2many(
         "sync.trigger.automation", "sync_task_id", copy=True
@@ -91,7 +91,7 @@ class SyncTask(models.Model):
             r.active_automation_ids = r.with_context(active_test=True).automation_ids
             r.active_webhook_ids = r.with_context(active_test=True).webhook_ids
 
-    def magic_button(self):
+    def action_magic_button(self):
         # TODO
         pass
 

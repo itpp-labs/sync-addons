@@ -64,6 +64,12 @@
                                 widget="ace"
                                 options="{'mode': 'python'}"
                             />
+                            <p>
+                                <em>
+                                    Hint: Updating this code won't change the triggers.
+                                    Instead, update the gist file.
+                                </em>
+                            </p>
                         </page>
                         <page name="triggers_cron" string="Cron">
                             <field name="cron_ids" context="{'active_test': False}">

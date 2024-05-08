@@ -1,5 +1,6 @@
 # Copyright 2021,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
+import ast
 import base64
 import functools
 import json
@@ -8,6 +9,7 @@ import re
 import markdown
 import requests
 import urllib3
+import yaml
 
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
@@ -116,3 +118,122 @@ def fetch_gist_data(gist_page):
     gist_content = json.loads(response.data.decode("utf-8"))
 
     return gist_content
+
+
+def extract_yaml(content, pattern, missing_message="No YAML front matter found."):
+    """
+    Extracts and parses YAML front matter using the given regex pattern.
+
+    Args:
+    content (str): The full content containing YAML front matter.
+    pattern (str): A regular expression pattern to match YAML front matter.
+    missing_message (str): An error message to raise if no YAML is found.
+
+    Returns:
+    dict: A dictionary containing the parsed YAML.
+
+    Raises:
+    ValueError: If no YAML is found or if there is a parsing error.
+    """
+    # Match the content against the pattern
+    match = re.match(pattern, content, re.DOTALL)
+
+    if not match:
+        raise ValueError(missing_message)
+
+    # Extract the YAML string
+    yaml_content = match.group(1)
+
+    # Parse the YAML
+    try:
+        return yaml.safe_load(yaml_content)
+    except yaml.YAMLError as exc:
+        raise ValueError(f"Error parsing YAML: {exc}") from exc
+
+
+def extract_yaml_from_markdown(markdown_content):
+    """
+    Extracts and parses the YAML front matter from the given Markdown file content.
+
+    Args:
+    markdown_content (str): The content of the Markdown file as a string.
+
+    Returns:
+    dict: A dictionary containing the parsed YAML.
+
+    Raises:
+    ValueError: If no YAML front matter is found or if there is a parsing error.
+    """
+    # Regular expression to find YAML delimited by ---
+    markdown_pattern = r"^---\s*\n(.*?)\n---"
+    return extract_yaml(markdown_content, markdown_pattern)
+
+
+def extract_yaml_from_python(python_content):
+    """
+    Extracts and parses the YAML front matter from the given Python file content.
+
+    Args:
+    python_content (str): The content of the Python file as a string.
+
+    Returns:
+    dict: A dictionary containing the parsed YAML.
+
+    Raises:
+    ValueError: If no YAML front matter is found or if there is a parsing error.
+    """
+    # Regular expression to find YAML enclosed in triple quotes (""")
+    python_pattern = r'^"""(.*?)"""'
+    return extract_yaml(python_content, python_pattern)
+
+
+def has_function_defined(python_code, function_name):
+    """
+    Check if a function with a specific name is defined in the given Python code.
+
+    Args:
+    python_code (str): The Python code to analyze.
+    function_name (str): The name of the function to look for.
+
+    Returns:
+    bool: True if the function is defined, False otherwise.
+    """
+    # Parse the code into an abstract syntax tree (AST)
+    try:
+        tree = ast.parse(python_code)
+    except SyntaxError as exc:
+        raise ValueError(f"Invalid Python code provided: {exc}") from exc
+
+    # Traverse the tree to find function definitions
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name == function_name:
+            return True
+
+    return False
+
+
+def convert_python_front_matter_to_comment(file_content):
+    """
+    Converts front matter in triple quotes at the top of a Python file into commented lines.
+
+    Args:
+    file_content (str): The content of the Python file.
+
+    Returns:
+    str: The modified file content with the front matter commented out.
+    """
+    # Regex to match the front matter enclosed in triple quotes
+    pattern = r'^("""[\s\S]+?""")'
+
+    # Function to add a hash in front of each line within the triple quotes
+    def comment(match):
+        commented = "\n".join(
+            "# " + line if line.strip() != "" else "#"
+            for line in match.group(1).split("\n")
+        )
+        return commented
+
+    # Replace the front matter with its commented version
+    modified_content = re.sub(pattern, comment, file_content, count=1)
+
+    return modified_content

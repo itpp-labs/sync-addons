@@ -14,7 +14,7 @@
     "website": "https://sync_studio.t.me/",
     "license": "Other OSI approved licence",  # MIT
     "depends": ["base_automation", "mail", "queue_job"],
-    "external_dependencies": {"python": ["markdown"], "bin": []},
+    "external_dependencies": {"python": ["markdown", "pyyaml"], "bin": []},
     "data": [
         "security/sync_groups.xml",
         "security/ir.model.access.csv",

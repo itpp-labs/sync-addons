@@ -1,4 +1,4 @@
-# Copyright 2020,2022 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2022,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -25,7 +25,17 @@ from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
 
-from ..tools import compile_markdown_to_html, fetch_gist_data, url2base64, url2bin
+from ..lib.tools.safe_eval import test_python_expr__MAGIC
+from ..tools import (
+    compile_markdown_to_html,
+    convert_python_front_matter_to_comment,
+    extract_yaml_from_markdown,
+    extract_yaml_from_python,
+    fetch_gist_data,
+    has_function_defined,
+    url2base64,
+    url2bin,
+)
 from .ir_logging import LOG_CRITICAL, LOG_DEBUG, LOG_ERROR, LOG_INFO, LOG_WARNING
 
 _logger = logging.getLogger(__name__)
@@ -45,7 +55,8 @@ class SyncProject(models.Model):
     _description = "Sync Project"
 
     name = fields.Char(
-        "Name", help="e.g. Legacy Migration or eCommerce Synchronization", required=True
+        "Name",
+        help="e.g. Legacy Migration or eCommerce Integration",
     )
     active = fields.Boolean(default=False)
 
@@ -82,12 +93,6 @@ class SyncProject(models.Model):
     )
     trigger_webhook_count = fields.Integer(
         compute="_compute_triggers", help="Enabled Webhooks"
-    )
-    trigger_button_count = fields.Integer(
-        compute="_compute_triggers", help="Manual Triggers"
-    )
-    trigger_button_ids = fields.Many2many(
-        "sync.trigger.button", compute="_compute_triggers", string="Manual Triggers"
     )
     job_ids = fields.One2many("sync.job", "project_id")
     job_count = fields.Integer(compute="_compute_job_count")
@@ -139,13 +144,18 @@ class SyncProject(models.Model):
             r.trigger_cron_count = len(r.mapped("task_ids.cron_ids"))
             r.trigger_automation_count = len(r.mapped("task_ids.automation_ids"))
             r.trigger_webhook_count = len(r.mapped("task_ids.webhook_ids"))
-            r.trigger_button_count = len(r.mapped("task_ids.button_ids"))
-            r.trigger_button_ids = r.mapped("task_ids.button_ids")
 
     @api.constrains("common_code")
-    def _check_python_code(self):
+    def _check_python_common_code(self):
         for r in self.sudo().filtered("common_code"):
             msg = test_python_expr(expr=(r.common_code or "").strip(), mode="exec")
+            if msg:
+                raise ValidationError(msg)
+
+    @api.constrains("core_code")
+    def _check_python_core_code(self):
+        for r in self.sudo().filtered("core_code"):
+            msg = test_python_expr__MAGIC(expr=(r.core_code or "").strip(), mode="exec")
             if msg:
                 raise ValidationError(msg)
 
@@ -302,7 +312,7 @@ class SyncProject(models.Model):
                 "type2str": type2str,
                 "record2image": record2image,
                 "DEFAULT_SERVER_DATETIME_FORMAT": DEFAULT_SERVER_DATETIME_FORMAT,
-            }
+            },
         )
         reading_time = time.time() - start_time
 
@@ -447,6 +457,7 @@ class SyncProject(models.Model):
             raise UserError(_("Please provide url to the gist page"))
 
         gist_content = fetch_gist_data(self.source_url)
+        gist_id = gist_content["id"]
         gist_files = {}
         for file_name, file_info in gist_content["files"].items():
             gist_files[file_name] = file_info["content"]
@@ -468,13 +479,30 @@ class SyncProject(models.Model):
         )
 
         # [PARAMS] and [SECRETS]
-        for field_name, file_name in (
-            ("param_description", ".markdown"),
-            ("text_param_description", "settings.templates.markdown"),
-            ("secret_description", "settings.secrets.markdown"),
+        for model, field_name, file_name in (
+            ("sync.project.param", "param_description", "settings.markdown"),
+            (
+                "sync.project.text",
+                "text_param_description",
+                "settings.templates.markdown",
+            ),
+            ("sync.project.secret", "secret_description", "settings.secrets.markdown"),
         ):
-            if gist_files.get(file_name):
-                vals[field_name] = compile_markdown_to_html(gist_files[file_name])
+            file_content = gist_files.get(file_name)
+            if not file_content:
+                continue
+            vals[field_name] = compile_markdown_to_html(file_content)
+            meta = extract_yaml_from_markdown(file_content)
+
+            for key, initial_value in meta.items():
+                param_vals = {
+                    "key": key,
+                    "initial_value": initial_value,
+                    "project_id": self.id,
+                }
+                self.env[model]._create_or_update_by_xmlid(
+                    param_vals, f"PARAM_{key}", namespace=gist_id
+                )
 
         # [CORE] and [LIB]
         for field_name, file_name in (
@@ -484,7 +512,67 @@ class SyncProject(models.Model):
             if gist_files.get(file_name):
                 vals[field_name] = gist_files[file_name]
 
-        # TODO: tasks
+        # Tasks 🦋
+        for file_name in gist_files:
+            # e.g. "task.setup.py"
+            if not (file_name.startswith("task.") and file_name.endswith(".py")):
+                continue
+
+            # e.g. "setup"
+            task_technical_name = file_name[len("task.") : -len(".py")]
+
+            # Process file content
+            file_content = gist_files[file_name]
+            meta = extract_yaml_from_python(file_content)
+            task_name = meta.get("TITLE", f"<No TITLE found at the {file_name}>")
+
+            # Update code to bypass security checks
+            file_content = convert_python_front_matter_to_comment(file_content)
+
+            # Check if code is valid
+            syntax_errors = test_python_expr(file_content, mode="exec")
+            if syntax_errors:
+                raise ValueError(
+                    f"Invalid python code at file {file_name}:\n\n{syntax_errors}"
+                )
+
+            # Check if python code has method `handle_button`
+            has_handle_button = has_function_defined(file_content, "handle_button")
+
+            task_vals = {
+                "name": task_name,
+                "code": file_content,
+                "magic_button": meta.get("MAGIC_BUTTON", "Magic ✨ Button")
+                if has_handle_button
+                else None,
+                "project_id": self.id,
+            }
+            task = self.env["sync.task"]._create_or_update_by_xmlid(
+                task_vals, task_technical_name, namespace=gist_id
+            )
+
+            def create_trigger(model, data):
+                vals = dict(
+                    {key: value for key, value in data.items() if value is not None},
+                    sync_task_id=task.id,
+                    trigger_name=data["name"],
+                )
+                return self.env[model]._create_or_update_by_xmlid(
+                    vals, data["name"], namespace=gist_id
+                )
+
+            # Create/Update triggers
+            for data in meta.get("CRON", []):
+                create_trigger("sync.trigger.cron", data)
+
+            for data in meta.get("WEBHOOK", []):
+                create_trigger("sync.trigger.webhook", data)
+
+            for data in meta.get("DB_TRIGGERS", []):
+                model_id = self.env["ir.model"]._get(data["model"]).id
+                create_trigger(
+                    "sync.trigger.automation", dict(data, model_id=model_id, model=None)
+                )
 
         self.update(vals)
 

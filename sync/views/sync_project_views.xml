@@ -119,7 +119,7 @@
                     <field name="active" invisible="1" />
                     <div class="oe_title">
                         <h1>
-                            <field name="name" placeholder="E.g. Legacy Migration" />
+                            <field name="name" />
                         </h1>
                     </div>
                     <notebook>
@@ -129,17 +129,27 @@
                                     <field
                                         name="source_url"
                                         widget="url"
+                                        default_focus="1"
                                         placeholder="E.g. https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2"
                                     />
                                     <field name="source_updated_at" />
                                 </group>
                                 <group>
+                                    <field name="id" invisible="1" />
+                                    <button
+                                        name="magic_upgrade"
+                                        string="Import"
+                                        class="oe_highlight"
+                                        type="object"
+                                        attrs="{'invisible': [('id', '!=', False)]}"
+                                    />
                                     <button
                                         name="magic_upgrade"
                                         string="Upgrade"
                                         class="oe_highlight"
                                         type="object"
                                         confirm="ATTENTION! This action will override all project code. PROCEED?"
+                                        attrs="{'invisible': [('id', '=', False)]}"
                                     />
                                 </group>
                             </group>
@@ -152,13 +162,14 @@
                                 <tree decoration-muted="not active">
                                     <field name="name" />
                                     <field name="active" />
-                                    <field name="show_magic_button" invisible="1" />
+                                    <field name="magic_button" invisible="1" />
+                                    <!-- TODO: make title name equal to magic_button -->
                                     <button
-                                        name="magic_button"
+                                        name="action_magic_button"
                                         title="Magic ✨ Button"
                                         type="object"
                                         class="oe_highlight"
-                                        attrs="{'invisible': [('show_magic_button', '=', False)]}"
+                                        attrs="{'invisible': ['|', ('magic_button', '=', False), ('magic_button', '=', '')]}"
                                     />
                                     <field
                                         name="active_cron_ids"
@@ -176,19 +187,17 @@
                             </field>
                             <p>
                                 <em>
-                                    Hint: Cron, Webhook and DB Triggers are not
-                                    executed
-                                    until both the Project and the Task are active (i.e.
-                                    not Archived)
+                                    Hint: Cron, Webhook, and DB Triggers are not
+                                    executed unless both the Project and the Task are
+                                    active (i.e., not Archived).
                                 </em>
                             </p>
                         </page>
                         <page name="core" string="CORE.🪬">
                             <p>
                                 <em>
-                                    Hint: For security reasons, the
-                                    <b>Core 🪬 Code</b>
-                                    can be updated via gist page only.
+                                    Hint: For security reasons, the **Core 🪬 Code** can
+                                    only be updated via the gist page.
                                 </em>
                             </p>
                             <field
@@ -203,6 +212,12 @@
                                 widget="ace"
                                 options="{'mode': 'python'}"
                             />
+                            <p>
+                                <em>
+                                    Hint: When adding new functions, don't forget to
+                                    export them.
+                                </em>
+                            </p>
                         </page>
                         <!--
                         <page name="buttons" string="Manual Triggers">
@@ -345,12 +360,4 @@
         action="sync_project_action"
         sequence="10"
     />
-    <record id="sync_make_module_action" model="ir.actions.act_window">
-        <field name="name">Export to XML</field>
-        <field name="binding_model_id" ref="sync.model_sync_project" />
-        <field name="res_model">sync.make.module</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{'default_project_id': active_id}</field>
-    </record>
 </odoo>
