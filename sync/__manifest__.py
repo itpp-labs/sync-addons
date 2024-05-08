@@ -28,7 +28,6 @@
         "views/sync_task_views.xml",
         "views/sync_project_views.xml",
         "views/sync_link_views.xml",
-        "wizard/sync_make_module_views.xml",
         "data/queue_job_function_data.xml",
     ],
     "assets": {
