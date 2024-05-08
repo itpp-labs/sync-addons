@@ -27,6 +27,9 @@ class SyncTask(models.Model):
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
     magic_button = fields.Char()
+    button_ids = fields.One2many(
+        "sync.trigger.button", "sync_task_id", string="Manual Triggers", copy=True
+    )
     cron_ids = fields.One2many("sync.trigger.cron", "sync_task_id", copy=True)
     automation_ids = fields.One2many(
         "sync.trigger.automation", "sync_task_id", copy=True
@@ -92,8 +95,16 @@ class SyncTask(models.Model):
             r.active_webhook_ids = r.with_context(active_test=True).webhook_ids
 
     def action_magic_button(self):
-        # TODO
-        pass
+        # TODO: This should be refactored to delete button_ids
+        if not self.button_ids:
+            self.button_ids.create(
+                {
+                    "name": self.magic_button,
+                    "trigger_name": self.magic_button,
+                    "sync_task_id": self.id,
+                }
+            )
+        return self.button_ids.start_button()
 
     def start(
         self, trigger, args=None, with_delay=False, force=False, raise_on_error=True

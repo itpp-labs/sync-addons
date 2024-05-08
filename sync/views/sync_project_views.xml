@@ -162,15 +162,16 @@
                                 <tree decoration-muted="not active">
                                     <field name="name" />
                                     <field name="active" />
-                                    <field name="magic_button" invisible="1" />
                                     <!-- TODO: make title name equal to magic_button -->
                                     <button
                                         name="action_magic_button"
-                                        title="Magic ✨ Button"
+                                        string="Magic ✨"
+                                        help="All you need to do is click the **Magic 🪬 Button**"
                                         type="object"
                                         class="oe_highlight"
                                         attrs="{'invisible': ['|', ('magic_button', '=', False), ('magic_button', '=', '')]}"
                                     />
+                                    <field name="magic_button" invisible="1" />
                                     <field
                                         name="active_cron_ids"
                                         widget="many2many_tags"
