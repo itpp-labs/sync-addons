@@ -25,7 +25,7 @@ from types import CodeType
 import werkzeug
 from psycopg2 import OperationalError
 
-from .misc import ustr
+from odoo.tools.misc import ustr
 
 import odoo
 
@@ -78,7 +78,7 @@ def to_opcodes(opnames, _opmap=opmap):
 # explicitly subtracted from all sets of valid opcodes just in case
 _BLACKLIST = set(to_opcodes([
     # can't provide access to accessing arbitrary modules
-    'IMPORT_STAR', 'IMPORT_NAME', 'IMPORT_FROM',
+    # 'IMPORT_STAR', 'IMPORT_NAME', 'IMPORT_FROM',
     # could allow replacing or updating core attributes on models & al, setitem
     # can be used to set field values
     'STORE_ATTR', 'DELETE_ATTR',
@@ -127,6 +127,11 @@ _EXPR_OPCODES = _CONST_OPCODES.union(to_opcodes([
 ])) - _BLACKLIST
 
 _SAFE_OPCODES = _EXPR_OPCODES.union(to_opcodes([
+    # MAGIC
+    'IMPORT_STAR', 'IMPORT_NAME', 'IMPORT_FROM',
+    # It's needed to make a function with *args
+    'LIST_TO_TUPLE',
+
     'POP_BLOCK', 'POP_EXCEPT',
 
     # note: removed in 3.8
@@ -219,7 +224,7 @@ def assert_valid_codeobj(allowed_codes, code_obj, expr):
     # when loading /web according to line_profiler
     code_codes = {i.opcode for i in dis.get_instructions(code_obj)}
     if not allowed_codes >= code_codes:
-        raise ValueError("forbidden opcode(s) in %r: %s" % (expr, ', '.join(opname[x] for x in (code_codes - allowed_codes))))
+        raise ValueError("forbidden opcode(s) in %r (%s): %s" % (expr, code_obj, ', '.join(opname[x] for x in (code_codes - allowed_codes))))
 
     for const in code_obj.co_consts:
         if isinstance(const, CodeType):
@@ -330,7 +335,7 @@ _BUILTINS = {
     'zip': zip,
     'Exception': Exception,
 }
-def safe_eval(expr, globals_dict=None, locals_dict=None, mode="eval", nocopy=False, locals_builtins=False, filename=None):
+def safe_eval__MAGIC(expr, globals_dict=None, locals_dict=None, mode="eval", nocopy=False, locals_builtins=False, filename=None):
     """safe_eval(expression[, globals[, locals[, mode[, nocopy]]]]) -> result
 
     System-restricted Python expression evaluation
@@ -395,7 +400,7 @@ def safe_eval(expr, globals_dict=None, locals_dict=None, mode="eval", nocopy=Fal
         raise
     except Exception as e:
         raise ValueError('%s: "%s" while evaluating\n%r' % (ustr(type(e)), ustr(e), expr))
-def test_python_expr(expr, mode="eval"):
+def test_python_expr__MAGIC(expr, mode="eval"):
     try:
         test_expr(expr, _SAFE_OPCODES, mode=mode)
     except (SyntaxError, TypeError, ValueError) as err:
