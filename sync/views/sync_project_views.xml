@@ -215,8 +215,8 @@
                             />
                             <p>
                                 <em>
-                                    Hint: When adding new functions, don't forget to
-                                    export them.
+                                    Hint: When adding new functions, remember to export
+                                    them.
                                 </em>
                             </p>
                         </page>

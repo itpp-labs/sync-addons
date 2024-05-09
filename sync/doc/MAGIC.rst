@@ -79,7 +79,7 @@ Tools
 * ``MAGIC.html2plaintext``
 * ``MAGIC.type2str``: get type of the given object
 * ``MAGIC.DEFAULT_SERVER_DATETIME_FORMAT``
-* ``MAGIC.AttrDict``: like a dictionary, but with accessing to attributes via dot.
+* ``MAGIC.AttrDict``: Extended dictionary that allows for attribute-style access
 
 Exceptions
 ==========

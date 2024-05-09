@@ -11,7 +11,7 @@ from pytz import timezone
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, frozendict, html2plaintext
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, html2plaintext
 from odoo.tools.misc import get_lang
 from odoo.tools.safe_eval import (
     datetime as safe_datetime,
@@ -25,8 +25,10 @@ from odoo.tools.translate import _
 
 from odoo.addons.queue_job.exception import RetryableJobError
 
-from ..lib.tools.safe_eval import test_python_expr__MAGIC
+from ..lib.tools.safe_eval import safe_eval__MAGIC, test_python_expr__MAGIC
 from ..tools import (
+    AttrDict,
+    add_items,
     compile_markdown_to_html,
     convert_python_front_matter_to_comment,
     extract_yaml_from_markdown,
@@ -42,11 +44,16 @@ _logger = logging.getLogger(__name__)
 DEFAULT_LOG_NAME = "Log"
 
 
-def cleanup_eval_context(eval_context):
-    delete = [k for k in eval_context if k.startswith("_")]
-    for k in delete:
-        del eval_context[k]
-    return eval_context
+def eval_export(eval_function, code, eval_context):
+    EXPORT = {}
+
+    def export(*args, **kwargs):
+        # Используем общую функцию для добавления элементов в EXPORT
+        add_items(EXPORT, *args, **kwargs)
+
+    eval_context = dict(eval_context, export=export)
+    eval_function((code or "").strip(), eval_context, mode="exec", nocopy=True)
+    return AttrDict(EXPORT)
 
 
 class SyncProject(models.Model):
@@ -68,7 +75,7 @@ class SyncProject(models.Model):
     description = fields.Html(readonly=True)
 
     core_code = fields.Text(string="Core Code", readonly=True)
-    common_code = fields.Text("Common Code")
+    common_code = fields.Text("Project Library Code")
 
     param_ids = fields.One2many(
         "sync.project.param", "project_id", copy=True, string="Parameters"
@@ -107,18 +114,6 @@ class SyncProject(models.Model):
     def unlink(self):
         self.with_context(active_test=False).mapped("task_ids").unlink()
         return super().unlink()
-
-    def _compute_eval_context_description(self):
-        for r in self:
-            r.eval_context_description = (
-                "\n".join(
-                    r.eval_context_ids.mapped(
-                        lambda c: "-= " + c.display_name + " =-\n\n" + c.description
-                    )
-                )
-                if r.eval_context_ids
-                else ""
-            )
 
     def _compute_network_access_readonly(self):
         for r in self:
@@ -200,10 +195,9 @@ class SyncProject(models.Model):
         return log
 
     def _get_eval_context(self, job, log):
-        """Executed Secret and Common codes and return "exported" variables and functions"""
+        """Prepare Task Evaluation Context"""
         self.ensure_one()
-        log("Job started", LOG_DEBUG)
-        start_time = time.time()
+        log("Let's prepare Evaluation Context", LOG_DEBUG)
 
         def add_job(function, **options):
             if callable(function):
@@ -225,18 +219,6 @@ class SyncProject(models.Model):
 
             return f
 
-        params = AttrDict()
-        for p in self.param_ids:
-            params[p.key] = p.value
-
-        texts = AttrDict()
-        for p in self.text_param_ids:
-            texts[p.key] = p.value
-
-        webhooks = AttrDict()
-        for w in self.task_ids.mapped("webhook_ids"):
-            webhooks[w.trigger_name] = w.website_url
-
         def log_transmission(recipient_str, data_str):
             log(data_str, name=recipient_str, log_type="data_out")
 
@@ -253,11 +235,7 @@ class SyncProject(models.Model):
         def type2str(obj):
             return "%s" % type(obj)
 
-        def record2image(record, fname=None):
-            # TODO: implement test, that is useful for backporting to 12.0
-            if not fname:
-                fname = "image_1920"
-
+        def record2image(record, fname="image_1920"):
             return (
                 record.sudo()
                 .env["ir.attachment"]
@@ -274,7 +252,7 @@ class SyncProject(models.Model):
         context = dict(self.env.context, log_function=log)
         env = self.env(context=context)
         link_functions = env["sync.link"]._get_eval_context()
-        eval_context = dict(
+        MAGIC = AttrDict(
             **link_functions,
             **self._get_sync_functions(log, link_functions),
             **{
@@ -286,9 +264,6 @@ class SyncProject(models.Model):
                 "LOG_WARNING": LOG_WARNING,
                 "LOG_ERROR": LOG_ERROR,
                 "LOG_CRITICAL": LOG_CRITICAL,
-                "params": params,
-                "texts": texts,
-                "webhooks": webhooks,
                 "user": self.env.user,
                 "trigger": job.trigger_name,
                 "add_job": add_job,
@@ -312,39 +287,48 @@ class SyncProject(models.Model):
                 "type2str": type2str,
                 "record2image": record2image,
                 "DEFAULT_SERVER_DATETIME_FORMAT": DEFAULT_SERVER_DATETIME_FORMAT,
+                "AttrDict": AttrDict,
             },
         )
-        reading_time = time.time() - start_time
+        SECRETS = AttrDict()
+        for p in self.secret_ids:
+            SECRETS[p.key] = p.value
 
-        executing_custom_context = 0
-        if self.eval_context_ids:
-            start_time = time.time()
+        PARAMS = AttrDict()
+        for p in self.param_ids:
+            PARAMS[p.key] = p.value
 
-            secrets = AttrDict()
-            for p in self.sudo().secret_ids:
-                secrets[p.key] = p.value
-            eval_context_frozen = frozendict(eval_context)
-            for ec in self.eval_context_ids:
-                method = ec.get_eval_context_method()
-                eval_context = dict(
-                    **eval_context, **method(secrets, eval_context_frozen)
+        for p in self.text_param_ids:
+            if p.key in PARAMS:
+                raise ValidationError(
+                    _(
+                        "Project Templates and Settings should not have parameters with the same key: %s"
+                    )
+                    % p.key
                 )
-            cleanup_eval_context(eval_context)
+            PARAMS[p.key] = p.value
 
-            executing_custom_context = time.time() - start_time
+        WEBHOOKS = AttrDict()
+        for w in self.task_ids.mapped("webhook_ids"):
+            WEBHOOKS[w.trigger_name] = w.website_url
 
-        start_time = time.time()
-        safe_eval(
-            (self.common_code or "").strip(), eval_context, mode="exec", nocopy=True
-        )
-        executing_common_code = time.time() - start_time
-        log(
-            "Evalution context is prepared. Reading project data: %05.3f sec; preparing custom evalution context: %05.3f sec; Executing Common Code: %05.3f sec"
-            % (reading_time, executing_custom_context, executing_common_code),
-            LOG_DEBUG,
-        )
-        cleanup_eval_context(eval_context)
-        return eval_context
+        core_eval_context = {
+            "MAGIC": MAGIC,
+            "SECRETS": SECRETS,
+        }
+        CORE = eval_export(safe_eval__MAGIC, self.core_code, core_eval_context)
+
+        lib_eval_context = {
+            "MAGIC": MAGIC,
+            "CORE": CORE,
+            "PARAMS": PARAMS,
+            "WEBHOOKS": WEBHOOKS,
+        }
+        LIB = eval_export(safe_eval, self.common_code, lib_eval_context)
+
+        task_eval_context = dict(lib_eval_context, LIB=LIB)
+        log("Evaluation Context is ready!", LOG_DEBUG)
+        return task_eval_context
 
     def _get_sync_functions(self, log, link_functions):
         def _sync(src_list, src2dst, link_src_dst, create=None, update=None):
@@ -412,10 +396,6 @@ class SyncProject(models.Model):
                 update and sync_info["odoo"]["update"],
             )
 
-        # def sync_x2y(src_list, sync_info, create=False, update=False):
-        #     return sync_external(src_list, sync_info["relation"], sync_info["x"], sync_info["y"], create=create, update=update)
-        # def sync_y2x(src_list, sync_info, create=False, update=False):
-        #     return sync_external(src_list, sync_info["relation"], sync_info["y"], sync_info["x"], create=create, update=update)
         def sync_external(
             src_list, relation, src_info, dst_info, create=False, update=False
         ):
@@ -642,10 +622,3 @@ class SyncProjectSecret(models.Model):
             "target": "new",
             "res_id": self.id,
         }
-
-
-# see https://stackoverflow.com/a/14620633/222675
-class AttrDict(dict):
-    def __init__(self, *args, **kwargs):
-        super(AttrDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self

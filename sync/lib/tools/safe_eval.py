@@ -298,7 +298,8 @@ def expr_eval(expr):
     return unsafe_eval(c)
 
 _BUILTINS = {
-    '__import__': _import,
+    #'__import__': _import,
+    '__import__': __import__,
     'True': True,
     'False': False,
     'None': None,

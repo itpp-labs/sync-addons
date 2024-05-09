@@ -237,3 +237,33 @@ def convert_python_front_matter_to_comment(file_content):
     modified_content = re.sub(pattern, comment, file_content, count=1)
 
     return modified_content
+
+
+def add_items(container, *args, **kwargs):
+    """
+    Adds items to the container. Handles functions, dictionaries, and positional arguments, adding them appropriately.
+    Also adds key-value pairs from keyword arguments directly to the container.
+    """
+    for item in args:
+        if callable(item):
+            container[item.__name__] = item
+        elif isinstance(item, dict) and not isinstance(item, AttrDict):
+            container.update(item)
+        else:
+            raise Exception(
+                f"The container received a non-callable positional argument of type "
+                f"'{type(item).__name__}', which lacks an explicit name. "
+                f"Please pass a callable, a dictionary, or provide a key-value pair using keyword arguments."
+            )
+    container.update(kwargs)
+
+
+class AttrDict(dict):
+    """
+    A dictionary that allows for attribute-style access. Automatically updates both keys and attributes.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__()
+        add_items(self, *args, **kwargs)
+        self.__dict__ = self
