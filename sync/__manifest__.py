@@ -36,12 +36,12 @@
         ],
     },
     "demo": [
+        "data/sync_project_unittest_demo.xml",
         # Obsolete
         # "data/sync_project_context_demo.xml",
         # "data/sync_project_telegram_demo.xml",
         # "data/sync_project_odoo2odoo_demo.xml",
         # "data/sync_project_trello_github_demo.xml",
-        # "data/sync_project_unittest_demo.xml",
         # "data/sync_project_context_demo.xml",
     ],
     "qweb": [],

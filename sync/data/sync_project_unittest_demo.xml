@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+<!-- Copyright 2020,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
      Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
      Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
      License MIT (https://opensource.org/licenses/MIT). -->
@@ -20,7 +20,7 @@
 <![CDATA[
 def handle_db(records):
     for r in records:
-        r.set_link(params.PARTNER_RELATION, r.id)
+        r.set_link(PARAMS.PARTNER_RELATION, r.id)
 ]]>
         </field>
     </record>
