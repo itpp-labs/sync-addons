@@ -4,3 +4,17 @@
 .html_field_container img {
     max-width: 100%;
 }
+.html_field_container kbd {
+    padding: 0;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+    display: inline-block;
+    box-shadow: 2px 2px 10px rgba(69, 42, 42, 0.8);
+    transition-duration: 300ms;
+}
+.html_field_container kbd:hover {
+    box-shadow: 2px 2px 5px rgba(69, 42, 42, 0.2);
+}
+.html_field_container kbd img {
+    border-radius: 6px;
+}
