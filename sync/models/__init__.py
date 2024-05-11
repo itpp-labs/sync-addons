@@ -14,5 +14,6 @@ from . import sync_data
 from . import ir_logging
 from . import ir_actions
 from . import ir_attachment
+from . import ir_fields
 from . import sync_link
 from . import base

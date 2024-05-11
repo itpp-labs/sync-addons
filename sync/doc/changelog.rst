@@ -4,6 +4,7 @@
 - **New:** Use prime numbers for major releases ;-)
 - **New:** Support data files
 - **Fix:** Use Project ID for xmlid namespace
+- **New:** Support dynamic properties
 - **Improvement:** make links dependent on project
 
 `7.0.0`
