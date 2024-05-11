@@ -5,8 +5,10 @@
 
 import base64
 import logging
+import os
 from datetime import datetime
 
+import urllib3
 from pytz import timezone
 
 from odoo import api, fields, models
@@ -107,6 +109,7 @@ class SyncProject(models.Model):
     log_count = fields.Integer(compute="_compute_log_count")
     link_ids = fields.One2many("sync.link", "project_id")
     link_count = fields.Integer(compute="_compute_link_count")
+    data_ids = fields.One2many("sync.data", "project_id")
 
     def copy(self, default=None):
         default = dict(default or {})
@@ -319,6 +322,10 @@ class SyncProject(models.Model):
         for w in self.task_ids.mapped("webhook_ids"):
             WEBHOOKS[w.trigger_name] = w.website_url
 
+        DATA = AttrDict()
+        for d in self.data_ids:
+            DATA[d.name] = d
+
         core_eval_context = {
             "MAGIC": MAGIC,
             "SECRETS": SECRETS,
@@ -330,6 +337,7 @@ class SyncProject(models.Model):
             "CORE": CORE,
             "PARAMS": PARAMS,
             "WEBHOOKS": WEBHOOKS,
+            "DATA": DATA,
         }
         LIB = eval_export(safe_eval, self.common_code, lib_eval_context)
 
@@ -498,6 +506,38 @@ class SyncProject(models.Model):
         ):
             if gist_files.get(file_name):
                 vals[field_name] = gist_files[file_name]
+
+        # [DATA]
+        http = urllib3.PoolManager()
+        for file_info in gist_content["files"].values():
+            # e.g. "data.emoji.csv"
+            file_name = file_info["filename"]
+            if not file_name.startswith("data."):
+                continue
+            raw_url = file_info["raw_url"]
+            response = http.request("GET", raw_url)
+            if response.status == 200:
+                file_content = response.data
+                file_content = base64.b64encode(file_content)
+            else:
+                raise Exception(
+                    f"Failed to fetch raw content from {raw_url}. Status code: {response.status}"
+                )
+
+            technical_name = file_name
+            technical_name = technical_name[len("data.") :]
+            technical_name = os.path.splitext(technical_name)[0]
+            technical_name = technical_name.replace(".", "_")
+
+            data_vals = {
+                "name": technical_name,
+                "project_id": self.id,
+                "file_name": file_name,
+                "file_content": file_content,
+            }
+            self.env["sync.data"]._create_or_update_by_xmlid(
+                data_vals, file_name, namespace=gist_id
+            )
 
         # Tasks 🦋
         for file_name in gist_files:

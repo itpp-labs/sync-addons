@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2020-2021 Ivan Yelizariev <https://twitter.com/yelizariev>
+<!-- Copyright 2020-2021,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_task_view_tree" model="ir.ui.view">
@@ -68,6 +68,13 @@
                                 <em>
                                     Hint: Updating this code won't change the triggers.
                                     Instead, update the gist file.
+                                    <br />
+                                    <a
+                                        target="_blank"
+                                        href="https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2#file-api-tasks-markdown"
+                                    >
+                                        Documentation
+                                    </a>
                                 </em>
                             </p>
                         </page>

@@ -214,28 +214,6 @@
                                 </em>
                             </p>
                         </page>
-                        <!--
-                        <page name="buttons" string="Manual Triggers">
-                            <p class="oe_edit_only">
-                                <br />
-                                Hint: to add manual triggers navigate to corresponding
-                                Task via "Available Tasks" tab
-                            </p>
-                            <field name="trigger_button_ids">
-                                <tree create="0">
-                                    <field name="sync_task_id" />
-                                    <field name="trigger_name" />
-                                    <button
-                                        name="start_button"
-                                        string="Run Now"
-                                        class="oe_highlight"
-                                        type="object"
-                                    />
-                                    <field name="name" />
-                                </tree>
-                            </field>
-                        </page>
-                        -->
                         <page name="params" string="PARAMS.🌹">
                             <notebook>
                                 <page string=" ✏️ Templates 🌹">
@@ -274,6 +252,26 @@
                                     </div>
                                 </page>
                             </notebook>
+                        </page>
+                        <page string="DATA.🐫">
+                            <field name="data_ids">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                    <field name="file_name" invisible="1" />
+                                    <field name="file_content" filename="file_name" />
+                                </tree>
+                            </field>
+                            <p>
+                                <em>
+                                    Hint:
+                                    <a
+                                        target="_blank"
+                                        href="https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2#file-api-data-markdown"
+                                    >
+                                        Documentation
+                                    </a>
+                                </em>
+                            </p>
                         </page>
                         <page string="SECRETS.🔐">
                             <p class="oe_read_only">

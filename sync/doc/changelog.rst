@@ -2,6 +2,7 @@
 -------
 
 - **New:** Use prime numbers for major releases ;-)
+- **New:** Support data files
 - **Improvement:** make links dependent on project
 
 `7.0.0`
