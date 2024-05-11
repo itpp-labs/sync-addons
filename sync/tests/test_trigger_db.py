@@ -17,7 +17,7 @@ class TestTriggerDB(TransactionCase):
         self.env = self.env(
             context=dict(
                 self.env.context,
-                test_queue_job_no_delay=True,  # no jobs thanks
+                queue_job__no_delay=True,  # no jobs thanks
             )
         )
         funcs = self.env["sync.link"]._get_eval_context()
