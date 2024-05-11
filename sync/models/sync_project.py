@@ -452,7 +452,6 @@ class SyncProject(models.Model):
             raise UserError(_("Please provide url to the gist page"))
 
         gist_content = fetch_gist_data(self.source_url)
-        gist_id = gist_content["id"]
         gist_files = {}
         for file_name, file_info in gist_content["files"].items():
             gist_files[file_name] = file_info["content"]
@@ -496,7 +495,7 @@ class SyncProject(models.Model):
                     "project_id": self.id,
                 }
                 self.env[model]._create_or_update_by_xmlid(
-                    param_vals, f"PARAM_{key}", namespace=gist_id
+                    param_vals, f"PARAM_{key}", namespace=self.id
                 )
 
         # [CORE] and [LIB]
@@ -536,7 +535,7 @@ class SyncProject(models.Model):
                 "file_content": file_content,
             }
             self.env["sync.data"]._create_or_update_by_xmlid(
-                data_vals, file_name, namespace=gist_id
+                data_vals, file_name, namespace=self.id
             )
 
         # Tasks 🦋
@@ -575,7 +574,7 @@ class SyncProject(models.Model):
                 "project_id": self.id,
             }
             task = self.env["sync.task"]._create_or_update_by_xmlid(
-                task_vals, task_technical_name, namespace=gist_id
+                task_vals, task_technical_name, namespace=self.id
             )
 
             def create_trigger(model, data):
@@ -585,7 +584,7 @@ class SyncProject(models.Model):
                     trigger_name=data["name"],
                 )
                 return self.env[model]._create_or_update_by_xmlid(
-                    vals, data["name"], namespace=gist_id
+                    vals, data["name"], namespace=self.id
                 )
 
             # Create/Update triggers
