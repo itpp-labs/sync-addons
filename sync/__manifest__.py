@@ -7,7 +7,7 @@
     "name": "Sync 🪬 Studio",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "16.0.7.0.0",
+    "version": "16.0.11.0.0",
     "application": True,
     "author": "Ivan Kropotkin",
     "support": "info@odoomagic.com",
@@ -26,8 +26,8 @@
         "views/sync_trigger_webhook_views.xml",
         "views/sync_trigger_button_views.xml",
         "views/sync_task_views.xml",
-        "views/sync_project_views.xml",
         "views/sync_link_views.xml",
+        "views/sync_project_views.xml",
         "data/queue_job_function_data.xml",
     ],
     "assets": {

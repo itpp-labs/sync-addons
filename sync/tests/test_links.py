@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import uuid
@@ -17,6 +17,8 @@ def generate_ref():
 class TestLink(TransactionCase):
     def setUp(self):
         super(TestLink, self).setUp()
+        project = self.env["sync.project"].create({"name": "Test Project"})
+        self.env = self.env(context=dict(self.env.context, sync_project_id=project.id))
         funcs = self.env["sync.link"]._get_eval_context()
         self.get_link = funcs["get_link"]
         self.set_link = funcs["set_link"]

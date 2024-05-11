@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+<!-- Copyright 2020,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_link_view_tree" model="ir.ui.view">
@@ -7,6 +7,7 @@
         <field name="model">sync.link</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="project_id" />
                 <field name="relation" />
                 <field name="system1" />
                 <field name="ref1" />
@@ -25,6 +26,7 @@
                 <sheet>
                     <group>
                         <group>
+                            <field name="project_id" />
                             <field name="relation" />
                             <field name="system1" />
                             <field name="ref1" />
@@ -78,6 +80,15 @@
         <field name="res_model">sync.link</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="sync_link_view_search" />
+    </record>
+    <record id="sync_link_action_from_project" model="ir.actions.act_window">
+        <field name="name">Links</field>
+        <field name="res_model">sync.link</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('project_id', '=', active_id)]</field>
+        <field name="context">
+            {'default_project_id': active_id, 'active_test': False}
+        </field>
     </record>
     <menuitem
         id="sync_link_menu_action"

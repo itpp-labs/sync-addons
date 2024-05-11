@@ -1,3 +1,9 @@
+`11.0.0`
+-------
+
+- **New:** Use prime numbers for major releases ;-)
+- **Improvement:** make links dependent on project
+
 `7.0.0`
 -------
 

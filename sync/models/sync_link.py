@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 import logging
@@ -23,6 +23,7 @@ class SyncLink(models.Model):
     _description = "Resource Links"
     _order = "id desc"
 
+    project_id = fields.Char("Project")
     relation = fields.Char("Relation Name", required=True)
     system1 = fields.Char("System 1", required=True)
     # index system2 only to make search "Odoo links"
@@ -40,7 +41,7 @@ class SyncLink(models.Model):
             self._cr,
             "sync_link_refs_uniq_index",
             self._table,
-            ["relation", "system1", "system2", "ref1", "ref2", "model"],
+            ["project_id", "relation", "system1", "system2", "ref1", "ref2", "model"],
         )
         return res
 
@@ -81,6 +82,7 @@ class SyncLink(models.Model):
         self, relation, external_refs, sync_date=None, allow_many2many=False, model=None
     ):
         vals = self.refs2vals(external_refs)
+        vals["project_id"] = self.env.context.get("sync_project_id")
         # Check for existing records
         if allow_many2many:
             existing = self._search_links_external(relation, external_refs)
@@ -142,7 +144,10 @@ class SyncLink(models.Model):
         self, relation, external_refs, model=None, make_logs=False
     ):
         vals = self.refs2vals(external_refs)
-        domain = [("relation", "=", relation)]
+        domain = [
+            ("relation", "=", relation),
+            ("project_id", "=", self.env.context.get("sync_project_id")),
+        ]
         if model:
             domain.append(("model", "=", model))
         for k, v in vals.items():

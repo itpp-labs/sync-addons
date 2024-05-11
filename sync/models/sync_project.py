@@ -105,6 +105,8 @@ class SyncProject(models.Model):
     job_count = fields.Integer(compute="_compute_job_count")
     log_ids = fields.One2many("ir.logging", "sync_project_id")
     log_count = fields.Integer(compute="_compute_log_count")
+    link_ids = fields.One2many("sync.link", "project_id")
+    link_count = fields.Integer(compute="_compute_link_count")
 
     def copy(self, default=None):
         default = dict(default or {})
@@ -133,6 +135,11 @@ class SyncProject(models.Model):
     def _compute_log_count(self):
         for r in self:
             r.log_count = len(r.log_ids)
+
+    @api.depends("link_ids")
+    def _compute_link_count(self):
+        for r in self:
+            r.link_count = len(r.link_ids)
 
     def _compute_triggers(self):
         for r in self:
@@ -249,7 +256,7 @@ class SyncProject(models.Model):
                 )
             )
 
-        context = dict(self.env.context, log_function=log)
+        context = dict(self.env.context, log_function=log, sync_project_id=self.id)
         env = self.env(context=context)
         link_functions = env["sync.link"]._get_eval_context()
         MAGIC = AttrDict(
