@@ -161,9 +161,7 @@ class Base(models.AbstractModel):
         )
 
         if not field:
-            raise exceptions.UserError(
-                f"Field '{field_name}' not found for the current model '{self._name}'."
-            )
+            return None
 
         res_id = f"{self._name},{self.id}"
         prop = Property.search(
