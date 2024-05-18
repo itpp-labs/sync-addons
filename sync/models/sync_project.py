@@ -327,15 +327,16 @@ class SyncProject(models.Model):
             DATA[d.name] = d
 
         core_eval_context = {
-            "MAGIC": MAGIC,
             "SECRETS": SECRETS,
+            "MAGIC": MAGIC,
+            "PARAMS": PARAMS,
         }
         CORE = eval_export(safe_eval__MAGIC, self.core_code, core_eval_context)
 
         lib_eval_context = {
             "MAGIC": MAGIC,
-            "CORE": CORE,
             "PARAMS": PARAMS,
+            "CORE": CORE,
             "WEBHOOKS": WEBHOOKS,
             "DATA": DATA,
         }
@@ -596,6 +597,13 @@ class SyncProject(models.Model):
 
             for data in meta.get("DB_TRIGGERS", []):
                 model_id = self.env["ir.model"]._get(data["model"]).id
+                if not model_id:
+                    raise ValidationError(
+                        _(
+                            "Model %s is not available. Check if you need to install an extra module first."
+                        )
+                        % data["model"]
+                    )
                 create_trigger(
                     "sync.trigger.automation", dict(data, model_id=model_id, model=None)
                 )

@@ -1,3 +1,9 @@
+`11.0.1`
+-------
+
+- **Improvement:** add `PARAMS.*` to the core eval context
+- **Improvement:** clarify error message when model is not found
+
 `11.0.0`
 -------
 
