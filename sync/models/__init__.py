@@ -11,9 +11,9 @@ from . import sync_project_demo
 from . import sync_task
 from . import sync_job
 from . import sync_data
+from . import sync_order
 from . import ir_logging
 from . import ir_actions
 from . import ir_attachment
-from . import ir_fields
 from . import sync_link
 from . import base

@@ -5,6 +5,9 @@ access_sync_project_manager,sync.project manager,model_sync_project,sync_group_m
 access_sync_task_user,sync.task user,model_sync_task,sync_group_user,1,0,0,0
 access_sync_task_dev,sync.task dev,model_sync_task,sync_group_dev,1,1,1,1
 access_sync_task_manager,sync.task manager,model_sync_task,sync_group_manager,1,1,1,1
+access_sync_order_user,sync.order user,model_sync_order,sync_group_user,1,0,0,0
+access_sync_order_dev,sync.order dev,model_sync_order,sync_group_dev,1,1,1,1
+access_sync_order_manager,sync.order manager,model_sync_order,sync_group_manager,1,1,1,1
 access_sync_data_user,sync.data user,model_sync_data,sync_group_user,1,0,0,0
 access_sync_data_dev,sync.data dev,model_sync_data,sync_group_dev,1,1,1,1
 access_sync_data_manager,sync.data manager,model_sync_data,sync_group_manager,1,1,1,1

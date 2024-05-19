@@ -19,7 +19,7 @@ class Base(models.AbstractModel):
             ._search_links_odoo(self, relation_name, refs)
         )
 
-    def _create_or_update_by_xmlid(self, vals, code, namespace="XXX", module="sync"):
+    def _create_or_update_by_xmlid(self, vals, code, namespace="XXX", module="__sync"):
         """
         Create or update a record by a dynamically generated XML ID.
         Warning! The field `noupdate` is ignored, i.e. existing records are always updated.
@@ -66,20 +66,9 @@ class Base(models.AbstractModel):
                     "noupdate": False,
                 }
             )
-
         return record
 
-    def _set_sync_property(self, property_name, property_type, property_value):
-        """
-        Set or create a property for the current record. If the property field
-        does not exist, create it dynamically.
-
-        Args:
-            property_name (str): Name of the property field to set.
-            property_value (Any): The value to assign to the property.
-            property_type (str): Type of the property field.
-        """
-        Property = self.env["ir.property"]
+    def _sync_field_name(self, property_name, property_type):
         sync_project_id = self.env.context.get("sync_project_id")
 
         if not sync_project_id:
@@ -87,13 +76,25 @@ class Base(models.AbstractModel):
                 _("The 'sync_project_id' must be provided in the context.")
             )
 
-        field_name = "x_sync_%s_%s_%s" % (sync_project_id, property_name, property_type)
+        return "x_sync_%s_%s_%s" % (sync_project_id, property_name, property_type)
+
+    def _set_sync_value(self, property_name, property_type, property_value):
+        """
+        Set or create a property for the current record. If the field
+        does not exist, create it dynamically.
+
+        Args:
+            property_name (str): Name of the property field to set.
+            property_type (str): Type of the property field.
+            property_value (Any): The value to assign to the property.
+        """
+        self.ensure_one()
+        field_name = self._sync_field_name(property_name, property_type)
         field = self.env["ir.model.fields"].search(
             [
                 ("name", "=", field_name),
                 ("model", "=", self._name),
                 ("ttype", "=", property_type),
-                ("sync_project_id", "=", sync_project_id),
             ],
             limit=1,
         )
@@ -104,73 +105,23 @@ class Base(models.AbstractModel):
                 {
                     "name": field_name,
                     "ttype": property_type,
-                    "model_id": self.env["ir.model"]
-                    .search([("model", "=", self._name)], limit=1)
-                    .id,
+                    "model_id": self.env["ir.model"]._get_id(self._name),
                     "field_description": property_name.capitalize().replace("_", " "),
-                    "sync_project_id": sync_project_id,  # Link to the sync project
                 }
             )
+        self[field_name] = property_value
 
-        res_id = f"{self._name},{self.id}"
-        prop = Property.search(
-            [
-                ("name", "=", property_name),
-                ("res_id", "=", res_id),
-                ("fields_id", "=", field.id),
-            ],
-            limit=1,
-        )
-
-        vals = {"type": property_type, "value": property_value}
-        if prop:
-            prop.write(vals)
-        else:
-            vals.update(
-                {
-                    "name": property_name,
-                    "fields_id": field.id,
-                    "res_id": res_id,
-                }
-            )
-            Property.create(vals)
-
-    def _get_sync_property(self, property_name, property_type):
+    def _get_sync_value(self, property_name, property_type):
         """
-        Get the value of a property for the current record.
+        Get the value of a dynamic field for the current record.
 
         Args:
             property_name (str): Name of the property field to get.
+            property_type (str): Type of the property field.
         """
-        Property = self.env["ir.property"]
-        sync_project_id = self.env.context.get("sync_project_id")
-
-        if not sync_project_id:
-            raise exceptions.UserError(
-                _("The 'sync_project_id' must be provided in the context.")
-            )
-
-        field_name = "x_sync_%s_%s_%s" % (sync_project_id, property_name, property_type)
-        field = self.env["ir.model.fields"].search(
-            [
-                ("name", "=", field_name),
-                ("model", "=", self._name),
-                ("sync_project_id", "=", sync_project_id),
-            ],
-            limit=1,
-        )
-
-        if not field:
+        self.ensure_one()
+        field_name = self._sync_field_name(property_name, property_type)
+        try:
+            return self[field_name]
+        except KeyError:
             return None
-
-        res_id = f"{self._name},{self.id}"
-        prop = Property.search(
-            [
-                ("name", "=", property_name),
-                ("res_id", "=", res_id),
-                ("fields_id", "=", field.id),
-            ],
-            limit=1,
-        )
-
-        return prop.get_by_record() if prop else None

@@ -7,13 +7,16 @@
     "name": "Sync 🪬 Studio",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "16.0.11.0.1",
+    "version": "16.0.13.0.0",
     "application": True,
     "author": "Ivan Kropotkin",
     "support": "info@odoomagic.com",
     "website": "https://sync_studio.t.me/",
     "license": "Other OSI approved licence",  # MIT
-    "depends": ["base_automation", "mail", "queue_job"],
+    # The `partner_telegram` dependency is not directly needed,
+    # but it plays an important role in the **Sync 🪬 Studio** ecosystem
+    # and is added for the quick onboarding of new **Cyber ✨ Pirates**.
+    "depends": ["base_automation", "mail", "queue_job", "partner_telegram"],
     "external_dependencies": {"python": ["markdown", "pyyaml"], "bin": []},
     "data": [
         "security/sync_groups.xml",
@@ -25,6 +28,7 @@
         "views/sync_trigger_automation_views.xml",
         "views/sync_trigger_webhook_views.xml",
         "views/sync_trigger_button_views.xml",
+        "views/sync_order_views.xml",
         "views/sync_task_views.xml",
         "views/sync_link_views.xml",
         "views/sync_project_views.xml",
@@ -37,12 +41,6 @@
     },
     "demo": [
         "data/sync_project_unittest_demo.xml",
-        # Obsolete
-        # "data/sync_project_context_demo.xml",
-        # "data/sync_project_telegram_demo.xml",
-        # "data/sync_project_odoo2odoo_demo.xml",
-        # "data/sync_project_trello_github_demo.xml",
-        # "data/sync_project_context_demo.xml",
     ],
     "qweb": [],
     "post_load": None,

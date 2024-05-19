@@ -69,6 +69,7 @@ Libs
 * ``MAGIC.timezone``
 * ``MAGIC.b64encode``
 * ``MAGIC.b64decode``
+* ``MAGIC.sha256``
 
 Tools
 =====
@@ -80,6 +81,8 @@ Tools
 * ``MAGIC.type2str``: get type of the given object
 * ``MAGIC.DEFAULT_SERVER_DATETIME_FORMAT``
 * ``MAGIC.AttrDict``: Extended dictionary that allows for attribute-style access
+* ``MAGIC.group_by_lang(partners, default_lang="en_US")``: yields `lang, partners` grouped by lang
+* ``MAGIC.gen2csv(generator)``: prepares csv as a string
 
 Exceptions
 ==========

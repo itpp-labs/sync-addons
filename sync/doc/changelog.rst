@@ -1,3 +1,17 @@
+`13.0.0`
+-------
+
+- **Fix:** Use `__sync.` for xmlid namespace to avoid data loss on module update.
+- **Fix:** Use task ID in xmlid namespace for the task triggers.
+- **Fix:** Keep job records (and their logs) on task deletion.
+- **New:** Add *Sync Order* — advanced manual trigger with blackjack, partners list, text input, etc.
+- **New:** Support `data.markdown` for custom documentation in the `DATA.🐫` tab.
+- **New:** Add `MAGIC.group_by_lang` to eval context.
+- **New:** Add dynamic Setting update via `PARAMS._update_param`.
+- **New:** Add computed field `text` to the model `sync.data`. Usage example in dynamic code: `DATA.restaurant.text`.
+- **Improvement:** Add `DATA.*` to the library eval context.
+- **Improvement:** Update API for attaching dynamic values: `_set_sync_value`, `_get_sync_value`. No need to use `ir.property`.
+
 `11.0.1`
 -------
 

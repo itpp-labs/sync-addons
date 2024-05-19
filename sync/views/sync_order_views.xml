@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_order_view_tree" model="ir.ui.view">
+        <field name="name">sync.order.tree</field>
+        <field name="model">sync.order</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sync_task_id" />
+                <field name="name" />
+                <field name="record_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_order_view_form" model="ir.ui.view">
+        <field name="name">sync.order.form</field>
+        <field name="model">sync.order</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="id" invisible="1" />
+                <header>
+                    <button
+                        string="Confirm 🐝"
+                        name="action_confirm"
+                        class="oe_highlight"
+                        type="object"
+                        attrs="{'invisible' : [('state', '!=', 'draft')]}"
+                    />
+                    <button
+                        string="Refresh"
+                        name="action_refresh"
+                        type="object"
+                        attrs="{'invisible' : [('state', '!=', 'open')]}"
+                    />
+                    <button
+                        string="Cancel"
+                        name="action_cancel"
+                        type="object"
+                        attrs="{'invisible' : [('state', '=', 'cancel')]}"
+                    />
+                    <field
+                        name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,open,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" class="oe_inline" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="record_id" />
+                            <field
+                                name="partner_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'country_id', 'no_create_edit': True}"
+                            />
+                        </group>
+                        <group>
+                            <field name="sync_project_id" readonly="1" />
+                            <field name="sync_task_id" readonly="1" />
+                        </group>
+                    </group>
+                    <separator string="Input ⬇️" />
+                    <field name="body" />
+                    <separator string="Input ⬆️" />
+                    <div class="html_field_container">
+                        <field name="description" nolabel="1" />
+                    </div>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" />
+                    <field name="activity_ids" />
+                    <field name="message_ids" />
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="sync_order_action_from_project" model="ir.actions.act_window">
+        <field name="name">Sync Orders</field>
+        <field name="res_model">sync.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('sync_project_id', '=', active_id)]</field>
+    </record>
+</odoo>

@@ -55,6 +55,18 @@
                         </button>
                         <button
                             type="action"
+                            name="%(sync.sync_order_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                        >
+                            <field
+                                string="Sync Orders"
+                                name="sync_order_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
                             name="%(sync.sync_trigger_cron_action_from_project)d"
                             class="oe_stat_button"
                             icon="fa-clock-o"
@@ -156,7 +168,18 @@
                                 <tree decoration-muted="not active">
                                     <field name="name" />
                                     <field name="active" />
-                                    <!-- TODO: make title name equal to magic_button -->
+                                    <button
+                                        name="action_super_magic_button"
+                                        string="Super 🔥 Magic"
+                                        help="Shamanic dances to please the **Digital ⚡️ Gods**"
+                                        type="object"
+                                        class="oe_highlight"
+                                        attrs="{'invisible': ['|', ('sync_order_description', '=', False), ('sync_order_description', '=', '')]}"
+                                    />
+                                    <field
+                                        name="sync_order_description"
+                                        invisible="1"
+                                    />
                                     <button
                                         name="action_magic_button"
                                         string="Magic ✨"
@@ -180,6 +203,9 @@
                                     />
                                 </tree>
                             </field>
+                            <div class="html_field_container">
+                                <field name="task_description" nolabel="1" />
+                            </div>
                             <p>
                                 <em>
                                     Hint: Cron, Webhook, and DB Triggers are not
@@ -254,13 +280,6 @@
                             </notebook>
                         </page>
                         <page string="DATA.🐫">
-                            <field name="data_ids">
-                                <tree editable="bottom">
-                                    <field name="name" />
-                                    <field name="file_name" invisible="1" />
-                                    <field name="file_content" filename="file_name" />
-                                </tree>
-                            </field>
                             <p>
                                 <em>
                                     Hint:
@@ -272,6 +291,16 @@
                                     </a>
                                 </em>
                             </p>
+                            <field name="data_ids">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                    <field name="file_name" invisible="1" />
+                                    <field name="file_content" filename="file_name" />
+                                </tree>
+                            </field>
+                            <div class="html_field_container">
+                                <field name="data_description" nolabel="1" />
+                            </div>
                         </page>
                         <page string="SECRETS.🔐">
                             <p class="oe_read_only">

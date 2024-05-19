@@ -39,10 +39,11 @@ class SyncTriggerMixin(models.AbstractModel):
         self._update_name(vals)
         return res
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        res._update_name(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            res = super().create(vals)
+            res._update_name(vals)
         return res
 
     def default_get(self, fields):

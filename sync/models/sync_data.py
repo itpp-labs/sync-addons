@@ -6,7 +6,7 @@ from io import StringIO
 
 import yaml
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class SyncData(models.Model):
@@ -17,13 +17,21 @@ class SyncData(models.Model):
     project_id = fields.Many2one("sync.project", ondelete="cascade")
     file_name = fields.Char("File Name")
     file_content = fields.Binary("File Content")
+    text = fields.Text("Decoded Text", compute="_compute_text")
+
+    @api.depends("file_content")
+    def _compute_text(self):
+        for record in self:
+            if record.file_content:
+                decoded_content = base64.b64decode(record.file_content)
+                record.text = decoded_content.decode("utf-8")
+            else:
+                record.text = False
 
     def csv(self, *args, **kwargs):
         """Parse CSV file from binary field."""
         if self.file_content:
-            file_content = base64.b64decode(self.file_content)
-            file_content = file_content.decode("utf-8")
-            file_like_object = StringIO(file_content)
+            file_like_object = StringIO(self.text)
             reader = csv.DictReader(file_like_object, *args, **kwargs)
             return [row for row in reader]
         return []
@@ -31,15 +39,11 @@ class SyncData(models.Model):
     def json(self):
         """Parse JSON file from binary field."""
         if self.file_content:
-            file_content = base64.b64decode(self.file_content)
-            file_content = file_content.decode("utf-8")
-            return json.loads(file_content)
+            return json.loads(self.text)
         return {}
 
     def yaml(self):
         """Parse YAML file from binary field."""
         if self.file_content:
-            file_content = base64.b64decode(self.file_content)
-            file_content = file_content.decode("utf-8")
-            return yaml.safe_load(file_content)
+            return yaml.safe_load(self.text)
         return None

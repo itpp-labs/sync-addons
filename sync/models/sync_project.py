@@ -4,9 +4,14 @@
 # License MIT (https://opensource.org/licenses/MIT).
 
 import base64
+import csv
+import io
 import logging
 import os
 from datetime import datetime
+from hashlib import sha256
+from itertools import groupby
+from operator import itemgetter
 
 import urllib3
 from pytz import timezone
@@ -94,6 +99,8 @@ class SyncProject(models.Model):
 
     task_ids = fields.One2many("sync.task", "project_id", copy=True)
     task_count = fields.Integer(compute="_compute_task_count")
+    task_description = fields.Html(readonly=True)
+
     trigger_cron_count = fields.Integer(
         compute="_compute_triggers", help="Enabled Crons"
     )
@@ -103,6 +110,10 @@ class SyncProject(models.Model):
     trigger_webhook_count = fields.Integer(
         compute="_compute_triggers", help="Enabled Webhooks"
     )
+    sync_order_ids = fields.One2many(
+        "sync.order", "sync_project_id", string="Sync Orders", copy=True
+    )
+    sync_order_count = fields.Integer(compute="_compute_sync_order_count")
     job_ids = fields.One2many("sync.job", "project_id")
     job_count = fields.Integer(compute="_compute_job_count")
     log_ids = fields.One2many("ir.logging", "sync_project_id")
@@ -110,6 +121,7 @@ class SyncProject(models.Model):
     link_ids = fields.One2many("sync.link", "project_id")
     link_count = fields.Integer(compute="_compute_link_count")
     data_ids = fields.One2many("sync.data", "project_id")
+    data_description = fields.Html(readonly=True)
 
     def copy(self, default=None):
         default = dict(default or {})
@@ -128,6 +140,11 @@ class SyncProject(models.Model):
     def _compute_task_count(self):
         for r in self:
             r.task_count = len(r.with_context(active_test=False).task_ids)
+
+    @api.depends("sync_order_ids")
+    def _compute_sync_order_count(self):
+        for r in self:
+            r.sync_order_count = len(r.sync_order_ids)
 
     @api.depends("job_ids")
     def _compute_job_count(self):
@@ -259,6 +276,43 @@ class SyncProject(models.Model):
                 )
             )
 
+        def group_by_lang(partners, default_lang="en_US"):
+            """
+            Yield groups of partners grouped by their language.
+
+            :param partners: recordset of res.partner
+            :return: generator yielding tuples of (lang, partners)
+            """
+            if not partners:
+                return
+
+            # Sort the partners by 'lang' to ensure groupby works correctly
+            partners = partners.sorted(key=lambda p: p.lang)
+
+            # Group the partners by 'lang'
+            for lang, group in groupby(partners, key=itemgetter("lang")):
+                partner_group = partners.browse([partner.id for partner in group])
+                yield lang or default_lang, partner_group
+
+        def gen2csv(generator):
+            # Prepare a StringIO buffer to hold the CSV data
+            output = io.StringIO()
+
+            # Create a CSV writer with quoting enabled
+            writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+
+            # Write rows from the generator
+            for row in generator:
+                writer.writerow(row)
+
+            # Get the CSV content
+            csv_content = output.getvalue()
+
+            # Close the StringIO buffer
+            output.close()
+
+            return csv_content
+
         context = dict(self.env.context, log_function=log, sync_project_id=self.id)
         env = self.env(context=context)
         link_functions = env["sync.link"]._get_eval_context()
@@ -294,8 +348,11 @@ class SyncProject(models.Model):
                 "timezone": timezone,
                 "b64encode": base64.b64encode,
                 "b64decode": base64.b64decode,
+                "sha256": sha256,
                 "type2str": type2str,
                 "record2image": record2image,
+                "gen2csv": gen2csv,
+                "group_by_lang": group_by_lang,
                 "DEFAULT_SERVER_DATETIME_FORMAT": DEFAULT_SERVER_DATETIME_FORMAT,
                 "AttrDict": AttrDict,
             },
@@ -304,7 +361,21 @@ class SyncProject(models.Model):
         for p in self.secret_ids:
             SECRETS[p.key] = p.value
 
-        PARAMS = AttrDict()
+        def _update_param(key, value):
+            for p in self.param_ids:
+                if p.key == key:
+                    p.value = value
+                    return
+            self.env["sync.project.param"].create(
+                {
+                    "project_id": self.id,
+                    "key": key,
+                    "value": value,
+                }
+            )
+            PARAMS[key] = value
+
+        PARAMS = AttrDict(_update_param)
         for p in self.param_ids:
             PARAMS[p.key] = p.value
 
@@ -330,15 +401,16 @@ class SyncProject(models.Model):
             "SECRETS": SECRETS,
             "MAGIC": MAGIC,
             "PARAMS": PARAMS,
+            "DATA": DATA,
         }
         CORE = eval_export(safe_eval__MAGIC, self.core_code, core_eval_context)
 
         lib_eval_context = {
             "MAGIC": MAGIC,
             "PARAMS": PARAMS,
+            "DATA": DATA,
             "CORE": CORE,
             "WEBHOOKS": WEBHOOKS,
-            "DATA": DATA,
         }
         LIB = eval_export(safe_eval, self.common_code, lib_eval_context)
 
@@ -467,11 +539,16 @@ class SyncProject(models.Model):
         )
 
         # [Documentation]
-        vals["description"] = (
-            compile_markdown_to_html(gist_files.get("README.md"))
-            if gist_files.get("README.md")
-            else "<h1>Please add README.md file to place some documentation here</h1>"
-        )
+        for field_name, file_name in (
+            ("description", "README.md"),
+            ("task_description", "tasks.markdown"),
+            ("data_description", "datas.markdown"),
+        ):
+            vals[field_name] = (
+                compile_markdown_to_html(gist_files.get(file_name))
+                if gist_files.get(file_name)
+                else f"<h1>Please add {file_name} file to place some documentation here</h1>"
+            )
 
         # [PARAMS] and [SECRETS]
         for model, field_name, file_name in (
@@ -512,7 +589,7 @@ class SyncProject(models.Model):
         for file_info in gist_content["files"].values():
             # e.g. "data.emoji.csv"
             file_name = file_info["filename"]
-            if not file_name.startswith("data."):
+            if not (file_name.startswith("data.") and file_name != "data.markdown"):
                 continue
             raw_url = file_info["raw_url"]
             response = http.request("GET", raw_url)
@@ -574,6 +651,20 @@ class SyncProject(models.Model):
                 else None,
                 "project_id": self.id,
             }
+            # Sync Order Model
+            if meta.get("SYNC_ORDER_MODEL"):
+                model = self._get_model(meta.get("SYNC_ORDER_MODEL"))
+                task_vals["sync_order_model_id"] = model.id
+
+            # Parse docs
+            sync_order_description = gist_files.get(
+                file_name[: -len(".py")] + ".markdown"
+            )
+            if sync_order_description:
+                task_vals["sync_order_description"] = compile_markdown_to_html(
+                    sync_order_description
+                )
+
             task = self.env["sync.task"]._create_or_update_by_xmlid(
                 task_vals, task_technical_name, namespace=self.id
             )
@@ -585,7 +676,7 @@ class SyncProject(models.Model):
                     trigger_name=data["name"],
                 )
                 return self.env[model]._create_or_update_by_xmlid(
-                    vals, data["name"], namespace=self.id
+                    vals, data["name"], namespace=f"p{self.id}t{task.id}"
                 )
 
             # Create/Update triggers
@@ -596,19 +687,36 @@ class SyncProject(models.Model):
                 create_trigger("sync.trigger.webhook", data)
 
             for data in meta.get("DB_TRIGGERS", []):
-                model_id = self.env["ir.model"]._get(data["model"]).id
-                if not model_id:
-                    raise ValidationError(
-                        _(
-                            "Model %s is not available. Check if you need to install an extra module first."
+                model = self._get_model(data["model"])
+                if data.get("trigger_fields"):
+                    trigger_field_ids = []
+                    for f in data.pop("trigger_fields").split(","):
+                        ff = self.env["ir.model.fields"]._get(model.model, f)
+                        trigger_field_ids.append(ff.id)
+                    data["trigger_field_ids"] = [(6, 0, trigger_field_ids)]
+
+                for field_name in ("filter_pre_domain", "filter_domain"):
+                    if data.get(field_name):
+                        data[field_name] = data[field_name].replace(
+                            "{TASK_ID}", str(task.id)
                         )
-                        % data["model"]
-                    )
+
                 create_trigger(
-                    "sync.trigger.automation", dict(data, model_id=model_id, model=None)
+                    "sync.trigger.automation", dict(data, model_id=model.id, model=None)
                 )
 
         self.update(vals)
+
+    def _get_model(self, model_name):
+        model = self.env["ir.model"]._get(model_name)
+        if not model:
+            raise ValidationError(
+                _(
+                    "Model %s is not available. Check if you need to install an extra module first."
+                )
+                % model_name
+            )
+        return model
 
 
 class SyncProjectParamMixin(models.AbstractModel):

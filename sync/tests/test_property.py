@@ -14,20 +14,24 @@ class TestProperty(TransactionCase):
         self.partner = self.env["res.partner"].create({"name": "Test Partner"})
 
     def test_basic_types(self):
+        # Test reading before creating
+        self.assertFalse(self.company._get_sync_value("test_integer", "integer"))
+
         # Basic types tests included for completeness
-        self.company._set_sync_property("x_test_prop_char", "char", "Hello, World!")
-        self.company._set_sync_property("x_test_prop_boolean", "boolean", True)
-        self.company._set_sync_property("x_test_prop_integer", "integer", 42)
-        self.company._set_sync_property("x_test_prop_float", "float", 3.14159)
+        self.company._set_sync_value("test_char", "char", "Hello, World!")
+        self.company._set_sync_value("test_boolean", "boolean", True)
+        self.company._set_sync_value("test_integer", "integer", 42)
+        self.company._set_sync_value("test_float", "float", 3.14159)
+        self.company.flush_recordset()
 
         # Invalidate cache before reading
         self.env.cache.invalidate()
 
         # Retrieval and Assertions
-        prop_char = self.company._get_sync_property("x_test_prop_char", "char")
-        prop_boolean = self.company._get_sync_property("x_test_prop_boolean", "boolean")
-        prop_integer = self.company._get_sync_property("x_test_prop_integer", "integer")
-        prop_float = self.company._get_sync_property("x_test_prop_float", "float")
+        prop_char = self.company._get_sync_value("test_char", "char")
+        prop_boolean = self.company._get_sync_value("test_boolean", "boolean")
+        prop_integer = self.company._get_sync_value("test_integer", "integer")
+        prop_float = self.company._get_sync_value("test_float", "float")
 
         self.assertEqual(prop_char, "Hello, World!", "The char property did not match.")
         self.assertEqual(prop_boolean, True, "The boolean property did not match.")

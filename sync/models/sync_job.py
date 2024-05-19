@@ -31,7 +31,7 @@ class SyncJob(models.Model):
     trigger_webhook_id = fields.Many2one("sync.trigger.webhook", readonly=True)
     trigger_button_id = fields.Many2one("sync.trigger.button", readonly=True)
     task_id = fields.Many2one(
-        "sync.task", compute="_compute_sync_task_id", store=True, ondelete="cascade"
+        "sync.task", compute="_compute_sync_task_id", store=True, ondelete="set null"
     )
     project_id = fields.Many2one(
         "sync.project", related="task_id.project_id", readonly=True

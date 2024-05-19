@@ -26,6 +26,8 @@ class SyncTask(models.Model):
     code = fields.Text("Code")
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
+    sync_order_model_id = fields.Many2one("ir.model")
+    sync_order_description = fields.Html(readonly=True)
     magic_button = fields.Char()
     button_ids = fields.One2many(
         "sync.trigger.button", "sync_task_id", string="Manual Triggers", copy=True
@@ -35,6 +37,9 @@ class SyncTask(models.Model):
         "sync.trigger.automation", "sync_task_id", copy=True
     )
     webhook_ids = fields.One2many("sync.trigger.webhook", "sync_task_id", copy=True)
+    # sync_trigger_order_ids = fields.One2many(
+    #    "sync.trigger.order", "sync_task_id", string="Sync Order Triggers", copy=True
+    # )
     active_cron_ids = fields.Many2many(
         "sync.trigger.cron",
         string="Enabled Crons",
@@ -95,7 +100,7 @@ class SyncTask(models.Model):
             r.active_webhook_ids = r.with_context(active_test=True).webhook_ids
 
     def action_magic_button(self):
-        # TODO: This should be refactored to delete button_ids
+        # TODO: This should be refactored, because we use single button per task
         if not self.button_ids:
             self.button_ids.create(
                 {
@@ -105,6 +110,36 @@ class SyncTask(models.Model):
                 }
             )
         return self.button_ids.start_button()
+
+    def _get_current_date_formatted(self):
+        user_lang = self.env.user.lang or "en_US"
+        lang = self.env["res.lang"].search([("code", "=", user_lang)], limit=1)
+        today = fields.Date.context_today(self)
+        if lang:
+            date_format = lang.date_format
+            formatted_date = today.strftime(date_format)
+        else:
+            formatted_date = today.strftime("%Y-%m-%d")
+
+        return formatted_date
+
+    def action_super_magic_button(self):
+        self.ensure_one()
+        sync_order = self.env["sync.order"].create(
+            {
+                "name": self._get_current_date_formatted(),
+                "sync_task_id": self.id,
+            }
+        )
+        return {
+            "name": "Super 🔥 Magic",
+            "type": "ir.actions.act_window",
+            "view_type": "form",
+            "view_mode": "form",
+            "res_model": "sync.order",
+            "res_id": sync_order.id,
+            "target": "self",
+        }
 
     def start(
         self, trigger, args=None, with_delay=False, force=False, raise_on_error=True

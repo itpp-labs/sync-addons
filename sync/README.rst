@@ -1,6 +1,6 @@
 .. image:: https://itpp.dev/images/infinity-readme.png
    :alt: Tested and maintained by IT Projects Labs
-   :target: https://itpp.dev
+   :target: https://odoomagic.com
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
    :target: https://opensource.org/licenses/MIT
