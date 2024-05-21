@@ -29,10 +29,12 @@ class ResPartner(models.Model):
     def _inverse_telegram(self):
         for record in self:
             value = record.telegram
-            if value.startswith("@"):
-                value = value[1:]
-            elif value.startswith("+"):
-                value = value.replace("-", "").replace(" ", "")
+            if not value:
+                record.telegram_username = False
+                record.telegram_mobile = False
+            elif value.startswith("@"):
+                record.telegram_username = value[1:]
             elif value.startswith("https://t.me/"):
-                value = value[len("https://t.me/") :]
-            record.telegram_mobile = value
+                record.telegram_username = value[len("https://t.me/") :]
+            elif value.startswith("+"):
+                record.telegram_mobile = value.replace("-", "").replace(" ", "")
