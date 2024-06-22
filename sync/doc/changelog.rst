@@ -1,3 +1,8 @@
+`13.0.1`
+-------
+
+- **Fix:** update params updating on existing records
+
 `13.0.0`
 -------
 

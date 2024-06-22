@@ -7,7 +7,7 @@
     "name": "Sync 🪬 Studio",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "16.0.13.0.0",
+    "version": "16.0.13.0.1",
     "application": True,
     "author": "Ivan Kropotkin",
     "support": "info@odoomagic.com",

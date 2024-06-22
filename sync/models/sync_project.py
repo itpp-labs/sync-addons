@@ -362,6 +362,7 @@ class SyncProject(models.Model):
             SECRETS[p.key] = p.value
 
         def _update_param(key, value):
+            PARAMS[key] = value
             for p in self.param_ids:
                 if p.key == key:
                     p.value = value
@@ -373,7 +374,6 @@ class SyncProject(models.Model):
                     "value": value,
                 }
             )
-            PARAMS[key] = value
 
         PARAMS = AttrDict(_update_param)
         for p in self.param_ids:
