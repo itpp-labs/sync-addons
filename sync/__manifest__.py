@@ -1,4 +1,4 @@
-# Copyright 2020-2021,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -9,7 +9,7 @@
     "category": "VooDoo ✨ Magic",
     "version": "16.0.13.0.1",
     "application": True,
-    "author": "Ivan Kropotkin",
+    "author": "Ivan Yelizariev",
     "support": "info@odoomagic.com",
     "website": "https://sync_studio.t.me/",
     "license": "Other OSI approved licence",  # MIT
