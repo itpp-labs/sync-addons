@@ -1,4 +1,4 @@
-# Copyright 2020-2022 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2022,2025 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 import logging
@@ -11,32 +11,38 @@ _logger = logging.getLogger(__name__)
 class SyncTriggerAutomation(models.Model):
 
     _name = "sync.trigger.automation"
-    _inherit = ["sync.trigger.mixin", "sync.trigger.mixin.actions"]
+    _inherit = ["sync.trigger.mixin"]
     _description = "DB Trigger"
     _sync_handler = "handle_db"
 
     automation_id = fields.Many2one(
         "base.automation", delegate=True, required=True, ondelete="cascade"
     )
+    sync_task_id = fields.Many2one("sync.task")
+    sync_project_id = fields.Many2one(
+        "sync.project", related="sync_task_id.project_id", readonly=True
+    )
 
     def unlink(self):
-        actions = self.mapped("action_server_id")
-        automations = self.mapped("automation_id")
+        actions = self.action_server_ids
+        automations = self.automation_id
         super().unlink()
         automations.unlink()
         actions.unlink()
         return True
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for r in records:
+            r.action_server_ids = [(0, 0, {
+                "state": "code",
+                "code": r.get_code(),
+            })]
+        return records
+
     def start(self, records):
         if self.active:
-            if not self.sync_task_id:
-                # workaround for old deployments
-                _logger.warning(
-                    "Task was deleted, but there is still base.automation record for it: %s"
-                    % self.automation_id
-                )
-                return
-
             self.sync_task_id.start(self, args=(records,), with_delay=True)
 
     def get_code(self):
@@ -53,6 +59,7 @@ env["sync.trigger.automation"].browse(%s).sudo().start(records)
 
     @api.onchange("trigger")
     def onchange_trigger(self):
+        # TODO
         if self.trigger in ["on_create", "on_create_or_write", "on_unlink"]:
             self.filter_pre_domain = (
                 self.trg_date_id

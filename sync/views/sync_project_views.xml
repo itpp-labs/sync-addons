@@ -120,7 +120,7 @@
                         name="web_ribbon"
                         text="Archived"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        invisible="active"
                     />
                     <field name="active" invisible="1" />
                     <div class="oe_title">
@@ -147,7 +147,7 @@
                                         string="Import"
                                         class="oe_highlight"
                                         type="object"
-                                        attrs="{'invisible': [('id', '!=', False)]}"
+                                        invisible="id"
                                     />
                                     <button
                                         name="magic_upgrade"
@@ -155,7 +155,7 @@
                                         class="oe_highlight"
                                         type="object"
                                         confirm="ATTENTION! This action will override all project code. PROCEED?"
-                                        attrs="{'invisible': [('id', '=', False)]}"
+                                        invisible="not id"
                                     />
                                 </group>
                             </group>
@@ -174,7 +174,7 @@
                                         help="Shamanic dances to please the **Digital ⚡️ Gods**"
                                         type="object"
                                         class="oe_highlight"
-                                        attrs="{'invisible': ['|', ('sync_order_description', '=', False), ('sync_order_description', '=', '')]}"
+                                        invisible="not sync_order_description"
                                     />
                                     <field
                                         name="sync_order_description"
@@ -186,7 +186,7 @@
                                         help="All you need to do is click the **Magic 🪬 Button**"
                                         type="object"
                                         class="oe_highlight"
-                                        attrs="{'invisible': ['|', ('magic_button', '=', False), ('magic_button', '=', '')]}"
+                                        invisible="not magic_button"
                                     />
                                     <field name="magic_button" invisible="1" />
                                     <field

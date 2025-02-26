@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2020-2021,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+<!-- Copyright 2020-2021,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_task_view_tree" model="ir.ui.view">
@@ -43,7 +43,7 @@
                         name="web_ribbon"
                         text="Archived"
                         bg_color="bg-danger"
-                        attrs="{'invisible': [('active', '=', True)]}"
+                        invisible="active"
                     />
                     <field name="active" invisible="1" />
                     <div class="oe_title">
