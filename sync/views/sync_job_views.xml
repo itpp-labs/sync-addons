@@ -114,10 +114,7 @@
                                 </form>
                             </field>
                         </page>
-                        <page
-                            string="Sub Jobs"
-                            invisible="not job_ids"
-                        >
+                        <page string="Sub Jobs" invisible="not job_ids">
                             <field name="job_ids" nolabel="1">
                                 <tree
                                     decoration-danger="state == 'failed'"

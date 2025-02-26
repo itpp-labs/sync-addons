@@ -35,10 +35,16 @@ class SyncTriggerAutomation(models.Model):
     def create(self, vals_list):
         records = super().create(vals_list)
         for r in records:
-            r.action_server_ids = [(0, 0, {
-                "state": "code",
-                "code": r.get_code(),
-            })]
+            r.action_server_ids = [
+                (
+                    0,
+                    0,
+                    {
+                        "state": "code",
+                        "code": r.get_code(),
+                    },
+                )
+            ]
         return records
 
     def start(self, records):
