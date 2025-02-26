@@ -20,74 +20,230 @@
         <field name="model">sync.trigger.automation</field>
         <field name="arch" type="xml">
             <form>
-                <div class="oe_button_box" name="button_box">
-                    <button
-                        name="toggle_active"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-archive"
-                    >
-                        <field
-                            name="active"
-                            widget="boolean_button"
-                            options='{"terminology": "archive"}'
-                        />
-                    </button>
-                </div>
-                <group>
-                    <field name="trigger_name" />
-                    <field name="model_id" />
-                    <field name="model_name" invisible="1" />
-                    <field name="trigger" />
-                    <field
-                        name="trigger_field_ids"
-                        domain="[('model_id', '=', model_id)]"
-                        invisible="trigger not in ('on_write', 'on_create_or_write')"
-                        widget="many2many_tags"
-                    />
-                    <field
-                        name="on_change_field_ids"
-                        string="Trigger Fields"
-                        domain="[('model_id', '=', model_id)]"
-                        invisible="trigger != 'on_change'"
-                        required="trigger == 'on_change'"
-                        widget='many2many_tags'
-                        options="{'no_create': True}"
-                    />
-                    <field
-                        name="filter_pre_domain"
-                        widget="domain"
-                        options="{'model': 'model_name', 'in_dialog': True}"
-                        invisible="trigger not in ('on_write','on_create_or_write')"
-                    />
-                    <field
-                        name="filter_domain"
-                        widget="domain"
-                        options="{'model': 'model_name', 'in_dialog': True}"
-                    />
-                    <field
-                        name="on_change_field_ids"
-                        invisible="trigger != 'on_change'"
-                        required="trigger == 'on_change'"
-                    />
-                    <field
-                        name="trg_date_id"
-                        invisible="trigger != 'on_time'"
-                        required="trigger == 'on_time'"
-                    />
-                    <label for="trg_date_range" invisible="trigger != 'on_time'" />
-                    <div class="o_row" invisible="trigger != 'on_time'">
-                        <field name="trg_date_range" required="trigger == 'on_time'" />
-                        <field
-                            name="trg_date_range_type"
-                            required="trigger == 'on_time'"
-                        />
-                    </div>
-                    <field
-                        name="trg_date_calendar_id"
-                        invisible="not trg_date_id or trg_date_range_type != 'day'"
-                    />
+                <!--
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_webhook_logs" type="object" string="Logs" class="oe_stat_button" icon="fa-list" invisible="trigger != 'on_webhook'">
+                            </button>
+                        </div>
+                        -->
+                <field name="active" invisible="1" />
+                <field name="model_name" invisible="1" force_save="True" />
+                <widget
+                    name="web_ribbon"
+                    title="Archived"
+                    bg_color="bg-danger"
+                    invisible="active"
+                />
+                <div class="oe_title">
+                    <h1>
+                        <field name="trigger_name" placeholder="e.g. Support flow" />
+                    </h1>
                     <field name="sync_task_id" invisible="1" />
+                </div>
+                <group
+                    groups="!base.group_no_one"
+                    invisible="context.get('default_model_id')"
+                >
+                    <group>
+                        <field name="model_id" options="{'no_create': True}" />
+                    </group>
+                </group>
+                <group groups="base.group_no_one">
+                    <group>
+                        <field name="model_id" options="{'no_create': True}" />
+                    </group>
+                </group>
+                <group invisible="not model_id">
+                    <group>
+                        <label for="trigger" />
+                        <div>
+                            <div class="d-flex flex-row">
+                                <field
+                                    name="trigger"
+                                    widget="base_automation_trigger_selection"
+                                    class="oe_inline me-3"
+                                />
+                                <field
+                                    name="trg_selection_field_id"
+                                    placeholder="Select a value..."
+                                    class="oe_inline"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    invisible="trigger not in ['on_state_set', 'on_priority_set']"
+                                    required="trigger in ['on_state_set', 'on_priority_set']"
+                                />
+                                <field
+                                    name="trg_field_ref"
+                                    placeholder="Select a value..."
+                                    class="oe_inline"
+                                    widget="base_automation_trigger_reference"
+                                    invisible="trigger not in ['on_stage_set', 'on_tag_set']"
+                                    required="trigger in ['on_stage_set', 'on_tag_set']"
+                                />
+                                <field name="trg_field_ref_model_name" invisible="1" />
+                                <field
+                                    name="trg_field_ref_display_name"
+                                    invisible="1"
+                                />
+                                <field
+                                    name="trg_date_id"
+                                    class="oe_inline"
+                                    string="Date Field"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    invisible="trigger != 'on_time'"
+                                    required="trigger in ['on_time', 'on_time_created', 'on_time_updated']"
+                                />
+                            </div>
+                            <div class="text-muted" invisible="trigger != 'on_change'">
+                                <i class="fa fa-warning" />
+                                Automation rules triggered by UI changes will be
+                                executed
+                                <em>every time</em>
+                                the watched fields change,
+                                <em>whether you save or not</em>
+                                .
+                            </div>
+                        </div>
+                        <!--
+                                <label for="url" string="URL" invisible="trigger != 'on_webhook'"/>
+                                <div invisible="trigger != 'on_webhook'">
+                                    <field name="url" widget="CopyClipboardURL"  placeholder="URL will be created once the rule is saved."/>
+                                    <div class="alert alert-warning" role="status">
+                                        <strong><i class="fa fa-lock"/> Keep it secret, keep it safe.</strong>
+                                        <p>Your webhook URL contains a secret. Don't share it online or carelessly.</p>
+                                        <button class="btn btn-seconadry" type="object" name="action_rotate_webhook_uuid" string="Rotate Secret" icon="fa-refresh" help="Change the URL's secret if you think the URL is no longer secure. You will have to update any automated system that calls this webhook to the new URL."/>
+                                    </div>
+                                </div>
+                                -->
+                        <label
+                            for="trg_date_range"
+                            string="Delay"
+                            invisible="trigger not in ['on_time', 'on_time_created', 'on_time_updated']"
+                        />
+                        <div
+                            class="d-flex flex-row gap-2"
+                            invisible="trigger not in ['on_time', 'on_time_created', 'on_time_updated']"
+                        >
+                            <field
+                                name="trg_date_range"
+                                class="oe_inline"
+                                required="trigger in ['on_time', 'on_time_created', 'on_time_updated']"
+                            />
+                            <field
+                                name="trg_date_range_type"
+                                class="oe_inline"
+                                required="trigger in ['on_time', 'on_time_created', 'on_time_updated']"
+                            />
+                            <span invisible="trigger != 'on_time_created'">
+                                after creation
+                            </span>
+                            <span invisible="trigger != 'on_time_updated'">
+                                after last update
+                            </span>
+                            <span invisible="trigger != 'on_time'">after</span>
+                            <field
+                                name="trg_date_id"
+                                class="oe_inline"
+                                string="Date Field"
+                                placeholder="Select a date field..."
+                                options="{'no_open': True, 'no_create': True}"
+                                context="{'hide_model': 1}"
+                                invisible="trigger != 'on_time'"
+                                required="trigger in ['on_time', 'on_time_created', 'on_time_updated']"
+                            />
+                        </div>
+                        <!--
+                                <field name="log_webhook_calls" widget="boolean_toggle" invisible="trigger != 'on_webhook'"/>
+                                -->
+                        <field
+                            name="trg_date_calendar_id"
+                            class="oe_inline"
+                            options="{'no_open': True, 'no_create': True}"
+                            invisible="not trg_date_id or trg_date_range_type != 'day'"
+                        />
+                        <label
+                            for="least_delay_msg"
+                            invisible="trigger not in ['on_time', 'on_time_created', 'on_time_updated'] or not least_delay_msg"
+                            string=""
+                        />
+                        <div
+                            class="alert alert-info"
+                            role="alert"
+                            invisible="trigger not in ['on_time', 'on_time_created', 'on_time_updated'] or not least_delay_msg"
+                        >
+                            <field name="least_delay_msg" />
+                        </div>
+                        <field
+                            name="filter_pre_domain"
+                            widget="domain"
+                            groups="base.group_no_one"
+                            options="{'model': 'model_name', 'in_dialog': True}"
+                            invisible="trigger in ['on_change', 'on_webhook']"
+                        />
+                        <field
+                            name="filter_domain"
+                            widget="domain"
+                            groups="base.group_no_one"
+                            options="{'model': 'model_name', 'in_dialog': True}"
+                            invisible="trigger in ['on_change', 'on_webhook']"
+                        />
+                        <label
+                            for="filter_domain"
+                            groups="!base.group_no_one"
+                            invisible="trigger not in ['on_create_or_write', 'on_unlink']"
+                        />
+                        <label
+                            for="filter_domain"
+                            groups="!base.group_no_one"
+                            string="Extra Conditions"
+                            invisible="trigger not in ['on_time', 'on_time_created', 'on_time_updated']"
+                        />
+                        <field
+                            name="filter_domain"
+                            nolabel="1"
+                            widget="domain"
+                            groups="!base.group_no_one"
+                            options="{'model': 'model_name', 'in_dialog': False, 'foldable': True}"
+                            invisible="trigger not in ['on_create_or_write', 'on_unlink', 'on_time', 'on_time_created', 'on_time_updated']"
+                        />
+                        <field
+                            name="trigger_field_ids"
+                            string="When updating"
+                            placeholder="Select fields..."
+                            options="{'no_open': True, 'no_create': True}"
+                            domain="[('model_id', '=', model_id),('store','=',True)]"
+                            context="{'hide_model': 1}"
+                            invisible="trigger != 'on_create_or_write'"
+                            widget="many2many_tags"
+                        />
+                        <field
+                            name="on_change_field_ids"
+                            string="When updating"
+                            placeholder="Select fields..."
+                            options="{'no_open': True, 'no_create': True}"
+                            domain="[('model_id', '=', model_id)]"
+                            context="{'hide_model': 1}"
+                            invisible="trigger != 'on_change'"
+                            widget="many2many_tags"
+                        />
+                    </group>
+                    <!--
+                            <group>
+                                <label for="record_getter" string="Target Record" invisible="trigger != 'on_webhook'" />
+                                <div invisible="trigger != 'on_webhook'">
+                                    <field name="record_getter" string="Target Record"/>
+                                    <div>
+                                        <div  class="text-muted"><i class="fa fa-info-circle"/> The default target record getter will work out-of-the-box for any webhook coming from another Odoo instance.</div>
+                                        <span class="text-muted"> Available variables: </span>
+                                        <ul class="text-muted">
+                                            <li><code>env</code>: environment on which the action is triggered</li>
+                                            <li><code>model</code>: model of the record on which the action is triggered; is a void recordset</li>
+                                            <li><code>time</code>, <code>datetime</code>, <code>dateutil</code>, <code>timezone</code>: useful Python libraries</li>
+                                            <li><code>payload</code>: the payload of the call (GET parameters, JSON body), as a dict.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </group>
+                            -->
                 </group>
             </form>
         </field>
