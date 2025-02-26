@@ -1,0 +1,386 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright 2020,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
+     Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
+     License MIT (https://opensource.org/licenses/MIT). -->
+<odoo>
+    <record id="sync_project_action" model="ir.actions.act_window">
+        <field name="name">Sync Projects</field>
+        <field name="res_model">sync.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"active_test": False}</field>
+    </record>
+    <record id="sync_project_view_tree" model="ir.ui.view">
+        <field name="name">sync.project.tree</field>
+        <field name="model">sync.project</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+    <record id="sync_project_view_form" model="ir.ui.view">
+        <field name="name">sync.project.form</field>
+        <field name="model">sync.project</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            type="action"
+                            name="%(sync.sync_job_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                        >
+                            <field string="Jobs" name="job_count" widget="statinfo" />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.ir_logging_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-book"
+                        >
+                            <field string="Logs" name="log_count" widget="statinfo" />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_link_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-link"
+                        >
+                            <field string="Links" name="link_count" widget="statinfo" />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_order_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-check-circle-o"
+                        >
+                            <field
+                                string="Sync Orders"
+                                name="sync_order_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_cron_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-clock-o"
+                        >
+                            <field
+                                string="Crons"
+                                name="trigger_cron_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_automation_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-database"
+                        >
+                            <field
+                                string="DB Triggers"
+                                name="trigger_automation_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_webhook_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-globe"
+                        >
+                            <field
+                                string="Webhooks"
+                                name="trigger_webhook_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        <!--
+                        <button
+                            type="action"
+                            name="%(sync.sync_trigger_button_action_from_project)d"
+                            class="oe_stat_button"
+                            icon="fa-hand-pointer-o"
+                        >
+                            <field
+                                string="Buttons"
+                                name="trigger_button_count"
+                                widget="statinfo"
+                            />
+                        </button>
+                        -->
+                    </div>
+                    <widget
+                        name="web_ribbon"
+                        text="Archived"
+                        bg_color="bg-danger"
+                        invisible="active"
+                    />
+                    <field name="active" invisible="1" />
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page name="readme" string="Documentation">
+                            <group>
+                                <group>
+                                    <field
+                                        name="source_url"
+                                        widget="url"
+                                        default_focus="1"
+                                        placeholder="E.g. https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2"
+                                    />
+                                    <field name="source_updated_at" />
+                                </group>
+                                <group>
+                                    <field name="id" invisible="1" />
+                                    <button
+                                        name="magic_upgrade"
+                                        string="Import"
+                                        class="oe_highlight"
+                                        type="object"
+                                        invisible="id"
+                                    />
+                                    <button
+                                        name="magic_upgrade"
+                                        string="Upgrade"
+                                        class="oe_highlight"
+                                        type="object"
+                                        confirm="ATTENTION! This action will override all project code. PROCEED?"
+                                        invisible="not id"
+                                    />
+                                </group>
+                            </group>
+                            <div class="html_field_container">
+                                <field name="description" nolabel="1" />
+                            </div>
+                        </page>
+                        <page name="tasks" string="🦋 Tasks">
+                            <field name="task_ids" context="{'active_test': False}">
+                                <tree decoration-muted="not active">
+                                    <field name="name" />
+                                    <field name="active" />
+                                    <button
+                                        name="action_super_magic_button"
+                                        string="Super 🔥 Magic"
+                                        help="Shamanic dances to please the **Digital ⚡️ Gods**"
+                                        type="object"
+                                        class="oe_highlight"
+                                        invisible="not sync_order_description"
+                                    />
+                                    <field
+                                        name="sync_order_description"
+                                        invisible="1"
+                                    />
+                                    <button
+                                        name="action_magic_button"
+                                        string="Magic ✨"
+                                        help="All you need to do is click the **Magic 🪬 Button**"
+                                        type="object"
+                                        class="oe_highlight"
+                                        invisible="not magic_button"
+                                    />
+                                    <field name="magic_button" invisible="1" />
+                                    <field
+                                        name="active_cron_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_automation_ids"
+                                        widget="many2many_tags"
+                                    />
+                                    <field
+                                        name="active_webhook_ids"
+                                        widget="many2many_tags"
+                                    />
+                                </tree>
+                            </field>
+                            <div class="html_field_container">
+                                <field name="task_description" nolabel="1" />
+                            </div>
+                            <p>
+                                <em>
+                                    Hint: Cron, Webhook, and DB Triggers are not
+                                    executed unless both the Project and the Task are
+                                    active (i.e., not Archived).
+                                </em>
+                            </p>
+                        </page>
+                        <page name="core" string="CORE.🪬">
+                            <p>
+                                <em>
+                                    Hint: For security reasons, the **Core 🪬 Code** can
+                                    only be updated via the gist page.
+                                </em>
+                            </p>
+                            <field
+                                name="core_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                        </page>
+                        <page name="code" string="LIB.🦄">
+                            <field
+                                name="common_code"
+                                widget="ace"
+                                options="{'mode': 'python'}"
+                            />
+                            <p>
+                                <em>
+                                    Hint: this code should be updated for testing
+                                    purposes only. To make changes in production, update
+                                    the gist page instead.
+                                </em>
+                            </p>
+                        </page>
+                        <page name="params" string="PARAMS.🌹">
+                            <notebook>
+                                <page string=" ✏️ Templates 🌹">
+                                    <field name="text_param_ids">
+                                        <tree decoration-danger="not value">
+                                            <field name="key" />
+                                            <field name="value" />
+                                        </tree>
+                                        <form>
+                                            <group>
+                                                <field name="key" />
+                                            </group>
+                                            <separator string="Value" />
+                                            <field name="value" />
+                                        </form>
+                                    </field>
+                                    <div class="html_field_container">
+                                        <field
+                                            name="text_param_description"
+                                            nolabel="1"
+                                        />
+                                    </div>
+                                </page>
+                                <page string=" 🔧 Settings 🌹">
+                                    <field name="param_ids">
+                                        <tree
+                                            editable="bottom"
+                                            decoration-danger="not value"
+                                        >
+                                            <field name="key" />
+                                            <field name="value" />
+                                        </tree>
+                                    </field>
+                                    <div class="html_field_container">
+                                        <field name="param_description" nolabel="1" />
+                                    </div>
+                                </page>
+                            </notebook>
+                        </page>
+                        <page string="DATA.🐫">
+                            <p>
+                                <em>
+                                    Hint:
+                                    <a
+                                        target="_blank"
+                                        href="https://gist.github.com/yelizariev/e0585a0817c4d87b65b8a3d945da7ca2#file-api-data-markdown"
+                                    >
+                                        Documentation
+                                    </a>
+                                </em>
+                            </p>
+                            <field name="data_ids">
+                                <tree editable="bottom">
+                                    <field name="name" />
+                                    <field name="file_name" invisible="1" />
+                                    <field name="file_content" filename="file_name" />
+                                </tree>
+                            </field>
+                            <div class="html_field_container">
+                                <field name="data_description" nolabel="1" />
+                            </div>
+                        </page>
+                        <page string="SECRETS.🔐">
+                            <p class="oe_read_only">
+                                <em>
+                                    Secret parameter values are accessible only to
+                                    Administrators.
+                                </em>
+                            </p>
+                            <field name="secret_ids">
+                                <tree editable="bottom" decoration-danger="not value">
+                                    <field name="key" />
+                                    <field
+                                        name="value"
+                                        password="True"
+                                        decoration-danger="not value"
+                                    />
+                                    <button
+                                        name="action_show_value"
+                                        title="Show Value"
+                                        icon="fa-key"
+                                        type="object"
+                                        options='{"warn": true}'
+                                    />
+                                </tree>
+                            </field>
+                            <div class="html_field_container">
+                                <field name="secret_description" nolabel="1" />
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="sync_project_param_view_form" model="ir.ui.view">
+        <field name="name">sync.project.param.form</field>
+        <field name="model">sync.project.param</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="key" />
+                    <field name="value" />
+                    <field name="url" widget="url" />
+                </group>
+                <field name="description" />
+            </form>
+        </field>
+    </record>
+    <record id="sync_project_text_view_form" model="ir.ui.view">
+        <field name="name">sync.project.text.form</field>
+        <field name="model">sync.project.text</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="key" />
+                    <field name="value" />
+                    <field name="url" widget="url" />
+                </group>
+                <field name="description" />
+            </form>
+        </field>
+    </record>
+    <record id="sync_project_secret_view_form" model="ir.ui.view">
+        <field name="name">sync.project.secret.form</field>
+        <field name="model">sync.project.secret</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="key" />
+                    <field name="value" />
+                </group>
+            </form>
+        </field>
+    </record>
+    <menuitem
+        id="sync_project_menu_action"
+        name="Sync Projects"
+        parent="sync_menu"
+        action="sync_project_action"
+        sequence="10"
+    />
+</odoo>

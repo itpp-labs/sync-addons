@@ -1,17 +1,13 @@
-[![help@itpp.dev](https://itpp.dev/images/infinity-readme.png)](mailto:help@itpp.dev)
-# [17.0] Odoo Integration Modules
+<h1 align="center">¡Welcome!</h1>
 
-:open_file_folder: Get a **.zip** file with all needed dependencies:
+<p align="center"> <b>Sync 🪬 Studio</b> is a groundbreaking meta-application<br/>that empowers you to build <b>Odoo ✨ Connectors</b> in just a few hours. </p>
 
+<div align="center">
+<a target="_blank" href="https://odoomagic.com/"><img src="https://github.com/itpp-labs/sync-addons/assets/186131/b7ae8ced-44f4-498d-b111-2fc4e3d1171b" alt="Sync 🪬 Studio"/></a>
+</div>
+  
+<p align="center"><em>Click the image for a quick introduction.</em></p>
 
+# Is It Magic?
 
-:star: Star this repo if you **like** it!
-
-Other Addons
-============
-
-| Repository | Versions |
-|------------|----------|
-| [itpp-labs/**pos-addons**](https://github.com/itpp-labs/pos-addons) | [[17.0]](https://github.com/itpp-labs/pos-addons/tree/17.0#readme) [[16.0]](https://github.com/itpp-labs/pos-addons/tree/16.0#readme) [[15.0]](https://github.com/itpp-labs/pos-addons/tree/15.0#readme) [[14.0]](https://github.com/itpp-labs/pos-addons/tree/14.0#readme) [[13.0]](https://github.com/itpp-labs/pos-addons/tree/13.0#readme) [[12.0]](https://github.com/itpp-labs/pos-addons/tree/12.0#readme) [[11.0]](https://github.com/itpp-labs/pos-addons/tree/11.0#readme) [[10.0]](https://github.com/itpp-labs/pos-addons/tree/10.0#readme) [[9.0]](https://github.com/itpp-labs/pos-addons/tree/9.0#readme) [[8.0]](https://github.com/itpp-labs/pos-addons/tree/8.0#readme) [[7.0]](https://github.com/itpp-labs/pos-addons/tree/7.0#readme) |
-| [itpp-labs/**sync-addons**](https://github.com/itpp-labs/sync-addons) | [[17.0]](https://github.com/itpp-labs/sync-addons/tree/17.0#readme) [[16.0]](https://github.com/itpp-labs/sync-addons/tree/16.0#readme) [[15.0]](https://github.com/itpp-labs/sync-addons/tree/15.0#readme) [[14.0]](https://github.com/itpp-labs/sync-addons/tree/14.0#readme) [[13.0]](https://github.com/itpp-labs/sync-addons/tree/13.0#readme) [[12.0]](https://github.com/itpp-labs/sync-addons/tree/12.0#readme) [[11.0]](https://github.com/itpp-labs/sync-addons/tree/11.0#readme) [[10.0]](https://github.com/itpp-labs/sync-addons/tree/10.0#readme) [[9.0]](https://github.com/itpp-labs/sync-addons/tree/9.0#readme) [[8.0]](https://github.com/itpp-labs/sync-addons/tree/8.0#readme) |
-| [itpp-labs/**access-addons**](https://github.com/itpp-labs/access-addons) | [[17.0]](https://github.com/itpp-labs/access-addons/tree/17.0#readme) [[16.0]](https://github.com/itpp-labs/access-addons/tree/16.0#readme) [[15.0]](https://github.com/itpp-labs/access-addons/tree/15.0#readme) [[14.0]](https://github.com/itpp-labs/access-addons/tree/14.0#readme) [[13.0]](https://github.com/itpp-labs/access-addons/tree/13.0#readme) [[12.0]](https://github.com/itpp-labs/access-addons/tree/12.0#readme) [[11.0]](https://github.com/itpp-labs/access-addons/tree/11.0#readme) [[10.0]](https://github.com/itpp-labs/access-addons/tree/10.0#readme) [[9.0]](https://github.com/itpp-labs/access-addons/tree/9.0#readme) [[8.0]](https://github.com/itpp-labs/access-addons/tree/8.0#readme) |
+Not quite. **Sync 🪬 Studio** harnesses the power of AI to generate safe, reusable code, making connector development as simple as copy-pasting. Let your imagination and **Sync 🪬 Studio** work together to create seamless integrations effortlessly.

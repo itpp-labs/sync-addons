@@ -1,1 +1,8 @@
 # Python dependencies
+bravado_core
+jsonschema<4
+swagger_spec_validator
+# Sync Studio
+pyTelegramBotAPI
+markdown==3.6
+pyyaml
