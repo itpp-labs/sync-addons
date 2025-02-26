@@ -16,6 +16,7 @@ class SyncTriggerCron(models.Model):
     _description = "Cron Trigger"
     _sync_handler = "handle_cron"
 
+    # DELEGATE=TRUE
     cron_id = fields.Many2one(
         "ir.cron", delegate=True, required=True, ondelete="cascade"
     )

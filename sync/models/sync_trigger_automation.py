@@ -15,6 +15,7 @@ class SyncTriggerAutomation(models.Model):
     _description = "DB Trigger"
     _sync_handler = "handle_db"
 
+    # DELEGATE=TRUE
     automation_id = fields.Many2one(
         "base.automation", delegate=True, required=True, ondelete="cascade"
     )
@@ -40,8 +41,10 @@ class SyncTriggerAutomation(models.Model):
                     0,
                     0,
                     {
+                        "name": r.trigger_name,
                         "state": "code",
                         "code": r.get_code(),
+                        "model_id": r.automation_id.model_id.id,
                     },
                 )
             ]
