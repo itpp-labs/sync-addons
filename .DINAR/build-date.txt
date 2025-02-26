@@ -1,1 +1,1 @@
-ReReFresh Odoo 17 build
+Fresh Odoo 17 build
