@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright 2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+<!-- Copyright 2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <templates xml:space="preserve">
     <t t-name="partner_contact.TelegramField" owl="1">
@@ -34,7 +34,7 @@
     >
         <xpath expr="//input" position="after">
             <a
-                t-if="props.value"
+                t-if="props.record.data[props.name]"
                 t-att-href="props.record.data.telegram_url"
                 class="ms-3 d-inline-flex align-items-center"
             >
