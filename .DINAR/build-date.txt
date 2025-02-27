@@ -1,1 +1,1 @@
-Odoo 17 build with new deps
+Fresh Odoo 17 build
