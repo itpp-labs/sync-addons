@@ -34,7 +34,7 @@ repos:
         args:
           - --plugin=@prettier/plugin-xml
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v7.32.0
+    rev: v8.24.0
     hooks:
       - id: eslint
         verbose: true
