@@ -15,6 +15,7 @@
     </record>
     <record id="test_task" model="sync.task">
         <field name="name">Assign ref to new partners</field>
+        <field name="technical_name">test</field>
         <field name="project_id" ref="sync.test_project" />
         <field name="code">
 <![CDATA[

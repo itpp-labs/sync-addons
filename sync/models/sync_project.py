@@ -1,4 +1,4 @@
-# Copyright 2020,2022,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2022,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -519,6 +519,12 @@ class SyncProject(models.Model):
             "sync_external": sync_external,
         }
 
+    def task(self, technical_name):
+        """Finds task by technical_name"""
+        return self.task_ids.filtered(
+            lambda task: task.technical_name == technical_name
+        )[:1]
+
     def magic_upgrade(self):
         self.ensure_one()
         if not self.source_url:
@@ -645,6 +651,7 @@ class SyncProject(models.Model):
 
             task_vals = {
                 "name": task_name,
+                "technical_name": task_technical_name,
                 "code": file_content,
                 "magic_button": meta.get("MAGIC_BUTTON", "Magic ✨ Button")
                 if has_handle_button

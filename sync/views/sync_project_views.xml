@@ -178,7 +178,7 @@
                                     />
                                     <field
                                         name="sync_order_description"
-                                        invisible="1"
+                                        column_invisible="True"
                                     />
                                     <button
                                         name="action_magic_button"
@@ -188,7 +188,10 @@
                                         class="oe_highlight"
                                         invisible="not magic_button"
                                     />
-                                    <field name="magic_button" invisible="1" />
+                                    <field
+                                        name="magic_button"
+                                        column_invisible="True"
+                                    />
                                     <field
                                         name="active_cron_ids"
                                         widget="many2many_tags"

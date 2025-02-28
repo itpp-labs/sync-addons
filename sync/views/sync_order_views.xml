@@ -55,21 +55,35 @@
                     </div>
                     <group>
                         <group>
-                            <field name="record_id" />
+                            <field name="sync_project_id" readonly="1" />
+                            <field name="sync_task_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="sync_job_id" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Linked Records">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="record_id" />
+                                    <field name="value" />
+                                    <field name="state" readonly="1" />
+                                    <field name="result" readonly="1" />
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Linked Partners">
                             <field
                                 name="partner_ids"
                                 widget="many2many_tags"
                                 options="{'color_field': 'country_id', 'no_create_edit': True}"
                             />
-                        </group>
-                        <group>
-                            <field name="sync_project_id" readonly="1" />
-                            <field name="sync_task_id" readonly="1" />
-                        </group>
-                    </group>
-                    <separator string="Input ⬇️" />
-                    <field name="body" />
-                    <separator string="Input ⬆️" />
+                        </page>
+                        <page string="Text Input">
+                            <field name="body" />
+                        </page>
+                    </notebook>
                     <div class="html_field_container">
                         <field name="description" nolabel="1" />
                     </div>

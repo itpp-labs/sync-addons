@@ -52,7 +52,9 @@ class SyncTriggerAutomation(models.Model):
 
     def start(self, records):
         if self.active:
-            self.sync_task_id.start(self, args=(records,), with_delay=True)
+            sync_job = self.sync_task_id.start(self, args=(records,), with_delay=True)
+            if records._name == "sync.order":
+                records.write({"sync_job_id": sync_job.id})
 
     def get_code(self):
         return (

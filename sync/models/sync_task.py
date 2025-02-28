@@ -1,4 +1,4 @@
-# Copyright 2020 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020,2025 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2021 Denis Mudarisov <https://github.com/trojikman>
 # License MIT (https://opensource.org/licenses/MIT).
 
@@ -23,6 +23,11 @@ class SyncTask(models.Model):
 
     project_id = fields.Many2one("sync.project", ondelete="cascade")
     name = fields.Char("Name", help="e.g. Sync Products", required=True)
+    technical_name = fields.Char(
+        "Technical Name",
+        help="Identifier equal to gist file name after removing prefix 'task.' and suffix '.py'",
+        required=True,
+    )
     code = fields.Text("Code")
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
