@@ -1,6 +1,12 @@
 `13.0.1`
 -------
 
+- **New:** sync.order: attaching multiple records via new line_ids field; automatic link to sync.job record.
+- **New:** sync.task: save technical_name of the task for a better integration with Odoo UI (e.g. to call task via custom action)
+
+`13.0.1`
+-------
+
 - **Fix:** update params updating on existing records
 
 `13.0.0`
