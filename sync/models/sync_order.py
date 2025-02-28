@@ -51,7 +51,7 @@ class SyncOrderLine(models.Model):
     _name = "sync.order.line"
     _description = "Sync Order Records"
 
-    sync_order_id = fields.Many2one("sync.order")
+    sync_order_id = fields.Many2one("sync.order", required=True)
     record_ref = fields.Reference(
         string="Linked Record",
         selection=lambda self: self.selection_record_ref(),
