@@ -31,7 +31,6 @@ class SyncTask(models.Model):
     code = fields.Text("Code")
     code_check = fields.Text("Syntax check", store=False, readonly=True)
     active = fields.Boolean(default=True)
-    sync_order_model_id = fields.Many2one("ir.model")
     sync_order_description = fields.Html(readonly=True)
     magic_button = fields.Char()
     button_ids = fields.One2many(
