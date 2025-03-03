@@ -658,10 +658,6 @@ class SyncProject(models.Model):
                 else None,
                 "project_id": self.id,
             }
-            # Sync Order Model
-            if meta.get("SYNC_ORDER_MODEL"):
-                model = self._get_model(meta.get("SYNC_ORDER_MODEL"))
-                task_vals["sync_order_model_id"] = model.id
 
             # Parse docs
             sync_order_description = gist_files.get(
