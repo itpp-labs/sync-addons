@@ -59,6 +59,7 @@
                         </group>
                         <group>
                             <field name="sync_job_id" readonly="1" />
+                            <field name="sync_job_state" readonly="1" />
                         </group>
                     </group>
                     <notebook>
