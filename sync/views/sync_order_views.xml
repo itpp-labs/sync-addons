@@ -31,7 +31,7 @@
                         string="Refresh"
                         name="action_refresh"
                         type="object"
-                        invisible="state != 'open'"
+                        invisible="state == 'draft'"
                     />
                     <button
                         string="Cancel"
