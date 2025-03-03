@@ -18,12 +18,6 @@ class SyncOrder(models.Model):
     )
     sync_job_id = fields.Many2one("sync.job")
     description = fields.Html(related="sync_task_id.sync_order_description")
-    # DEPRECATED. Use line_ids.record_id instead
-    record_id = fields.Reference(
-        string="Blackjack",
-        selection="_selection_record_id",
-        help="Optional extra information to perform this task",
-    )
     line_ids = fields.One2many(
         "sync.order.line", "sync_order_id", string="Linked Records"
     )
@@ -38,12 +32,6 @@ class SyncOrder(models.Model):
         ],
         default="draft",
     )
-
-    def _selection_record_id(self):
-        mm = self.sync_task_id.sync_order_model_id
-        if not mm:
-            return []
-        return [(mm.model, mm.name)]
 
     def action_done(self):
         self.write({"state": "done"})
@@ -64,9 +52,10 @@ class SyncOrderLine(models.Model):
     _description = "Sync Order Records"
 
     sync_order_id = fields.Many2one("sync.order")
-    record_id = fields.Reference(
+    record_ref = fields.Reference(
         string="Linked Record",
-        selection="_selection_record_id",
+        selection=lambda self: self.selection_record_ref(),
+        required=True,
         help="Optional extra information to perform this task",
     )
     state = fields.Selection(
@@ -82,11 +71,8 @@ class SyncOrderLine(models.Model):
     value = fields.Char("Extra Input")
     result = fields.Char("Result")
 
-    def _selection_record_id(self):
-        mm = self.sync_order_id.sync_task_id.sync_order_model_id
-        if not mm:
-            return []
-        return [(mm.model, mm.name)]
+    def selection_record_ref(self):
+        return []
 
     def action_done(self, msg=None):
         self.write({"state": "done"})
