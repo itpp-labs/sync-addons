@@ -17,6 +17,9 @@ class SyncOrder(models.Model):
         required=True,
     )
     sync_job_id = fields.Many2one("sync.job")
+    sync_job_state = fields.Selection(
+        related="sync_job_id.state", string="Sync Job State"
+    )
     description = fields.Html(related="sync_task_id.sync_order_description")
     line_ids = fields.One2many(
         "sync.order.line", "sync_order_id", string="Linked Records"
