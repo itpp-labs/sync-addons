@@ -9,7 +9,6 @@
             <tree>
                 <field name="sync_task_id" />
                 <field name="name" />
-                <field name="record_id" />
                 <field name="state" />
             </tree>
         </field>
@@ -66,10 +65,10 @@
                         <page string="Linked Records">
                             <field name="line_ids">
                                 <tree editable="bottom">
-                                    <field name="record_id" />
+                                    <field name="record_ref" />
                                     <field name="value" />
-                                    <field name="state" readonly="1" />
                                     <field name="result" readonly="1" />
+                                    <field name="state" readonly="1" />
                                 </tree>
                             </field>
                         </page>

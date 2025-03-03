@@ -708,9 +708,15 @@ class SyncProject(models.Model):
                             "{TASK_ID}", str(task.id)
                         )
 
-                create_trigger(
+                automation = create_trigger(
                     "sync.trigger.automation", dict(data, model_id=model.id, model=None)
                 )
+                # fix recomputation
+                if data.get("trigger_field_ids"):
+                    automation.trigger_field_ids = data.get("trigger_field_ids")
+                for field_name in ("filter_pre_domain", "filter_domain"):
+                    if data.get(field_name):
+                        automation[field_name] = data.get(field_name)
 
         self.update(vals)
 
