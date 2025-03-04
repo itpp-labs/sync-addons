@@ -1,8 +1,9 @@
-`13.0.1`
+`14.0.0`
 -------
 
 - **New:** sync.order: attaching multiple records via new line_ids field; automatic link to sync.job record.
 - **New:** sync.task: save technical_name of the task for a better integration with Odoo UI (e.g. to call task via custom action)
+- **New:** Add dynamic Secret update via `SECRETS._update_secret`.
 
 `13.0.1`
 -------

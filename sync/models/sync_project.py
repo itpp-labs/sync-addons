@@ -357,7 +357,22 @@ class SyncProject(models.Model):
                 "AttrDict": AttrDict,
             },
         )
-        SECRETS = AttrDict()
+
+        def _update_secret(key, value):
+            SECRETS[key] = value
+            for p in self.secret_ids:
+                if p.key == key:
+                    p.value = value
+                    return
+            self.env["sync.project.secret"].create(
+                {
+                    "project_id": self.id,
+                    "key": key,
+                    "value": value,
+                }
+            )
+
+        SECRETS = AttrDict(_update_secret)
         for p in self.secret_ids:
             SECRETS[p.key] = p.value
 
