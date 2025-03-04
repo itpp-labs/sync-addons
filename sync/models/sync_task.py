@@ -103,7 +103,7 @@ class SyncTask(models.Model):
             r.active_automation_ids = r.with_context(active_test=True).automation_ids
             r.active_webhook_ids = r.with_context(active_test=True).webhook_ids
 
-    def action_magic_button(self):
+    def _magic_button(self):
         # TODO: This should be refactored, because we use single button per task
         if not self.button_ids:
             self.button_ids.create(
@@ -113,7 +113,11 @@ class SyncTask(models.Model):
                     "sync_task_id": self.id,
                 }
             )
-        return self.button_ids.start_button()
+
+        return self.button_ids
+
+    def action_magic_button(self):
+        return self._magic_button().start_button()
 
     def _get_current_date_formatted(self):
         user_lang = self.env.user.lang or "en_US"
