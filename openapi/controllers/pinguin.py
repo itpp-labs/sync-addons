@@ -37,7 +37,7 @@ from odoo.addons.base_api.lib.pinguin import (
     get_dictlist_from_model,
     get_model_for_read,
 )
-from odoo.addons.web.controllers.main import ReportController
+from odoo.addons.web.controllers.report import ReportController
 
 try:
     import simplejson as json

@@ -26,11 +26,11 @@
         <field name="name">logs.tree.view</field>
         <field name="model">openapi.log</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="create_date" />
                 <field name="create_uid" />
                 <field name="request" />
-            </tree>
+            </list>
         </field>
     </record>
     <record model="ir.ui.view" id='openapi_log_model_view_form'>
@@ -194,20 +194,20 @@
                         <page string="Accessable Models">
                             <field
                                 name="access_ids"
-                                mode="tree"
+                                mode="list"
                                 context="{'parent_name': name, 'active_test': False}"
                             >
-                                <tree>
+                                <list>
                                     <field name="active" />
                                     <field name="model_id" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Allowed Users">
                             <field name="user_ids">
-                                <tree>
+                                <list>
                                     <field name="name" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -219,19 +219,19 @@
         <field name="name">openapi.namespace.tree</field>
         <field name="model">openapi.namespace</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id='openapi_access_model_view_tree' model='ir.ui.view'>
         <field name="name">openapi.access.tree</field>
         <field name="model">openapi.access</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="namespace_id" />
                 <field name="model" />
-            </tree>
+            </list>
         </field>
     </record>
     <record model="ir.actions.act_window" id="namespace_list_action">
