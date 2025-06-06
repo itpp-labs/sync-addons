@@ -8,8 +8,7 @@ import json
 import types
 import urllib.parse as urlparse
 from inspect import getmro, isclass
-
-from odoo import _, api, exceptions, fields, models
+from odoo import _, api, exceptions, fields, models, SUPERUSER_ID
 
 from odoo.addons.base_api.lib.pinguin import transform_strfields_to_dict
 
@@ -381,7 +380,7 @@ class Access(models.Model):
         return paths_object
 
     def get_OAS_definitions_part(self):
-        related_model = self.env[self.model]
+        related_model = self.env[self.model].with_user(SUPERUSER_ID)
         export_fields_read_one = transform_strfields_to_dict(
             self.read_one_id.export_fields.mapped("name") or ("id",)
         )
@@ -424,7 +423,8 @@ class Access(models.Model):
         return definitions
 
     def get_OAS_part(self):
-        self = self.sudo()
+        # self.env.user ... checks break if we just use sudo()
+        self = self.with_user(SUPERUSER_ID)
         return {
             "definitions": self.get_OAS_definitions_part(),
             "paths": self.get_OAS_paths_part(),
