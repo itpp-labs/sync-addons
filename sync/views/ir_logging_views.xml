@@ -3,10 +3,10 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="ir_logging_view_tree" model="ir.ui.view">
-        <field name="name">ir.logging.tree</field>
+        <field name="name">ir.logging.list</field>
         <field name="model">ir.logging</field>
         <field name="arch" type="xml">
-            <tree
+            <list
                 decoration-muted="level == 'debug'"
                 decoration-danger="level in ['error', 'critical']"
                 decoration-warning="level == 'warning'"
@@ -17,7 +17,7 @@
                 <field name="message_short" />
                 <field name="sync_project_id" />
                 <field name="sync_task_id" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="ir_logging_view_form" model="ir.ui.view">
@@ -88,13 +88,13 @@
     <record id="ir_logging_action" model="ir.actions.act_window">
         <field name="name">Logs</field>
         <field name="res_model">ir.logging</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('sync_job_id', '!=', False)]</field>
         <field name="search_view_id" ref="ir_logging_view_search" />
         <field
             name="view_ids"
             eval="[(5, 0, 0),
-                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('ir_logging_view_tree')}),
                                      (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
         />
     </record>
@@ -108,37 +108,37 @@
     <record id="ir_logging_action_from_project" model="ir.actions.act_window">
         <field name="name">Project Logs</field>
         <field name="res_model">ir.logging</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('sync_project_id', '=', active_id)]</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
-                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('ir_logging_view_tree')}),
                                      (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
         />
     </record>
     <record id="ir_logging_action_from_task" model="ir.actions.act_window">
         <field name="name">Task Logs</field>
         <field name="res_model">ir.logging</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('sync_task_id', '=', active_id)]</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
-                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('ir_logging_view_tree')}),
                                      (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
         />
     </record>
     <record id="ir_logging_action_from_job" model="ir.actions.act_window">
         <field name="name">Job Logs</field>
         <field name="res_model">ir.logging</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <!-- TODO: use search filters instead -->
         <field name="domain">[('sync_job_id', '=', active_id)]</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
-                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('ir_logging_view_tree')}),
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('ir_logging_view_tree')}),
                                      (0, 0, {'view_mode': 'form', 'view_id': ref('ir_logging_view_form')})]"
         />
     </record>

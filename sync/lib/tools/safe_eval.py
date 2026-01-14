@@ -26,8 +26,6 @@ from opcode import opmap, opname
 from psycopg2 import OperationalError
 
 import odoo
-from odoo.tools.misc import ustr
-
 unsafe_eval = eval
 
 __all__ = ["test_expr", "safe_eval", "const_eval"]
@@ -522,7 +520,7 @@ def safe_eval__MAGIC(
         raise
     except Exception as e:
         raise ValueError(
-            '%s: "%s" while evaluating\n%r' % (ustr(type(e)), ustr(e), expr)
+            '%s: "%s" while evaluating\n%r' % (ustr(type(e))(e), expr)
         )
 
 
@@ -545,7 +543,7 @@ def test_python_expr__MAGIC(expr, mode="eval"):
                 error["error_line"],
             )
         else:
-            msg = ustr(err)
+            msg = err
         return msg
     return False
 

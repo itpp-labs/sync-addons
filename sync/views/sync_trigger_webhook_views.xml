@@ -3,15 +3,15 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_trigger_webhook_view_tree" model="ir.ui.view">
-        <field name="name">sync.trigger.webhook.tree</field>
+        <field name="name">sync.trigger.webhook.list</field>
         <field name="model">sync.trigger.webhook</field>
         <field name="arch" type="xml">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="trigger_name" />
                 <field name="website_url" />
                 <field name="sync_project_id" />
                 <field name="sync_task_id" required="1" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_trigger_webhook_view_form" model="ir.ui.view">
@@ -36,7 +36,7 @@
     <record id="sync_trigger_webhook_action_from_project" model="ir.actions.act_window">
         <field name="name">Webhook Triggers</field>
         <field name="res_model">sync.trigger.webhook</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
         <field name="domain">[('sync_project_id', '=', active_id)]</field>
     </record>
 </odoo>
