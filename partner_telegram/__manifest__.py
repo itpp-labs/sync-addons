@@ -5,7 +5,7 @@
     "name": "Telegram Contact Field",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "author": "Ivan Kropotkin",
     "support": "info@odoomagic.com",
     "website": "https://sync_studio.t.me/",
