@@ -1,4 +1,4 @@
-# Copyright 2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2026 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {

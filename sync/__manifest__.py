@@ -1,4 +1,4 @@
-# Copyright 2020-2021,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021,2024-2026 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).

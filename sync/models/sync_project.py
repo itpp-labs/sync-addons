@@ -672,7 +672,7 @@ class SyncProject(models.Model):
                 task_vals, task_technical_name, namespace=self.id
             )
 
-            def create_trigger(model, data):
+            def create_trigger(model, data, task=task):
                 vals = dict(
                     {key: value for key, value in data.items() if value is not None},
                     sync_task_id=task.id,

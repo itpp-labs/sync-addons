@@ -153,7 +153,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='project_id']" position="attributes">
                 <attribute name="invisible" />
-                <attribute name="required" eval="1" />
+                <attribute name="required">1</attribute>
             </xpath>
         </field>
     </record>
