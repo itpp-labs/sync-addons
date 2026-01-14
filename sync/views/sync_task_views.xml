@@ -86,7 +86,6 @@
                                     <field name="interval_number" />
                                     <field name="interval_type" />
                                     <field name="nextcall" />
-                                    <field name="numbercall" />
                                 </list>
                             </field>
                             <p>
