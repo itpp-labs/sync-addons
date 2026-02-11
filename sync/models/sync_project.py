@@ -707,7 +707,9 @@ class SyncProject(models.Model):
                 automation = create_trigger(
                     "sync.trigger.automation", dict(data, model_id=model.id, model=None)
                 )
-                # fix recomputation
+                # fix recomputation: model_id change resets trigger via _compute_trigger
+                if data.get("trigger"):
+                    automation.trigger = data["trigger"]
                 if data.get("trigger_field_ids"):
                     automation.trigger_field_ids = data.get("trigger_field_ids")
                 for field_name in ("filter_pre_domain", "filter_domain"):
