@@ -3,16 +3,16 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_trigger_automation_view_tree" model="ir.ui.view">
-        <field name="name">sync.trigger.automation.tree</field>
+        <field name="name">sync.trigger.automation.list</field>
         <field name="model">sync.trigger.automation</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="trigger_name" />
                 <field name="model_id" />
                 <field name="trigger" />
                 <field name="sync_project_id" />
                 <field name="sync_task_id" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_trigger_automation_view_form" model="ir.ui.view">
@@ -80,10 +80,6 @@
                                     required="trigger in ['on_stage_set', 'on_tag_set']"
                                 />
                                 <field name="trg_field_ref_model_name" invisible="1" />
-                                <field
-                                    name="trg_field_ref_display_name"
-                                    invisible="1"
-                                />
                                 <field
                                     name="trg_date_id"
                                     class="oe_inline"
@@ -256,7 +252,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='sync_task_id']" position="attributes">
                 <attribute name="invisible" />
-                <attribute name="required" eval="1" />
+                <attribute name="required">1</attribute>
             </xpath>
         </field>
     </record>
@@ -266,12 +262,12 @@
     >
         <field name="name">Automation Triggers</field>
         <field name="res_model">sync.trigger.automation</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('sync_project_id', '=', active_id)]</field>
         <field
             name="view_ids"
             eval="[(5, 0, 0),
-                                     (0, 0, {'view_mode': 'tree', 'view_id': ref('sync_trigger_automation_view_tree')}),
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('sync_trigger_automation_view_tree')}),
                                      (0, 0, {'view_mode': 'form', 'view_id': ref('sync_trigger_automation_view_form_full')})]"
         />
     </record>

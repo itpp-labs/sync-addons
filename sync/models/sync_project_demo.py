@@ -131,7 +131,7 @@ class SyncProjectDemo(models.Model):
                 if not getattr(secrets, key):
                     raise Exception("{} is not set".format(key))
 
-            # https://github.com/sarumont/py-trello/tree/master/trello
+            # https://github.com/sarumont/py-trello/list/master/trello
             from trello import TrelloClient
             from trello.exceptions import ResourceUnavailable
 

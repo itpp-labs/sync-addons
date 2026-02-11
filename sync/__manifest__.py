@@ -1,4 +1,4 @@
-# Copyright 2020-2021,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2020-2021,2024-2026 Ivan Yelizariev <https://twitter.com/yelizariev>
 # Copyright 2020-2021 Denis Mudarisov <https://github.com/trojikman>
 # Copyright 2021 Ilya Ilchenko <https://github.com/mentalko>
 # License MIT (https://opensource.org/licenses/MIT).
@@ -7,7 +7,7 @@
     "name": "Sync 🪬 Studio",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "17.0.14.0.0",
+    "version": "18.0.1.0.0",
     "application": True,
     "author": "Ivan Yelizariev",
     "support": "info@odoomagic.com",

@@ -26,8 +26,6 @@ from opcode import opmap, opname
 from psycopg2 import OperationalError
 
 import odoo
-from odoo.tools.misc import ustr
-
 unsafe_eval = eval
 
 __all__ = ["test_expr", "safe_eval", "const_eval"]
@@ -71,7 +69,7 @@ _UNSAFE_ATTRIBUTES = [
     # Generators
     "gi_code",
     "gi_frame",
-    "g_yieldfrom"
+    "gi_yieldfrom",
     # Coroutines
     "cr_await",
     "cr_code",
@@ -134,6 +132,10 @@ _CONST_OPCODES = (
                 "SWAP",
                 # Added in 3.11 https://docs.python.org/3/whatsnew/3.11.html#new-opcodes
                 "RESUME",
+                # 3.12 https://docs.python.org/3/whatsnew/3.12.html#cpython-bytecode-changes
+                "RETURN_CONST",
+                # 3.13
+                "TO_BOOL",
             ]
         )
     )
@@ -182,6 +184,7 @@ _EXPR_OPCODES = (
                 "GEN_START",  # added in 3.10 but already removed from 3.11.
                 # Added in 3.11, replacing all BINARY_* and INPLACE_*
                 "BINARY_OP",
+                "BINARY_SLICE",
             ]
         )
     )
@@ -266,6 +269,23 @@ _SAFE_OPCODES = (
                 "NOP",
                 "FORMAT_VALUE",
                 "BUILD_STRING",
+                # 3.12 https://docs.python.org/3/whatsnew/3.12.html#cpython-bytecode-changes
+                "END_FOR",
+                "LOAD_FAST_AND_CLEAR",
+                "LOAD_FAST_CHECK",
+                "POP_JUMP_IF_NOT_NONE",
+                "POP_JUMP_IF_NONE",
+                "CALL_INTRINSIC_1",
+                "STORE_SLICE",
+                # 3.13
+                "CALL_KW",
+                "LOAD_FAST_LOAD_FAST",
+                "STORE_FAST_STORE_FAST",
+                "STORE_FAST_LOAD_FAST",
+                "CONVERT_VALUE",
+                "FORMAT_SIMPLE",
+                "FORMAT_WITH_SPEC",
+                "SET_FUNCTION_ATTRIBUTE",
             ]
         )
     )
@@ -522,7 +542,7 @@ def safe_eval__MAGIC(
         raise
     except Exception as e:
         raise ValueError(
-            '%s: "%s" while evaluating\n%r' % (ustr(type(e)), ustr(e), expr)
+            '%s: "%s" while evaluating\n%r' % (ustr(type(e))(e), expr)
         )
 
 
@@ -545,7 +565,7 @@ def test_python_expr__MAGIC(expr, mode="eval"):
                 error["error_line"],
             )
         else:
-            msg = ustr(err)
+            msg = err
         return msg
     return False
 

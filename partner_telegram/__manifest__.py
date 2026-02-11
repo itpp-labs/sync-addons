@@ -1,11 +1,11 @@
-# Copyright 2024 Ivan Yelizariev <https://twitter.com/yelizariev>
+# Copyright 2026 Ivan Yelizariev <https://twitter.com/yelizariev>
 # License MIT (https://opensource.org/licenses/MIT).
 
 {
     "name": "Telegram Contact Field",
     "summary": """Join the Amazing 😍 Community ⤵️""",
     "category": "VooDoo ✨ Magic",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "author": "Ivan Kropotkin",
     "support": "info@odoomagic.com",
     "website": "https://sync_studio.t.me/",

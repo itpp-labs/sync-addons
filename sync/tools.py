@@ -252,7 +252,7 @@ def add_items(container, *args, **kwargs):
         else:
             raise Exception(
                 f"The container received a non-callable positional argument of type "
-                f"'{type(item).__name__}', which lacks an explicit name. "
+                f"{type(item).__name__!r}, which lacks an explicit name. "
                 f"Please pass a callable, a dictionary, or provide a key-value pair using keyword arguments."
             )
     container.update(kwargs)

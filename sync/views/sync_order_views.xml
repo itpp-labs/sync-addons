@@ -3,14 +3,14 @@
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
     <record id="sync_order_view_tree" model="ir.ui.view">
-        <field name="name">sync.order.tree</field>
+        <field name="name">sync.order.list</field>
         <field name="model">sync.order</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="sync_task_id" />
                 <field name="name" />
                 <field name="state" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_order_view_form" model="ir.ui.view">
@@ -65,12 +65,12 @@
                     <notebook>
                         <page string="Linked Records">
                             <field name="line_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="record_ref" />
                                     <field name="value" />
                                     <field name="result" readonly="1" />
                                     <field name="state" readonly="1" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Linked Partners">
@@ -88,18 +88,14 @@
                         <field name="description" nolabel="1" />
                     </div>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" />
-                    <field name="activity_ids" />
-                    <field name="message_ids" />
-                </div>
+                <chatter />
             </form>
         </field>
     </record>
     <record id="sync_order_action_from_project" model="ir.actions.act_window">
         <field name="name">Sync Orders</field>
         <field name="res_model">sync.order</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('sync_project_id', '=', active_id)]</field>
     </record>
 </odoo>

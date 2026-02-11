@@ -65,7 +65,5 @@ env["sync.trigger.cron"].browse(%s).start()
                 r.interval_number,
                 r.interval_type,
             )
-            if r.numbercall > 0:
-                name += " (%s times)" % r.numbercall
             result.append((r.id, name))
         return result
