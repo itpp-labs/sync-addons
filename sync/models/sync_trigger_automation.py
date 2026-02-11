@@ -8,6 +8,38 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 
+class BaseAutomationTriggerFix(models.Model):
+    """Override _compute_trigger to preserve existing values.
+
+    Odoo 18's base.automation._compute_trigger depends on model_id and
+    unconditionally resets trigger to False.  This breaks programmatic
+    creation/update where model_id and trigger are set together, because
+    the ORM recomputation overrides the explicit value at flush time.
+
+    The ORM invalidates the field cache before calling compute, so reading
+    record.trigger inside compute returns the default (False) instead of
+    the stored DB value.  We must read directly from the database.
+    """
+
+    _inherit = "base.automation"
+
+    @api.depends("model_id")
+    def _compute_trigger(self):
+        # Read stored trigger values directly from DB — the ORM cache is
+        # invalidated before compute runs, so record.trigger would return
+        # False even when the DB holds a valid value.
+        stored = {}
+        existing = self.filtered("id")
+        if existing:
+            self.env.cr.execute(
+                "SELECT id, trigger FROM base_automation WHERE id IN %s",
+                [tuple(existing.ids)],
+            )
+            stored = dict(self.env.cr.fetchall())
+        for record in self:
+            record.trigger = stored.get(record.id) or False
+
+
 class SyncTriggerAutomation(models.Model):
 
     _name = "sync.trigger.automation"
