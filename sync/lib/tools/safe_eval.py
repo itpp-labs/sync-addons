@@ -242,6 +242,8 @@ _SAFE_OPCODES = (
                 "LOAD_GLOBAL",
                 "RERAISE",
                 "JUMP_IF_NOT_EXC_MATCH",
+                # Following opcodes were Added in 3.12
+                "RETURN_CONST",
                 # Following opcodes were Added in 3.11
                 # replacement of opcodes CALL_FUNCTION, CALL_FUNCTION_KW, CALL_METHOD
                 "PUSH_NULL",

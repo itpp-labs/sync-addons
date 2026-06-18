@@ -6,17 +6,17 @@
     <record id="sync_project_action" model="ir.actions.act_window">
         <field name="name">Sync Projects</field>
         <field name="res_model">sync.project</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{"active_test": False}</field>
     </record>
-    <record id="sync_project_view_tree" model="ir.ui.view">
-        <field name="name">sync.project.tree</field>
+    <record id="sync_project_view_list" model="ir.ui.view">
+        <field name="name">sync.project.list</field>
         <field name="model">sync.project</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="active" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_project_view_form" model="ir.ui.view">
@@ -165,7 +165,7 @@
                         </page>
                         <page name="tasks" string="🦋 Tasks">
                             <field name="task_ids" context="{'active_test': False}">
-                                <tree decoration-muted="not active">
+                                <list decoration-muted="not active">
                                     <field name="name" />
                                     <field name="active" />
                                     <button
@@ -204,7 +204,7 @@
                                         name="active_webhook_ids"
                                         widget="many2many_tags"
                                     />
-                                </tree>
+                                </list>
                             </field>
                             <div class="html_field_container">
                                 <field name="task_description" nolabel="1" />
@@ -248,10 +248,10 @@
                             <notebook>
                                 <page string=" ✏️ Templates 🌹">
                                     <field name="text_param_ids">
-                                        <tree decoration-danger="not value">
+                                        <list decoration-danger="not value">
                                             <field name="key" />
                                             <field name="value" />
-                                        </tree>
+                                        </list>
                                         <form>
                                             <group>
                                                 <field name="key" />
@@ -269,13 +269,13 @@
                                 </page>
                                 <page string=" 🔧 Settings 🌹">
                                     <field name="param_ids">
-                                        <tree
+                                        <list
                                             editable="bottom"
                                             decoration-danger="not value"
                                         >
                                             <field name="key" />
                                             <field name="value" />
-                                        </tree>
+                                        </list>
                                     </field>
                                     <div class="html_field_container">
                                         <field name="param_description" nolabel="1" />
@@ -296,11 +296,11 @@
                                 </em>
                             </p>
                             <field name="data_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name" />
                                     <field name="file_name" invisible="1" />
                                     <field name="file_content" filename="file_name" />
-                                </tree>
+                                </list>
                             </field>
                             <div class="html_field_container">
                                 <field name="data_description" nolabel="1" />
@@ -314,7 +314,7 @@
                                 </em>
                             </p>
                             <field name="secret_ids">
-                                <tree editable="bottom" decoration-danger="not value">
+                                <list editable="bottom" decoration-danger="not value">
                                     <field name="key" />
                                     <field
                                         name="value"
@@ -328,7 +328,7 @@
                                         type="object"
                                         options='{"warn": true}'
                                     />
-                                </tree>
+                                </list>
                             </field>
                             <div class="html_field_container">
                                 <field name="secret_description" nolabel="1" />
