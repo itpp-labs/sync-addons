@@ -2,11 +2,11 @@
 <!-- Copyright 2020,2024 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-    <record id="sync_link_view_tree" model="ir.ui.view">
-        <field name="name">sync.link.tree</field>
+    <record id="sync_link_view_list" model="ir.ui.view">
+        <field name="name">sync.link.list</field>
         <field name="model">sync.link</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="project_id" />
                 <field name="relation" />
                 <field name="system1" />
@@ -15,7 +15,7 @@
                 <field name="ref2" />
                 <field name="model" />
                 <field name="date" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_link_view_form" model="ir.ui.view">
@@ -78,13 +78,13 @@
     <record id="sync_link_action" model="ir.actions.act_window">
         <field name="name">Links</field>
         <field name="res_model">sync.link</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="sync_link_view_search" />
     </record>
     <record id="sync_link_action_from_project" model="ir.actions.act_window">
         <field name="name">Links</field>
         <field name="res_model">sync.link</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('project_id', '=', active_id)]</field>
         <field name="context">
             {'default_project_id': active_id, 'active_test': False}

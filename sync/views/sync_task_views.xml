@@ -2,14 +2,14 @@
 <!-- Copyright 2020-2021,2024-2025 Ivan Yelizariev <https://twitter.com/yelizariev>
      License MIT (https://opensource.org/licenses/MIT). -->
 <odoo>
-    <record id="sync_task_view_tree" model="ir.ui.view">
-        <field name="name">sync.task.tree</field>
+    <record id="sync_task_view_list" model="ir.ui.view">
+        <field name="name">sync.task.list</field>
         <field name="model">sync.task</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name" />
                 <field name="active" />
-            </tree>
+            </list>
         </field>
     </record>
     <record id="sync_task_view_form" model="ir.ui.view">
@@ -80,14 +80,13 @@
                         </page>
                         <page name="triggers_cron" string="Cron">
                             <field name="cron_ids" context="{'active_test': False}">
-                                <tree decoration-muted="not active">
+                                <list decoration-muted="not active">
                                     <field name="trigger_name" />
                                     <field name="active" />
                                     <field name="interval_number" />
                                     <field name="interval_type" />
                                     <field name="nextcall" />
-                                    <field name="numbercall" />
-                                </tree>
+                                </list>
                             </field>
                             <p>
                                 <em>
@@ -97,7 +96,7 @@
                         </page>
                         <page name="triggers_webhook" string="Webhook">
                             <field name="webhook_ids" context="{'active_test': False}">
-                                <tree editable="bottom" decoration-muted="not active">
+                                <list editable="bottom" decoration-muted="not active">
                                     <field name="trigger_name" />
                                     <field name="active" />
                                     <field name="webhook_type" />
@@ -115,7 +114,7 @@
                                     />
                                     <field name="groups_id" widget="many2many_tags" />
                                     <field name="action_server_id" invisible="1" />
-                                </tree>
+                                </list>
                             </field>
                             <p>
                                 <em>
@@ -128,12 +127,12 @@
                                 name="automation_ids"
                                 context="{'active_test': False}"
                             >
-                                <tree decoration-muted="not active">
+                                <list decoration-muted="not active">
                                     <field name="trigger_name" />
                                     <field name="active" />
                                     <field name="model_id" />
                                     <field name="trigger" />
-                                </tree>
+                                </list>
                             </field>
                             <p>
                                 <em>
@@ -154,14 +153,14 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='project_id']" position="attributes">
                 <attribute name="invisible" />
-                <attribute name="required" eval="1" />
+                <attribute name="required">1</attribute>
             </xpath>
         </field>
     </record>
     <record id="sync_task_action_from_project" model="ir.actions.act_window">
         <field name="name">Tasks</field>
         <field name="res_model">sync.task</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[('project_id', '=', active_id)]</field>
         <field name="context">
             {'default_project_id': active_id, 'active_test': False}
