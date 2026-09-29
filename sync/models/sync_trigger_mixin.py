@@ -26,7 +26,7 @@ class SyncTriggerMixin(models.AbstractModel):
         if not self._fields["name"].required:
             return
         for record in self:
-            if record.name != self._description:
+            if record.name != record.trigger_name:
                 continue
             name = "Sync Studio: %s -> %s" % (
                 record.sync_project_id.name,

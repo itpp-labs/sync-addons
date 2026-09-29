@@ -330,6 +330,7 @@ class SyncProject(models.Model):
                 "LOG_CRITICAL": LOG_CRITICAL,
                 "user": self.env.user,
                 "trigger": job.trigger_name,
+                "job_date": job.create_date,
                 "add_job": add_job,
                 "json": json,
                 "UserError": UserError,

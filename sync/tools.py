@@ -73,9 +73,7 @@ def url2base64(url):
 
 def compile_markdown_to_html(markdown_content):
     markdown_content = remove_front_matter(markdown_content)
-
-    html = markdown.markdown(markdown_content)
-
+    html = markdown.markdown(markdown_content, extensions=["fenced_code"])
     return html
 
 
